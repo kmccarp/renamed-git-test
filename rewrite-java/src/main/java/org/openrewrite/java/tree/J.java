@@ -3387,6 +3387,9 @@ public interface J extends Tree {
             return getAnnotations().withName(this.name.withIdentifier(name));
         }
 
+        /**
+         * Can be either a list of {@link VariableDeclarations}, when there are no parameters, a single {@link J.Empty}.
+         */
         JContainer<Statement> parameters;
 
         public List<Statement> getParameters() {
@@ -3395,6 +3398,14 @@ public interface J extends Tree {
 
         public MethodDeclaration withParameters(List<Statement> parameters) {
             return getPadding().withParameters(JContainer.withElements(this.parameters, parameters));
+        }
+
+        public List<VariableDeclarations> getParametersAsVariableDeclarations() {
+            return getParameters()
+                    .stream()
+                    .filter(VariableDeclarations.class::isInstance)
+                    .map(VariableDeclarations.class::cast)
+                    .collect(toList());
         }
 
         @Nullable
