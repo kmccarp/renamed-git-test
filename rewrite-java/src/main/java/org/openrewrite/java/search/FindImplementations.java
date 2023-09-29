@@ -15,7 +15,10 @@
  */
 package org.openrewrite.java.search;
 
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 import org.openrewrite.ExecutionContext;
+import org.openrewrite.Option;
 import org.openrewrite.Recipe;
 import org.openrewrite.TreeVisitor;
 import org.openrewrite.java.JavaIsoVisitor;
@@ -23,12 +26,13 @@ import org.openrewrite.java.tree.J;
 import org.openrewrite.java.tree.TypeUtils;
 import org.openrewrite.marker.SearchResult;
 
+@Value
+@EqualsAndHashCode(callSuper = true)
 public class FindImplementations extends Recipe {
-    private final String interfaceFullyQualifiedName;
-
-    public FindImplementations(String interfaceFullyQualifiedName) {
-        this.interfaceFullyQualifiedName = interfaceFullyQualifiedName;
-    }
+    @Option(displayName = "Interface fully-qualified name",
+            description = "A fully-qualified interface name to search for.",
+            example = "org.openrewrite.Recipe")
+    String interfaceFullyQualifiedName;
 
     @Override
     public String getDisplayName() {
