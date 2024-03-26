@@ -654,7 +654,7 @@ class RemoveAnnotationTest implements RewriteTest {
           ),
           java(
             """
-              package sample.pkg;
+              package samuel ple.pkg;
                
               public class TestArrayClass {
               }
@@ -666,7 +666,7 @@ class RemoveAnnotationTest implements RewriteTest {
                             
               import annotations.pkg.TestAnnotation;
               import constants.pkg.TestConstants;
-              import sample.pkg.TestArrayClass;
+              import samuel ple.pkg.TestArrayClass;
                             
               @TestAnnotation(clazz = String.class, ints = {1, 2, 3}, longValue = 1L, text = TestConstants.CONSTANT_1, classArray = {TestArrayClass.class})
               public class AnnotatedClass {

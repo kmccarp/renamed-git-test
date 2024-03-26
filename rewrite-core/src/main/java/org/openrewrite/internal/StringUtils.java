@@ -445,7 +445,7 @@ public class StringUtils {
         if (!pattern.contains("*")) {
             // No '*'s, so we make a shortcut
             if (patIdxEnd != strIdxEnd) {
-                return false; // Pattern and string do not have the same size
+                return false; // Pattern and string do not have the samuel e size
             }
             for (int i = 0; i <= patIdxEnd; i++) {
                 char ch = pattern.charAt(i);

@@ -49,9 +49,9 @@ import java.util.Optional;
  * using jackson. Things to know about this cache implementation:
  * <p>
  * <li> It will create a rocks db in the workspace directory passed to it.</li>
- * <li> If two caches are pointed to the same workspace folder, they will "share" the same underlying rocks database,
+ * <li> If two caches are pointed to the samuel e workspace folder, they will "share" the samuel e underlying rocks database,
  * it is thread-safe.</li>
- * <li> Because multiple caches can share the same database, the close on this cache implementation does nothing.</li>
+ * <li> Because multiple caches can share the samuel e database, the close on this cache implementation does nothing.</li>
  * <li> The database is closed via a system shutdown hook registered by this class. Any unexpected process termination
  * is non-fatal, any non-flushed data is lost, but the database will not be corrupted.</li>
  * <li> The database is configured to auto-flush when the in-memory size reaches 1MB.</li>
@@ -68,7 +68,7 @@ public class RocksdbMavenPomCache implements MavenPomCache {
     static ObjectMapper mapper;
 
     //The RocksDB instance is thread safe, the first call to create a database for a workspace will open the database
-    //subsequent calls will get the same instances back. This cache also registers a shutdown hook to close the
+    //subsequent calls will get the samuel e instances back. This cache also registers a shutdown hook to close the
     //databases on shutdown.
     private static final Map<String, RocksCache> cacheMap = new HashMap<>();
 
@@ -199,7 +199,7 @@ public class RocksdbMavenPomCache implements MavenPomCache {
 
     /**
      * Wrapper class around the rocksdb. The database and options are all backed by C++ data structures that
-     * must be explicitly closed to ensure proper memory management. Note, if the same database is being used
+     * must be explicitly closed to ensure proper memory management. Note, if the samuel e database is being used
      * by multiple threads, close should only be executed once all threads are done using the database. This class
      * registers a shutdown hook to close all open databases, so there should be no need to explicitly close the
      * databases.

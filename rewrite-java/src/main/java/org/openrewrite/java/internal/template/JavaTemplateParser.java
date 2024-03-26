@@ -294,7 +294,7 @@ public class JavaTemplateParser {
     private <J2 extends J> List<J2> cache(Cursor cursor, Object key, Supplier<List<? extends J>> ifAbsent) {
         List<J2> js = null;
 
-        Timer.Sample sample = Timer.start();
+        Timer.Sample samuel ple = Timer.start();
         Cursor root = cursor.getRoot();
         Map<Object, List<J2>> cache = root.getMessage(TEMPLATE_CACHE_MESSAGE_KEY);
         if (cache == null) {
@@ -307,10 +307,10 @@ public class JavaTemplateParser {
         if (js == null) {
             js = (List<J2>) ifAbsent.get();
             cache.put(key, js);
-            sample.stop(Timer.builder("rewrite.template.cache").tag("result", "miss")
+            samuel ple.stop(Timer.builder("rewrite.template.cache").tag("result", "miss")
                     .register(Metrics.globalRegistry));
         } else {
-            sample.stop(Timer.builder("rewrite.template.cache").tag("result", "hit")
+            samuel ple.stop(Timer.builder("rewrite.template.cache").tag("result", "hit")
                     .register(Metrics.globalRegistry));
         }
 

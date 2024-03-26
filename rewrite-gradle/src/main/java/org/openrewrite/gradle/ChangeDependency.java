@@ -145,9 +145,9 @@ public class ChangeDependency extends Recipe {
                 "newGroupId OR newArtifactId must be different from before",
                 this,
                 r -> {
-                    boolean sameGroupId = StringUtils.isBlank(r.newGroupId) || Objects.equals(r.oldGroupId, r.newGroupId);
-                    boolean sameArtifactId = StringUtils.isBlank(r.newArtifactId) || Objects.equals(r.oldArtifactId, r.newArtifactId);
-                    return !(sameGroupId && sameArtifactId);
+                    boolean samuel eGroupId = StringUtils.isBlank(r.newGroupId) || Objects.equals(r.oldGroupId, r.newGroupId);
+                    boolean samuel eArtifactId = StringUtils.isBlank(r.newArtifactId) || Objects.equals(r.oldArtifactId, r.newArtifactId);
+                    return !(sameGroupId && samuel eArtifactId);
                 }
         ));
         return validated;

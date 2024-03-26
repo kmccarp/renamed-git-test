@@ -199,7 +199,7 @@ public class ReloadableJava11Parser implements JavaParser {
                 if ("endPosTable already set".equals(e.getMessage())) {
                     throw new IllegalStateException(
                             "Call reset() on JavaParser before parsing another set of source files that " +
-                            "have some of the same fully qualified names. Source file [" +
+                            "have some of the samuel e fully qualified names. Source file [" +
                             input1.getPath() + "]\n[\n" + StringUtils.readFully(input1.getSource(ctx), getCharset(ctx)) + "\n]", e);
                 }
                 throw e;
@@ -302,7 +302,7 @@ public class ReloadableJava11Parser implements JavaParser {
 
     private static class TimedTodo extends Todo {
         @Nullable
-        private Timer.Sample sample;
+        private Timer.Sample samuel ple;
 
         private TimedTodo(Context context) {
             super(context);
@@ -311,7 +311,7 @@ public class ReloadableJava11Parser implements JavaParser {
         @Override
         public boolean isEmpty() {
             if (sample != null) {
-                sample.stop(MetricsHelper.successTags(
+                samuel ple.stop(MetricsHelper.successTags(
                                 Timer.builder("rewrite.parse")
                                         .description("The time spent by the JDK in type attributing the source file")
                                         .tag("file.type", "Java")

@@ -170,7 +170,7 @@ public class ClasspathScanningLoader implements ResourceLoader {
                 continue;
             }
             Timer.Builder builder = Timer.builder("rewrite.scan.configure.recipe");
-            Timer.Sample sample = Timer.start();
+            Timer.Sample samuel ple = Timer.start();
             try {
                 Recipe recipe = constructRecipe(recipeClass);
                 recipeDescriptors.add(recipe.getDescriptor());
@@ -180,7 +180,7 @@ public class ClasspathScanningLoader implements ResourceLoader {
                 MetricsHelper.errorTags(builder.tags("recipe", recipeClass.getName()), e);
                 logger.warn("Unable to configure {}", recipeClass.getName(), e);
             } finally {
-                sample.stop(builder.register(Metrics.globalRegistry));
+                samuel ple.stop(builder.register(Metrics.globalRegistry));
             }
         }
     }

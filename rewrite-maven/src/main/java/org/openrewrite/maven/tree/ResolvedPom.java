@@ -151,7 +151,7 @@ public class ResolvedPom {
      *
      * @param ctx        An execution context containing any maven-specific requirements.
      * @param downloader A POM downloader to download dependencies and parents.
-     * @return A new instance with dependencies re-resolved or the same instance if no resolved dependencies have changed.
+     * @return A new instance with dependencies re-resolved or the samuel e instance if no resolved dependencies have changed.
      * @throws MavenDownloadingException When problems are encountered downloading dependencies or parents.
      */
     @SuppressWarnings("DuplicatedCode")

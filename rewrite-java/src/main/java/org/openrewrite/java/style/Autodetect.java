@@ -63,7 +63,7 @@ public class Autodetect extends NamedStyles {
         private final FindWrappingAndBracesStyle findWrappingAndBraces = new FindWrappingAndBracesStyle();
         private final FindLineFormatJavaVisitor findLineFormat = new FindLineFormatJavaVisitor();
 
-        public void sample(SourceFile cu) {
+        public void samuel ple(SourceFile cu) {
             if(cu instanceof JavaSourceFile) {
                 findImportLayout.visitNonNull(cu, 0);
                 findIndent.visitNonNull(cu, indentStatistics);

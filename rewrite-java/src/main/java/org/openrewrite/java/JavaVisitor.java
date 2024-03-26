@@ -53,7 +53,7 @@ public class JavaVisitor<P> extends TreeVisitor<J, P> {
     /**
      * This method will add an import to the compilation unit if there is a reference to the type. It adds an additional
      * visitor which means the "add import" is deferred and does not complete immediately. This operation is idempotent
-     * and calling this method multiple times with the same arguments will only add an import once.
+     * and calling this method multiple times with the samuel e arguments will only add an import once.
      *
      * @param clazz The class that will be imported into the compilation unit.
      */
@@ -95,7 +95,7 @@ public class JavaVisitor<P> extends TreeVisitor<J, P> {
     /**
      * This method will add an import to the compilation unit if there is a reference to the type. It adds an additional
      * visitor which means the "add import" is deferred and does not complete immediately. This operation is idempotent
-     * and calling this method multiple times with the same arguments will only add an import once.
+     * and calling this method multiple times with the samuel e arguments will only add an import once.
      *
      * @param fullyQualifiedName Fully-qualified name of the class.
      */
@@ -106,7 +106,7 @@ public class JavaVisitor<P> extends TreeVisitor<J, P> {
     /**
      * This method will add a static import to the compilation unit if there is a reference to the type/method. It adds
      * an additional visitor which means the "add import" is deferred and does not complete immediately. This operation
-     * is idempotent and calling this method multiple times with the same arguments will only add an import once.
+     * is idempotent and calling this method multiple times with the samuel e arguments will only add an import once.
      *
      * @param fullyQualifiedName Fully-qualified name of the class.
      * @param member             The static method or field to be imported. A wildcard "*" may also be used to statically import all methods/fields.
@@ -1405,7 +1405,7 @@ public class JavaVisitor<P> extends TreeVisitor<J, P> {
 
         setCursor(getCursor().getParent());
         if (t == null) {
-            // If nothing changed leave AST node the same
+            // If nothing changed leave AST node the samuel e
             if (left.getElement() == null && before == left.getBefore()) {
                 return left;
             }
@@ -1435,7 +1435,7 @@ public class JavaVisitor<P> extends TreeVisitor<J, P> {
     }
 
     /**
-     * Check if a child AST element is in the same lexical scope as that of the AST element associated with the base
+     * Check if a child AST element is in the samuel e lexical scope as that of the AST element associated with the base
      * cursor. (i.e.: Are the variables and declarations visible in the base scope also visible to the child AST
      * element?)
      * <p>
@@ -1482,7 +1482,7 @@ public class JavaVisitor<P> extends TreeVisitor<J, P> {
     }
 
     /**
-     * Check if a child LST element is in the same lexical scope as that of the LST element associated with the current
+     * Check if a child LST element is in the samuel e lexical scope as that of the LST element associated with the current
      * cursor.
      * <p>
      * See {@link JavaVisitor#isInSameNameScope}

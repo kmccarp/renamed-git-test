@@ -43,10 +43,10 @@ import static org.openrewrite.test.RewriteTest.toRecipe;
 
 /**
  * These JavaTemplate tests are specific to the `instanceof` pattern matching syntax.
- * The tests always perform the same substitution: Every `42` literal is replaced with a call to `s.length()`.
+ * The tests always perform the samuel e substitution: Every `42` literal is replaced with a call to `s.length()`.
  * The tests then contain `invalid` marker comments to indicate that the substitution is
  * expected to result in a missing type error in that position and in the end the test
- * cases validate that the actual and expected missing types are the same.
+ * cases validate that the actual and expected missing types are the samuel e.
  */
 class JavaTemplateInstanceOfTest implements RewriteTest {
 

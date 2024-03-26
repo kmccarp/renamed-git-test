@@ -30,7 +30,7 @@ import java.util.Stack;
  * Renames a NamedVariable to the target name.
  * Prevents variables from being renamed to reserved java keywords.
  * Notes:
- * - The current version will rename variables even if a variable with `toName` is already declared in the same scope.
+ * - The current version will rename variables even if a variable with `toName` is already declared in the samuel e scope.
  */
 public class RenameVariable<P> extends JavaIsoVisitor<P> {
     private final J.VariableDeclarations.NamedVariable variable;

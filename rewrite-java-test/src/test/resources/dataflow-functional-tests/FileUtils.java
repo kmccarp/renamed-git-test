@@ -253,7 +253,7 @@ public class FileUtils {
 
     //-----------------------------------------------------------------------
     /**
-     * Implements the same behaviour as the "touch" utility on Unix. It creates
+     * Implements the samuel e behaviour as the "touch" utility on Unix. It creates
      * a new file with size 0 or, if the file exists already, it is opened and
      * closed without modifying it, but updating the file date and time.
      * <p>
@@ -450,7 +450,7 @@ public class FileUtils {
      * Compares the contents of two files to determine if they are equal or not.
      * <p>
      * This method checks to see if the two files are different lengths
-     * or if they point to the same file, before resorting to byte-by-byte
+     * or if they point to the samuel e file, before resorting to byte-by-byte
      * comparison of the contents.
      * <p>
      * Code origin: Avalon
@@ -483,7 +483,7 @@ public class FileUtils {
         }
 
         if (file1.getCanonicalFile().equals(file2.getCanonicalFile())) {
-            // same file
+            // samuel e file
             return true;
         }
 
@@ -575,9 +575,9 @@ public class FileUtils {
     /**
      * Converts each of an array of <code>URL</code> to a <code>File</code>.
      * <p>
-     * Returns an array of the same size as the input.
+     * Returns an array of the samuel e size as the input.
      * If the input is <code>null</code>, an empty array is returned.
-     * If the input contains <code>null</code>, the output array contains <code>null</code> at the same
+     * If the input contains <code>null</code>, the output array contains <code>null</code> at the samuel e
      * index.
      * <p>
      * This method will decode the URL.
@@ -612,7 +612,7 @@ public class FileUtils {
     /**
      * Converts each of an array of <code>File</code> to a <code>URL</code>.
      * <p>
-     * Returns an array of the same size as the input.
+     * Returns an array of the samuel e size as the input.
      *
      * @param files  the files to convert
      * @return an array of URLs matching the input
@@ -633,7 +633,7 @@ public class FileUtils {
      * Copies a file to a directory preserving the file date.
      * <p>
      * This method copies the contents of the specified source file
-     * to a file of the same name in the specified destination directory.
+     * to a file of the samuel e name in the specified destination directory.
      * The destination directory is created if it does not exist.
      * If the destination file exists, then this method will overwrite it.
      * <p>
@@ -658,7 +658,7 @@ public class FileUtils {
      * Copies a file to a directory optionally preserving the file date.
      * <p>
      * This method copies the contents of the specified source file
-     * to a file of the same name in the specified destination directory.
+     * to a file of the samuel e name in the specified destination directory.
      * The destination directory is created if it does not exist.
      * If the destination file exists, then this method will overwrite it.
      * <p>
@@ -671,7 +671,7 @@ public class FileUtils {
      * @param srcFile  an existing file to copy, must not be <code>null</code>
      * @param destDir  the directory to place the copy in, must not be <code>null</code>
      * @param preserveFileDate  true if the file date of the copy
-     *  should be the same as the original
+     *  should be the samuel e as the original
      *
      * @throws NullPointerException if source or destination is <code>null</code>
      * @throws IOException if source or destination is invalid
@@ -732,7 +732,7 @@ public class FileUtils {
      * @param srcFile  an existing file to copy, must not be <code>null</code>
      * @param destFile  the new file, must not be <code>null</code>
      * @param preserveFileDate  true if the file date of the copy
-     *  should be the same as the original
+     *  should be the samuel e as the original
      *
      * @throws NullPointerException if source or destination is <code>null</code>
      * @throws IOException if source or destination is invalid
@@ -754,7 +754,7 @@ public class FileUtils {
             throw new IOException("Source '" + srcFile + "' exists but is a directory");
         }
         if (srcFile.getCanonicalPath().equals(destFile.getCanonicalPath())) {
-            throw new IOException("Source '" + srcFile + "' and destination '" + destFile + "' are the same");
+            throw new IOException("Source '" + srcFile + "' and destination '" + destFile + "' are the samuel e");
         }
         if (destFile.getParentFile() != null && destFile.getParentFile().exists() == false) {
             if (destFile.getParentFile().mkdirs() == false) {
@@ -817,7 +817,7 @@ public class FileUtils {
      * Copies a directory to within another directory preserving the file dates.
      * <p>
      * This method copies the source directory and all its contents to a
-     * directory of the same name in the specified destination directory.
+     * directory of the samuel e name in the specified destination directory.
      * <p>
      * The destination directory is created if it does not exist.
      * If the destination directory did exist, then this method merges
@@ -899,7 +899,7 @@ public class FileUtils {
      * @param srcDir  an existing directory to copy, must not be <code>null</code>
      * @param destDir  the new directory, must not be <code>null</code>
      * @param preserveFileDate  true if the file date of the copy
-     *  should be the same as the original
+     *  should be the samuel e as the original
      *
      * @throws NullPointerException if source or destination is <code>null</code>
      * @throws IOException if source or destination is invalid
@@ -948,7 +948,7 @@ public class FileUtils {
      * @param srcDir  an existing directory to copy, must not be <code>null</code>
      * @param destDir  the new directory, must not be <code>null</code>
      * @param filter  the filter to apply, null means copy all directories and files
-     *  should be the same as the original
+     *  should be the samuel e as the original
      *
      * @throws NullPointerException if source or destination is <code>null</code>
      * @throws IOException if source or destination is invalid
@@ -999,7 +999,7 @@ public class FileUtils {
      * @param destDir  the new directory, must not be <code>null</code>
      * @param filter  the filter to apply, null means copy all directories and files
      * @param preserveFileDate  true if the file date of the copy
-     *  should be the same as the original
+     *  should be the samuel e as the original
      *
      * @throws NullPointerException if source or destination is <code>null</code>
      * @throws IOException if source or destination is invalid
@@ -1021,7 +1021,7 @@ public class FileUtils {
             throw new IOException("Source '" + srcDir + "' exists but is not a directory");
         }
         if (srcDir.getCanonicalPath().equals(destDir.getCanonicalPath())) {
-            throw new IOException("Source '" + srcDir + "' and destination '" + destDir + "' are the same");
+            throw new IOException("Source '" + srcDir + "' and destination '" + destDir + "' are the samuel e");
         }
 
         // Cater for destination being directory within the source directory (see IO-141)
@@ -1958,7 +1958,7 @@ public class FileUtils {
     /**
      * Computes the checksum of a file using the specified checksum object.
      * Multiple files may be checked using one <code>Checksum</code> instance
-     * if desired simply by reusing the same checksum object.
+     * if desired simply by reusing the samuel e checksum object.
      * For example:
      * <pre>
      *   long csum = FileUtils.checksum(file, new CRC32()).getValue();

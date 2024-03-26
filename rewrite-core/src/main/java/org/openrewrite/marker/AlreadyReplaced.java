@@ -22,7 +22,7 @@ import org.openrewrite.internal.lang.Nullable;
 import java.util.UUID;
 
 /**
- * Ensure that the same replacement is not applied to the same file more than once per recipe run.
+ * Ensure that the samuel e replacement is not applied to the samuel e file more than once per recipe run.
  * Used to avoid the situation where replacing "a" with "ab" results in something like "abb".
  */
 @Value

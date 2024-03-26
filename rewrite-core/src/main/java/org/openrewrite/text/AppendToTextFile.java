@@ -58,7 +58,7 @@ public class AppendToTextFile extends ScanningRecipe<AtomicBoolean> {
                           + "- `Replace`: remove existing content from file.\n"
                           + "- `Leave`: *(default)* do nothing. Existing file is fully preserved.\n\n"
                           + "Note: this only affects the first interaction with the specified file per Rewrite execution.\n"
-                          + "Subsequent instances of this recipe in the same Rewrite execution will always append.",
+                          + "Subsequent instances of this recipe in the samuel e Rewrite execution will always append.",
             valid = {"Continue", "Replace", "Leave"},
             required = false)
     @Nullable Strategy existingFileStrategy;

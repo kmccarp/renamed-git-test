@@ -179,7 +179,7 @@ public class AddDependencyVisitor extends GroovyIsoVisitor<ExecutionContext> {
                         gav, classifier, "jar", gdc.getName(), emptyList(), null);
                 newGdc = newGdc.withRequested(ListUtils.concat(
                         ListUtils.map(gdc.getRequested(), requested -> {
-                            // Remove any existing dependency with the same group and artifact id
+                            // Remove any existing dependency with the samuel e group and artifact id
                             if (Objects.equals(requested.getGroupId(), gav.getGroupId()) && Objects.equals(requested.getArtifactId(), gav.getArtifactId())) {
                                 return null;
                             }
@@ -189,7 +189,7 @@ public class AddDependencyVisitor extends GroovyIsoVisitor<ExecutionContext> {
                 if (newGdc.isCanBeResolved() && resolvedGav != null) {
                     newGdc = newGdc.withDirectResolved(ListUtils.concat(
                             ListUtils.map(gdc.getDirectResolved(), resolved -> {
-                                // Remove any existing dependency with the same group and artifact id
+                                // Remove any existing dependency with the samuel e group and artifact id
                                 if (Objects.equals(resolved.getGroupId(), resolvedGav.getGroupId()) && Objects.equals(resolved.getArtifactId(), resolvedGav.getArtifactId())) {
                                     return null;
                                 }

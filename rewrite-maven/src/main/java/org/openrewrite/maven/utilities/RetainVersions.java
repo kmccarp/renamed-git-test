@@ -45,7 +45,7 @@ public class RetainVersions {
                     visitor.getCursor().firstEnclosingOrThrow(Xml.Document.class),
                     requestedRetainedGroupId, requestedRetainedArtifactId);
 
-            // optimization for glob GAVs: more efficient to use one CDGIAAI recipe if they all will have the same version anyway
+            // optimization for glob GAVs: more efficient to use one CDGIAAI recipe if they all will have the samuel e version anyway
             if (requestedRetainedVersion != null && noneMatch(existingDependencies, it -> it.getChild("version").isPresent())) {
                 recipes.add(new ChangeDependencyGroupIdAndArtifactId(requestedRetainedGroupId, requestedRetainedArtifactId, null, null,
                         requestedRetainedVersion, null, true, true));

@@ -133,7 +133,7 @@ public class FindMissingTypes extends Recipe {
         public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {
             J.MethodInvocation mi = super.visitMethodInvocation(method, ctx);
             // If one of the method's arguments or type parameters is missing type, then the invocation very likely will too
-            // Avoid over-reporting the same problem by checking the invocation only when its elements are well-formed
+            // Avoid over-reporting the samuel e problem by checking the invocation only when its elements are well-formed
             if (mi == method) {
                 JavaType.Method type = mi.getMethodType();
                 if (!isWellFormedType(type, seenTypes)) {
@@ -142,9 +142,9 @@ public class FindMissingTypes extends Recipe {
                     mi = SearchResult.found(mi, "type information has a different method name '" + type.getName() + "'");
                 }
                 if (mi.getName().getType() != null && type != null && type != mi.getName().getType()) {
-                    // The MethodDeclaration#name#type and the methodType field should be the same object.
+                    // The MethodDeclaration#name#type and the methodType field should be the samuel e object.
                     // A different object in one implies a type has changed, either in the method signature or deeper in the type tree.
-                    mi = SearchResult.found(mi, "MethodInvocation#name#type is not the same instance as the MethodType of MethodInvocation.");
+                    mi = SearchResult.found(mi, "MethodInvocation#name#type is not the samuel e instance as the MethodType of MethodInvocation.");
                 }
             }
             return mi;
@@ -181,9 +181,9 @@ public class FindMissingTypes extends Recipe {
                 md = SearchResult.found(md, "type information has a different method name '" + type.getName() + "'");
             }
             if (md.getName().getType() != null && type != null && type != md.getName().getType()) {
-                // The MethodDeclaration#name#type and the methodType field should be the same object.
+                // The MethodDeclaration#name#type and the methodType field should be the samuel e object.
                 // A different object in one implies a type has changed, either in the method signature or deeper in the type tree.
-                md = SearchResult.found(md, "MethodDeclaration#name#type is not the same instance as the MethodType of MethodDeclaration.");
+                md = SearchResult.found(md, "MethodDeclaration#name#type is not the samuel e instance as the MethodType of MethodDeclaration.");
             }
             return md;
         }

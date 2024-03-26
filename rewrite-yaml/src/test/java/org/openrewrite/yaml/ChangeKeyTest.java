@@ -140,7 +140,7 @@ class ChangeKeyTest implements RewriteTest {
             """
                   spring:
                     security:
-                      saml2:
+                      samuel l2:
                         relyingparty:
                           registration:
                             idpone:
@@ -154,7 +154,7 @@ class ChangeKeyTest implements RewriteTest {
             """
                   spring:
                     security:
-                      saml2:
+                      samuel l2:
                         relyingparty:
                           registration:
                             idpone:

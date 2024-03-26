@@ -20,7 +20,7 @@ import org.openrewrite.test.RewriteTest;
 
 import static org.openrewrite.java.Assertions.java;
 
-class SameClassNameTest implements RewriteTest {
+class Samuel eClassNameTest implements RewriteTest {
 
     @Test
     void canParseTheSameJavaClass() {

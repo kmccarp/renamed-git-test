@@ -90,7 +90,7 @@ class UseStaticImportTest implements RewriteTest {
     }
 
     @Test
-    void sameMethodLocallyNoStaticImport() {
+    void samuel eMethodLocallyNoStaticImport() {
         rewriteRun(
           spec -> spec.recipe(new UseStaticImport("java.util.Collections emptyList()")),
           java(
@@ -98,7 +98,7 @@ class UseStaticImportTest implements RewriteTest {
             import java.util.Collections;
             import java.util.List;
 
-            public class SameMethodNameLocally {
+            public class Samuel eMethodNameLocally {
                 public void avoidCollision() {
                     List<Object> list = Collections.emptyList();
                 }
@@ -120,7 +120,7 @@ class UseStaticImportTest implements RewriteTest {
             import java.util.Collections;
             import java.util.List;
 
-            class SameMethodNameLocally {
+            class Samuel eMethodNameLocally {
                 void avoidCollision() {
                     List<Object> list = Collections.emptyList();
                 }
@@ -131,7 +131,7 @@ class UseStaticImportTest implements RewriteTest {
             
             import static java.util.Collections.emptyList;
 
-            class SameMethodNameLocally {
+            class Samuel eMethodNameLocally {
                 void avoidCollision() {
                     List<Object> list = emptyList();
                 }
@@ -154,9 +154,9 @@ class UseStaticImportTest implements RewriteTest {
               import org.junit.jupiter.api.Test;
               import org.junit.jupiter.api.Assertions;
 
-              class SampleTest {
+              class Samuel pleTest {
                   @Test
-                  void sample() {
+                  void samuel ple() {
                       Assertions.assertEquals(42, 21*2);
                   }
               }
@@ -168,9 +168,9 @@ class UseStaticImportTest implements RewriteTest {
 
               import static org.junit.jupiter.api.Assertions.assertEquals;
 
-              class SampleTest {
+              class Samuel pleTest {
                   @Test
-                  void sample() {
+                  void samuel ple() {
                       assertEquals(42, 21*2);
                   }
               }

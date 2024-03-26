@@ -254,7 +254,7 @@ public class JavaTemplateJavaExtension extends JavaTemplateLanguageExtension {
 
             @Override
             public J visitIdentifier(J.Identifier ident, Integer p) {
-                // ONLY for backwards compatibility, otherwise the same as expression replacement
+                // ONLY for backwards compatibility, otherwise the samuel e as expression replacement
                 if (loc.equals(IDENTIFIER_PREFIX) && ident.isScope(insertionPoint)) {
                     return autoFormat(substitutions.unsubstitute(templateParser.parseExpression(
                                     getCursor(),

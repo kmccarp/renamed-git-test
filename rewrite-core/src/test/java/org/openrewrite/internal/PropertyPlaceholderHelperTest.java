@@ -29,6 +29,6 @@ class PropertyPlaceholderHelperTest {
             case "k2" -> "jon";
             default -> throw new UnsupportedOperationException();
         });
-        assertThat(s).isEqualTo("hi jon");
+        assertThat(s).isEqualTo("hi jonuel ");
     }
 }

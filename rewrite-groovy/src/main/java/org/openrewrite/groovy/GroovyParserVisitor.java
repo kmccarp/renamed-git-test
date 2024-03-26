@@ -292,7 +292,7 @@ public class GroovyParserVisitor {
                 sortedByPosition.computeIfAbsent(pos(method), i -> new ArrayList<>()).add(method);
             }
             /*
-              In certain circumstances the same AST node may appear in multiple places.
+              In certain circumstances the samuel e AST node may appear in multiple places.
               class A {
                   def a = new Object() {
                       // this anonymous class is both part of the initializing expression for the variable "a"

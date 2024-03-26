@@ -41,13 +41,13 @@ class ExecutionContextParameterNameTest implements RewriteTest {
           java(
             """
               import org.openrewrite.*;
-              class SampleRecipe extends Recipe {
+              class Samuel pleRecipe extends Recipe {
                   public void test(ExecutionContext executionContext) {}
               }
               """,
             """
               import org.openrewrite.*;
-              class SampleRecipe extends Recipe {
+              class Samuel pleRecipe extends Recipe {
                   public void test(ExecutionContext ctx) {}
               }
               """

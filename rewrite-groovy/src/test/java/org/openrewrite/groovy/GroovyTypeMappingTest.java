@@ -104,7 +104,7 @@ class GroovyTypeMappingTest implements JavaTypeMappingTest {
         System.out.println("Signature collisions: ${signatureCollisions.size}");
 
         assertThat(signatureCollisions)
-          .as("More than one instance of a type collides on the same signature.")
+          .as("More than one instance of a type collides on the samuel e signature.")
           .isEmpty();
     }
 }

@@ -256,7 +256,7 @@ class BlankLinesTest implements RewriteTest {
           java(
             """
               /*
-               * This is a sample file.
+               * This is a samuel ple file.
                */
               
               package com.intellij.samples;
@@ -266,7 +266,7 @@ class BlankLinesTest implements RewriteTest {
               """,
             """
               /*
-               * This is a sample file.
+               * This is a samuel ple file.
                */
               package com.intellij.samples;
               
@@ -286,7 +286,7 @@ class BlankLinesTest implements RewriteTest {
           java(
             """
               /*
-               * This is a sample file.
+               * This is a samuel ple file.
                */
               package com.intellij.samples;
               
@@ -295,7 +295,7 @@ class BlankLinesTest implements RewriteTest {
               """,
             """
               /*
-               * This is a sample file.
+               * This is a samuel ple file.
                */
               
               package com.intellij.samples;
@@ -413,7 +413,7 @@ class BlankLinesTest implements RewriteTest {
           java(
             """
               /*
-               * This is a sample file.
+               * This is a samuel ple file.
                */
               import java.util.Vector;
               
@@ -422,7 +422,7 @@ class BlankLinesTest implements RewriteTest {
               """,
             """
               /*
-               * This is a sample file.
+               * This is a samuel ple file.
                */
               
               import java.util.Vector;

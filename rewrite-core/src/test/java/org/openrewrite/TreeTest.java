@@ -44,7 +44,7 @@ class TreeTest implements RewriteTest {
                       }
                   })
                 );
-                assertThat(printed).isEqualTo("hello jon");
+                assertThat(printed).isEqualTo("hello jonuel ");
             })
           )
         );

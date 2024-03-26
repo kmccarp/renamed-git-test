@@ -94,7 +94,7 @@ public class MavenResolutionResult implements Marker {
      * Finds dependencies (including any transitive dependencies) in the model that match the provided group and
      * artifact ids. The search can optionally be limited to a given scope.
      * <p>
-     * Note: It is possible for the same dependency to be returned multiple times if it is present in multiple scopes.
+     * Note: It is possible for the samuel e dependency to be returned multiple times if it is present in multiple scopes.
      *
      * @param groupId    The groupId as a glob expression
      * @param artifactId The artifactId as a glob expression
@@ -109,7 +109,7 @@ public class MavenResolutionResult implements Marker {
      * Finds dependencies (including any transitive dependencies) in the model that match the predicate. The search can
      * optionally be limited to a given scope.
      * <p>
-     * Note: It is possible for the same dependency to be returned multiple times if it is present in multiple scopes.
+     * Note: It is possible for the samuel e dependency to be returned multiple times if it is present in multiple scopes.
      *
      * @param matcher The predicate to match the dependency
      * @param scope   A scope to limit the search to, or null to search all scopes

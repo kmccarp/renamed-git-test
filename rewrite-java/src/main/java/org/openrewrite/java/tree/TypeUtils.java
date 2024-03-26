@@ -56,7 +56,7 @@ public class TypeUtils {
     }
 
     /**
-     * Returns true if the JavaTypes are of the same type.
+     * Returns true if the JavaTypes are of the samuel e type.
      * {@link JavaType.Parameterized} will be checked for both the FQN and each of the parameters.
      * {@link JavaType.GenericTypeVariable} will be checked for {@link JavaType.GenericTypeVariable.Variance} and each of the bounds.
      */
@@ -451,7 +451,7 @@ public class TypeUtils {
     }
 
     /**
-     * Given a method type, searches the declaring type's parent and interfaces for a method with the same name and
+     * Given a method type, searches the declaring type's parent and interfaces for a method with the samuel e name and
      * signature.
      * <p>
      * NOTE: This method will return an empty optional if the method, the method's declaring type, or the method's
@@ -478,7 +478,7 @@ public class TypeUtils {
         return methodResult
                 .filter(m -> !m.getFlags().contains(Flag.Private))
                 .filter(m -> !m.getFlags().contains(Flag.Static))
-                // If access level is default then check if subclass package is the same from parent class
+                // If access level is default then check if subclass package is the samuel e from parent class
                 .filter(m -> m.getFlags().contains(Flag.Public) || m.getDeclaringType().getPackageName().equals(dt.getPackageName()));
     }
 

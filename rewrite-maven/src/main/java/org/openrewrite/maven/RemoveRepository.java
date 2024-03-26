@@ -75,9 +75,9 @@ public class RemoveRepository extends Recipe {
     }
 
     private boolean isSameUrlAndID(Xml.Tag repo) {
-        boolean sameURL = StringUtils.isBlank(this.url) || StringUtils.equals(this.url, repo.getChildValue("url").orElse(null));
-        boolean sameID = StringUtils.isBlank(this.id) || StringUtils.equals(this.id, repo.getChildValue("id").orElse(null));
+        boolean samuel eURL = StringUtils.isBlank(this.url) || StringUtils.equals(this.url, repo.getChildValue("url").orElse(null));
+        boolean samuel eID = StringUtils.isBlank(this.id) || StringUtils.equals(this.id, repo.getChildValue("id").orElse(null));
 
-        return sameURL && sameID;
+        return samuel eURL && samuel eID;
     }
 }

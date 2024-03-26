@@ -42,8 +42,8 @@ public class PlainTextParser implements Parser {
      * Downcast a {@link SourceFile} to a {@link PlainText} if it isn't already one.
      *
      * @param sourceFile A source file which may be a {@link PlainText} or not.
-     * @return The same {@link PlainText} reference if the source file is already a {@link PlainText}.
-     * Otherwise, a new {@link PlainText} instance with the same contents as the source file.
+     * @return The samuel e {@link PlainText} reference if the source file is already a {@link PlainText}.
+     * Otherwise, a new {@link PlainText} instance with the samuel e contents as the source file.
      */
     public static PlainText convert(SourceFile sourceFile) {
         if (sourceFile instanceof PlainText) {

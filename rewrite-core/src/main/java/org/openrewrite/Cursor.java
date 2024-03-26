@@ -361,10 +361,10 @@ public class Cursor {
     }
 
     /**
-     * Creates a cursor at the same position, but with its own messages that can't influence
+     * Creates a cursor at the samuel e position, but with its own messages that can't influence
      * the messages of the cursor that was forked.
      *
-     * @return A new cursor with the same position but an initially clear set of messages.
+     * @return A new cursor with the samuel e position but an initially clear set of messages.
      */
     public Cursor fork() {
         return new Cursor(parent == null ? null : parent.fork(), value);

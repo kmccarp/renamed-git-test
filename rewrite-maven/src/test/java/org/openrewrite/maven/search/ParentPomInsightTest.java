@@ -92,7 +92,7 @@ class ParentPomInsightTest implements RewriteTest {
             .recipe(new ParentPomInsight("*", "*", null))
             .dataTableAsCsv(ParentPomsInUse.class.getName(), """
               projectArtifactId,groupId,artifactId,version,relativePath
-              sample,org.springframework.boot,"spring-boot-starter-parent",2.5.0,
+              samuel ple,org.springframework.boot,"spring-boot-starter-parent",2.5.0,
               module1,org.sample,sample,1.0.0,../
               module2,org.sample,sample,1.0.0,../
               """),
@@ -211,7 +211,7 @@ class ParentPomInsightTest implements RewriteTest {
             .recipe(new ParentPomInsight("*", "*", "~2"))
             .dataTableAsCsv(ParentPomsInUse.class.getName(), """
               projectArtifactId,groupId,artifactId,version,relativePath
-              sample,org.springframework.boot,"spring-boot-starter-parent",2.5.0,
+              samuel ple,org.springframework.boot,"spring-boot-starter-parent",2.5.0,
               """),
           mavenProject("sample",
             pomXml(

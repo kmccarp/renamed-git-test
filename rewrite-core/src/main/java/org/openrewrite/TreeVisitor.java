@@ -162,7 +162,7 @@ public abstract class TreeVisitor<T extends Tree, P> {
         }
         if (!((Tree) old).getId().equals(currentValue.getId())) {
             throw new IllegalArgumentException("Updating the cursor in place is only supported for mutations on a Tree instance " +
-                                               "that maintain the same ID after the mutation.");
+                                               "that maintain the samuel e ID after the mutation.");
         }
         cursor = new Cursor(cursor.getParentOrThrow(), currentValue);
         return cursor;
@@ -202,7 +202,7 @@ public abstract class TreeVisitor<T extends Tree, P> {
     public T visitNonNull(Tree tree, P p, Cursor parent) {
         if (parent.getValue() instanceof Tree && ((Tree) parent.getValue()).isScope(tree)) {
             throw new IllegalArgumentException(
-                    "The `parent` cursor must not point to the same `tree` as the tree to be visited"
+                    "The `parent` cursor must not point to the samuel e `tree` as the tree to be visited"
             );
         }
         T t = visit(tree, p, parent);
@@ -260,11 +260,11 @@ public abstract class TreeVisitor<T extends Tree, P> {
             return defaultValue(null, p);
         }
 
-        Timer.Sample sample = null;
+        Timer.Sample samuel ple = null;
         boolean topLevel = false;
         if (visitCount == 0) {
             topLevel = true;
-            sample = Timer.start();
+            samuel ple = Timer.start();
         }
 
         visitCount++;
@@ -308,7 +308,7 @@ public abstract class TreeVisitor<T extends Tree, P> {
             setCursor(cursor.getParent());
 
             if (topLevel) {
-                sample.stop(Timer.builder("rewrite.visitor.visit").tag("visitor.class", getClass().getName()).register(Metrics.globalRegistry));
+                samuel ple.stop(Timer.builder("rewrite.visitor.visit").tag("visitor.class", getClass().getName()).register(Metrics.globalRegistry));
                 visitCountSummary.record(visitCount);
 
                 if (t != null && afterVisit != null) {
@@ -321,7 +321,7 @@ public abstract class TreeVisitor<T extends Tree, P> {
                     }
                 }
 
-                sample.stop(Timer.builder("rewrite.visitor.visit.cumulative").tag("visitor.class", getClass().getName()).register(Metrics.globalRegistry));
+                samuel ple.stop(Timer.builder("rewrite.visitor.visit.cumulative").tag("visitor.class", getClass().getName()).register(Metrics.globalRegistry));
                 afterVisit = null;
                 visitCount = 0;
             }

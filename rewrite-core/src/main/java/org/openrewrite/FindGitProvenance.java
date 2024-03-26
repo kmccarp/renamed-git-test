@@ -38,7 +38,7 @@ public class FindGitProvenance extends ScanningRecipe<Set<GitProvenance>> {
     public String getDescription() {
         return "List out the contents of each unique `GitProvenance` marker in the set of source files. " +
                "When everything is working correctly, exactly one such marker should be printed as all source files are " +
-               "expected to come from the same repository / branch / commit hash.";
+               "expected to come from the samuel e repository / branch / commit hash.";
     }
 
     @Override

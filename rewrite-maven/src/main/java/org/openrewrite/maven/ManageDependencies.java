@@ -34,7 +34,7 @@ import java.util.Map;
  * section of the POM.
  * <p>
  * All dependencies that match {@link #groupPattern} and {@link #artifactPattern} should be
- * align-able to the same version (either the version provided to this visitor or the maximum matching
+ * align-able to the samuel e version (either the version provided to this visitor or the maximum matching
  * version if none is provided).
  */
 @Value

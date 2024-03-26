@@ -68,7 +68,7 @@ class MemberReferenceTest implements RewriteTest {
               import java.util.stream.Collector;
               import java.util.stream.Collectors;
                             
-              public class Sample {
+              public class Samuel ple {
                             
                   private void foo(List<Criteria> request) {
                       Set<Id<Criteria>> allCriteria = request.stream()

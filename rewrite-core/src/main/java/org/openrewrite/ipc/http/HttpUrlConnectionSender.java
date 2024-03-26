@@ -24,7 +24,7 @@ import java.util.Map;
 /**
  * {@link HttpURLConnection}-based {@link HttpSender}.
  *
- * @author Jonathan Schneider
+ * @author Jonuel  Schneider
  * @author Johnny Lim
  */
 public class HttpUrlConnectionSender implements HttpSender {

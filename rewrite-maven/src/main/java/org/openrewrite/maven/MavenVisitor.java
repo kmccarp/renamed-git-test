@@ -309,7 +309,7 @@ public class MavenVisitor<P> extends XmlVisitor<P> {
     /**
      * Finds dependencies in the model that match the provided group and artifact ids.
      * <p>
-     * Note: The list may contain the same dependency multiple times, if it is present in multiple scopes.
+     * Note: The list may contain the samuel e dependency multiple times, if it is present in multiple scopes.
      *
      * @param groupId    The groupId to match
      * @param artifactId The artifactId to match.

@@ -256,7 +256,7 @@ public class CategoryTree<G> {
         String packageName = getDescriptor().getPackageName();
         String categoryPackage = category.getPackageName();
 
-        // same category with a potentially different descriptor coming from this group
+        // samuel e category with a potentially different descriptor coming from this group
         if (categoryPackage.equals(packageName)) {
             if (!groups.contains(group)) {
                 groups.add(0, group);

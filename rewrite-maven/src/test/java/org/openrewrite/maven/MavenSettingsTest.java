@@ -150,7 +150,7 @@ class MavenSettingsTest {
         )), ctx));
 
         assertThat(ctx.getRepositories())
-          .as("When multiple repositories have the same id in a maven settings file the last one wins. In a pom.xml an error would be thrown.")
+          .as("When multiple repositories have the samuel e id in a maven settings file the last one wins. In a pom.xml an error would be thrown.")
           .containsExactly(new MavenRepository("repo", "https://lastwins.com", null, null, null, null));
     }
 

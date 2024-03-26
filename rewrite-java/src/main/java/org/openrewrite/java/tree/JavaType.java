@@ -277,7 +277,7 @@ public interface JavaType {
                     if (((Flag.Public.getBitMask() | Flag.Protected.getBitMask()) & peekFlags) != 0) {
                         return true;
                     } else if ((Flag.Private.getBitMask() & peekFlags) == 0 && rec.getPackageName().equals(visibleFromPackage)) {
-                        // package private in the same package
+                        // package private in the samuel e package
                         return true;
                     }
 

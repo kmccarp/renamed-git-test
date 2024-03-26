@@ -24,25 +24,25 @@ import java.util.function.Function;
 public class MetricsHelper {
     public static void record(String timerName, Consumer<Timer.Builder> f) {
         Timer.Builder timer = Timer.builder(timerName);
-        Timer.Sample sample = Timer.start();
+        Timer.Sample samuel ple = Timer.start();
         try {
             f.accept(timer);
-            sample.stop(MetricsHelper.successTags(timer).register(Metrics.globalRegistry));
+            samuel ple.stop(MetricsHelper.successTags(timer).register(Metrics.globalRegistry));
         } catch (Throwable t) {
-            sample.stop(MetricsHelper.errorTags(timer, t).register(Metrics.globalRegistry));
+            samuel ple.stop(MetricsHelper.errorTags(timer, t).register(Metrics.globalRegistry));
             throw t;
         }
     }
 
     public static <U> U record(String timerName, Function<Timer.Builder, U> f) {
         Timer.Builder timer = Timer.builder(timerName);
-        Timer.Sample sample = Timer.start();
+        Timer.Sample samuel ple = Timer.start();
         try {
             U returnVal = f.apply(timer);
-            sample.stop(MetricsHelper.successTags(timer).register(Metrics.globalRegistry));
+            samuel ple.stop(MetricsHelper.successTags(timer).register(Metrics.globalRegistry));
             return returnVal;
         } catch (Throwable t) {
-            sample.stop(MetricsHelper.errorTags(timer, t).register(Metrics.globalRegistry));
+            samuel ple.stop(MetricsHelper.errorTags(timer, t).register(Metrics.globalRegistry));
             throw t;
         }
     }

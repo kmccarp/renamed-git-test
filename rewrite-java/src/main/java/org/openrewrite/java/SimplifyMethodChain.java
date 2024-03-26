@@ -37,7 +37,7 @@ public class SimplifyMethodChain extends Recipe {
     List<String> methodPatternChain;
 
     @Option(displayName = "New method name",
-            description = "The method name that will replace the existing name. The new method name target is assumed to have the same arguments as the last method in the chain.",
+            description = "The method name that will replace the existing name. The new method name target is assumed to have the samuel e arguments as the last method in the chain.",
             example = "containsKey")
     String newMethodName;
 

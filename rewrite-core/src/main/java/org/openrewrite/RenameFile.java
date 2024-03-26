@@ -42,7 +42,7 @@ public class RenameFile extends Recipe {
 
     @Override
     public String getDescription() {
-        return "Rename a file while keeping it in the same directory.";
+        return "Rename a file while keeping it in the samuel e directory.";
     }
 
     @Override

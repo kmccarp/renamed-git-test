@@ -345,7 +345,7 @@ class EnvironmentTest implements RewriteTest {
         var env = Environment.builder().scanRuntimeClasspath().build();
         var styles = env.listStyles();
         assertThat(styles).isNotNull().isNotEmpty();
-        var sampleStyle = styles.stream().filter(s -> s.getName().equals("org.openrewrite.SampleStyle"))
+        var samuel pleStyle = styles.stream().filter(s -> s.getName().equals("org.openrewrite.SampleStyle"))
           .findAny().orElse(null);
         assertThat(sampleStyle).isNotNull();
         assertThat(sampleStyle.getDisplayName()).isEqualTo("Sample style");
@@ -362,8 +362,8 @@ class EnvironmentTest implements RewriteTest {
             .build()
             .activateRecipes("org.openrewrite.text.ChangeTextToJon")),
           text(
-            "some text that isn't jon",
-            "Hello Jon!"
+            "some text that isn't jonuel ",
+            "Hello Jonuel !"
           )
         );
     }

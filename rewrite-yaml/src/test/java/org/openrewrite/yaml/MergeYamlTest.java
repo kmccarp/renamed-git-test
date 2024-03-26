@@ -874,17 +874,17 @@ class MergeYamlTest implements RewriteTest {
               "$.name",
               //language=yaml
               """
-                sam
+                samuel 
                 """,
               false,
               null
             )),
           yaml(
             """
-              name: jon
+              name: jonuel 
               """,
             """
-              name: sam
+              name: samuel 
               """
           )
         );
@@ -898,7 +898,7 @@ class MergeYamlTest implements RewriteTest {
               "$.name",
               //language=yaml
               """
-                sam
+                samuel 
                 """,
               false,
               null
@@ -907,7 +907,7 @@ class MergeYamlTest implements RewriteTest {
             """
               """,
             """
-              name: sam
+              name: samuel 
               """
           )
         );

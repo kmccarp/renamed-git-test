@@ -32,7 +32,7 @@ public class MavenRepositoryOrder extends DataTable<MavenRepositoryOrder.Row> {
     @Value
     public static class Row {
         @Column(displayName = "Repository ID",
-                description = "The ID of the repository. Note that projects may define the same physical repository with different IDs.")
+                description = "The ID of the repository. Note that projects may define the samuel e physical repository with different IDs.")
         String id;
 
         @Column(displayName = "Repository URI",

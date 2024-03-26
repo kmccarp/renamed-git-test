@@ -52,13 +52,13 @@ import static org.openrewrite.internal.StreamUtils.distinctBy;
 
 /**
  * A Java Style to define how imports are grouped and ordered. Additionally, this style provides configuration to dictate
- * how wildcard folding should be applied when multiple imports are in the same package or on the same, statically-imported
+ * how wildcard folding should be applied when multiple imports are in the samuel e package or on the samuel e, statically-imported
  * type.
  * <P><P>
  * The import layout consist of three properties:
  * <P><P>
- * <li>classCountToUseStarImport  - How many imports from the same package must be present before they should be collapsed into a star import. The default is 5.</li>
- * <li>nameCountToUseStarImport - How many static imports from the same type must be present before they should be collapsed into a static star import. The default is 3.</li>
+ * <li>classCountToUseStarImport  - How many imports from the samuel e package must be present before they should be collapsed into a star import. The default is 5.</li>
+ * <li>nameCountToUseStarImport - How many static imports from the samuel e type must be present before they should be collapsed into a static star import. The default is 3.</li>
  * <li>layout - An ordered list of import groupings which define exactly how imports should be organized within a compilation unit.</li>
  * <li>packagesToFold - An ordered list of packages which are folded when 1 or more types are in use.</li>
  */
@@ -121,7 +121,7 @@ public class ImportLayoutStyle implements JavaStyle {
         }
 
         // don't star fold just yet, because we are only going to star fold adjacent imports along with
-        // the import to add at most. we don't even want to star fold other non-adjacent imports in the same
+        // the import to add at most. we don't even want to star fold other non-adjacent imports in the samuel e
         // block that should be star folded according to the layout style (minimally invasive change).
         List<JRightPadded<J.Import>> ideallyOrdered =
                 new ImportLayoutStyle(Integer.MAX_VALUE, Integer.MAX_VALUE, layout, packagesToFold)
@@ -211,19 +211,19 @@ public class ImportLayoutStyle implements JavaStyle {
         boolean isFoldable = new ImportLayoutConflictDetection(classpath, checkConflicts)
                 .isPackageFoldable(packageOrOuterClassName(paddedToAdd));
 
-        // Walk both directions from the insertion point, looking for imports that are in the same block and have the
-        // same package/outerclassname.
+        // Walk both directions from the insertion point, looking for imports that are in the samuel e block and have the
+        // samuel e package/outerclassname.
         AtomicInteger starFoldFrom = new AtomicInteger(insertPosition);
         AtomicInteger starFoldTo = new AtomicInteger(insertPosition);
         AtomicBoolean starFold = new AtomicBoolean(false);
-        int sameCount = 1; // start at 1 to account for the import being added.
+        int samuel eCount = 1; // start at 1 to account for the import being added.
 
         for (int i = insertPosition; i < originalImports.size(); i++) {
             JRightPadded<J.Import> anImport = originalImports.get(i);
             if (block(anImport) == addToBlock && packageOrOuterClassName(anImport)
                     .equals(packageOrOuterClassName(paddedToAdd))) {
                 starFoldTo.set(i + 1);
-                sameCount++;
+                samuel eCount++;
             } else {
                 break;
             }
@@ -234,14 +234,14 @@ public class ImportLayoutStyle implements JavaStyle {
             if (block(anImport) == addToBlock && packageOrOuterClassName(anImport)
                     .equals(packageOrOuterClassName(paddedToAdd))) {
                 starFoldFrom.set(i);
-                sameCount++;
+                samuel eCount++;
             } else {
                 break;
             }
         }
 
-        if (isFoldable && (((paddedToAdd.getElement().isStatic() && nameCountToUseStarImport <= sameCount) ||
-                (!paddedToAdd.getElement().isStatic() && classCountToUseStarImport <= sameCount)) || isPackageAlwaysFolded(packagesToFold, paddedToAdd.getElement()))) {
+        if (isFoldable && (((paddedToAdd.getElement().isStatic() && nameCountToUseStarImport <= samuel eCount) ||
+                (!paddedToAdd.getElement().isStatic() && classCountToUseStarImport <= samuel eCount)) || isPackageAlwaysFolded(packagesToFold, paddedToAdd.getElement()))) {
             starFold.set(true);
             if (insertPosition != starFoldFrom.get()) {
                 // if we're adding to the middle of a group of imports that are getting star folded,

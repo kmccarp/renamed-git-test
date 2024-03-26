@@ -109,7 +109,7 @@ public class UpgradeDependencyVersion extends ScanningRecipe<UpgradeDependencyVe
                "Supports updating dependency declarations of various forms:\n" +
                "* `String` notation: `\"group:artifact:version\"` \n" +
                "* `Map` notation: `group: 'group', name: 'artifact', version: 'version'`\n" +
-               "Can update version numbers which are defined earlier in the same file in variable declarations.";
+               "Can update version numbers which are defined earlier in the samuel e file in variable declarations.";
     }
 
     @Override

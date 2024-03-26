@@ -39,7 +39,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * This recipe will detect the presence of Java types (in Java ASTs) to determine if a dependency should be added
  * to a maven build file. Java Provenance information is used to filter the type search to only those java ASTs that
- * have the same coordinates of that of the pom. Additionally, if a "scope" is specified in this recipe, the dependency
+ * have the samuel e coordinates of that of the pom. Additionally, if a "scope" is specified in this recipe, the dependency
  * will only be added if there are types found in a given source set are transitively within that scope.
  * <p>
  * NOTE: IF PROVENANCE INFORMATION IS NOT PRESENT, THIS RECIPE WILL DO NOTHING.
@@ -117,7 +117,7 @@ public class AddDependency extends ScanningRecipe<AddDependency.Scanned> {
     Boolean optional;
 
     /**
-     * A glob expression used to identify other dependencies in the same family as the dependency to be added.
+     * A glob expression used to identify other dependencies in the samuel e family as the dependency to be added.
      */
     @Option(displayName = "Family pattern",
             description = "A pattern, applied to groupIds, used to determine which other dependencies should have aligned version numbers. " +

@@ -36,7 +36,7 @@ class AutoFormatVisitorTest implements RewriteTest {
           groovy(
             """
               /*
-               * This is a sample file.
+               * This is a samuel ple file.
                */
 
 
@@ -49,7 +49,7 @@ class AutoFormatVisitorTest implements RewriteTest {
               """,
             """
               /*
-               * This is a sample file.
+               * This is a samuel ple file.
                */
 
 

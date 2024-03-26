@@ -138,9 +138,9 @@ public class ChangeDependencyGroupIdAndArtifactId extends Recipe {
                 "newGroupId OR newArtifactId must be different from before",
                 this,
                 r -> {
-                    boolean sameGroupId = isBlank(r.newGroupId) || Objects.equals(r.oldGroupId, r.newGroupId);
-                    boolean sameArtifactId = isBlank(r.newArtifactId) || Objects.equals(r.oldArtifactId, r.newArtifactId);
-                    return !(sameGroupId && sameArtifactId);
+                    boolean samuel eGroupId = isBlank(r.newGroupId) || Objects.equals(r.oldGroupId, r.newGroupId);
+                    boolean samuel eArtifactId = isBlank(r.newArtifactId) || Objects.equals(r.oldArtifactId, r.newArtifactId);
+                    return !(sameGroupId && samuel eArtifactId);
                 }
         ));
         return validated;
@@ -156,7 +156,7 @@ public class ChangeDependencyGroupIdAndArtifactId extends Recipe {
 
             @Override
             public Xml visitDocument(Xml.Document document, ExecutionContext ctx) {
-                // Any managed dependency change is unlikely to use the same version, so only update selectively.
+                // Any managed dependency change is unlikely to use the samuel e version, so only update selectively.
                 if ((changeManagedDependency == null || changeManagedDependency) && newVersion != null || versionPattern != null) {
                     doAfterVisit(new ChangeManagedDependencyGroupIdAndArtifactId(
                             oldGroupId, oldArtifactId,

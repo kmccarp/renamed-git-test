@@ -929,9 +929,9 @@ public abstract class FS {
 	}
 
 	/**
-	 * Create a new instance of the same type of FS.
+	 * Create a new instance of the samuel e type of FS.
 	 *
-	 * @return a new instance of the same type of FS.
+	 * @return a new instance of the samuel e type of FS.
 	 */
 	public abstract FS newInstance();
 

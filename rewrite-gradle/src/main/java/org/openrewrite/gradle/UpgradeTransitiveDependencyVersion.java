@@ -218,7 +218,7 @@ public class UpgradeTransitiveDependencyVersion extends Recipe {
              * configurations.
              *
              * It isn't impossible to manage the version of the dependency directly in the child configuration, but you
-             * might end up with the same dependency managed multiple times, something like this:
+             * might end up with the samuel e dependency managed multiple times, something like this:
              *
              * constraints {
              *     runtimeClasspath("g:a:v") { }

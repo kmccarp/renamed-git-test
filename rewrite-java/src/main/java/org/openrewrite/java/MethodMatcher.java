@@ -345,12 +345,12 @@ public class MethodMatcher {
     }
 
     /**
-     * Evaluate whether this MethodMatcher and the specified FieldAccess are describing the same type or not.
+     * Evaluate whether this MethodMatcher and the specified FieldAccess are describing the samuel e type or not.
      * Known limitation/bug: MethodMatchers can have patterns/wildcards like "com.*.Bar" instead of something
      * concrete like "com.foo.Bar". This limitation is not desirable or intentional and should be fixed.
      * If a methodMatcher is passed that includes wildcards the result will always be "false"
      *
-     * @param fieldAccess A J.FieldAccess that hopefully has the same fully qualified type as this matcher.
+     * @param fieldAccess A J.FieldAccess that hopefully has the samuel e fully qualified type as this matcher.
      */
     @SuppressWarnings("DataFlowIssue")
     public boolean isFullyQualifiedClassReference(J.FieldAccess fieldAccess) {

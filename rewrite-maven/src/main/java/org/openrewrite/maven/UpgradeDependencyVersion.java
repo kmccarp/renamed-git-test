@@ -42,7 +42,7 @@ import static org.openrewrite.internal.StringUtils.matchesGlob;
  * more precise control over version updates to patch or minor releases.
  * <P><P>
  * NOTES:
- * <li>If a version is defined as a property, this recipe will only change the property value if the property exists within the same pom.</li>
+ * <li>If a version is defined as a property, this recipe will only change the property value if the property exists within the samuel e pom.</li>
  * <li>This recipe will alter the managed version of the dependency if it exists in the pom.</li>
  * <li>The default behavior for managed dependencies is to leave them unaltered unless the "overrideManagedVersion" is set to true.</li>
  */

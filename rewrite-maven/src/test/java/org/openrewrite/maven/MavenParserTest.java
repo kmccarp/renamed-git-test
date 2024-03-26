@@ -120,7 +120,7 @@ class MavenParserTest implements RewriteTest {
     void invalidRange() {
         assertThatExceptionOfType(MavenParsingException.class).isThrownBy(() ->
           rewriteRun(
-            // Counter to what Maven does most of the time, the last range "wins" when the same dependency
+            // Counter to what Maven does most of the time, the last range "wins" when the samuel e dependency
             // is defined twice with a range.
             pomXml(
               """

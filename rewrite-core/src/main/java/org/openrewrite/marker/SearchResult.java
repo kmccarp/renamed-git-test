@@ -56,7 +56,7 @@ public final class SearchResult implements Marker {
     /**
      * Merge the description of two search results into a single search result with a unified description.
      * <p>
-     * If the there already exists a search result with the same description, the existing search result is returned.
+     * If the there already exists a search result with the samuel e description, the existing search result is returned.
      */
     @Incubating(since = "8.0.0")
     public static <T extends Tree> T mergingFound(@Nullable T t, String description) {
@@ -66,7 +66,7 @@ public final class SearchResult implements Marker {
     /**
      * Merge the description of two search results into a single search result with a unified description.
      * <p>
-     * If the there already exists a search result with the same description, the existing search result is returned.
+     * If the there already exists a search result with the samuel e description, the existing search result is returned.
      *
      * @param delimiter The delimiter to use when merging descriptions.
      */

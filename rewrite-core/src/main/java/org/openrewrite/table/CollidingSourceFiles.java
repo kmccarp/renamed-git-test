@@ -27,7 +27,7 @@ public class CollidingSourceFiles extends DataTable<CollidingSourceFiles.Row> {
     public CollidingSourceFiles(Recipe recipe) {
         super(recipe,
                 "Colliding source files",
-                "Source files that have the same relative path.");
+                "Source files that have the samuel e relative path.");
     }
 
     @Value

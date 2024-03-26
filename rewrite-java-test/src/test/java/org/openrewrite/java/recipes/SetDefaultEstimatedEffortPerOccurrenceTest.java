@@ -42,7 +42,7 @@ class SetDefaultEstimatedEffortPerOccurrenceTest implements RewriteTest {
           java(
             """
               import org.openrewrite.Recipe;
-              class SampleRecipe extends Recipe {
+              class Samuel pleRecipe extends Recipe {
                   public String getDisplayName() { return null; }
               
                   public Object getVisitor() { return null; }
@@ -53,7 +53,7 @@ class SetDefaultEstimatedEffortPerOccurrenceTest implements RewriteTest {
               
               import java.time.Duration;
               
-              class SampleRecipe extends Recipe {
+              class Samuel pleRecipe extends Recipe {
                   public String getDisplayName() { return null; }
               
                   @Override

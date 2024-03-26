@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * In case multiple profiles are active in the same POM or external file, the ones which are defined
+ * In case multiple profiles are active in the samuel e POM or external file, the ones which are defined
  * later <a href="https://maven.apache.org/guides/introduction/introduction-to-profiles.html#profile-order">take precedence</a>
  * over the ones defined earlier (independent of their profile id and activation order).
  */

@@ -124,7 +124,7 @@ public class LatestRelease implements VersionComparator {
         v2Gav.matches();
 
         // Remove the metadata pattern from the normalized versions, this only impacts the comparison when all version
-        // parts are the same:
+        // parts are the samuel e:
         //
         // HyphenRange [25-28] should include "28-jre" and "28-android" as possible candidates.
         String normalized1 = metadataPattern == null ? nv1.toString() : nv1.toString().replace(metadataPattern, "");

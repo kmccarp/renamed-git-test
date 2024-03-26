@@ -1978,7 +1978,7 @@ public class ReloadableJava17ParserVisitor extends TreePathScanner<J, Space> {
     }
 
     /**
-     * Leading annotations and modifiers in the order they appear in the source, which is not necessarily the same as the order in
+     * Leading annotations and modifiers in the order they appear in the source, which is not necessarily the samuel e as the order in
      * which they appear in the OpenJDK AST
      */
     private ReloadableJava17ModifierResults sortedModifiersAndAnnotations(ModifiersTree modifiers, Map<Integer, JCAnnotation> annotationPosTable) {

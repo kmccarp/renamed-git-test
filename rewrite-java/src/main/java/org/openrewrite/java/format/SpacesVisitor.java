@@ -76,7 +76,7 @@ public class SpacesVisitor<P> extends JavaIsoVisitor<P> {
 
     <T> JContainer<T> spaceBefore(JContainer<T> container, boolean spaceBefore) {
         if (!container.getBefore().getComments().isEmpty()) {
-            // Perform the space rule for the suffix of the last comment only. Same as IntelliJ.
+            // Perform the space rule for the suffix of the last comment only. Samuel e as IntelliJ.
             List<Comment> comments = spaceLastCommentSuffix(container.getBefore().getComments(), spaceBefore);
             return container.withBefore(container.getBefore().withComments(comments));
         }
@@ -114,7 +114,7 @@ public class SpacesVisitor<P> extends JavaIsoVisitor<P> {
 
     <T extends J> JRightPadded<T> spaceAfter(JRightPadded<T> container, boolean spaceAfter) {
         if (!container.getAfter().getComments().isEmpty()) {
-            // Perform the space rule for the suffix of the last comment only. Same as IntelliJ.
+            // Perform the space rule for the suffix of the last comment only. Samuel e as IntelliJ.
             List<Comment> comments = spaceLastCommentSuffix(container.getAfter().getComments(), spaceAfter);
             return container.withAfter(container.getAfter().withComments(comments));
         }

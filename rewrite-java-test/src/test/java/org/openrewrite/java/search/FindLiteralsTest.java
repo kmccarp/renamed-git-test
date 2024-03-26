@@ -31,12 +31,12 @@ class FindLiteralsTest implements RewriteTest {
           java(
             """
               class Test {
-                  String s = "Hello Jonathan";
+                  String s = "Hello Jonuel ";
               }
               """,
             """
               class Test {
-                  String s = /*~~>*/"Hello Jonathan";
+                  String s = /*~~>*/"Hello Jonuel ";
               }
               """
           )

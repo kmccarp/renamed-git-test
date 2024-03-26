@@ -35,7 +35,7 @@ class WeightTest implements RewriteTest {
               import java.util.List;
               
               /**
-               * @author Jonathan
+               * @author Jonuel 
                */
               class Test {
                   static boolean hasIndex(List<String> strList, String str) {

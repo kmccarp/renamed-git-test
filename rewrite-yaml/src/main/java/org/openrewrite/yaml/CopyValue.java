@@ -48,7 +48,7 @@ public class CopyValue extends ScanningRecipe<CopyValue.Accumulator> {
 
     @Option(displayName = "New file path",
             description = "The file path to the YAML file to copy the value to. " +
-                          "If `null` then the value will be copied only into the same file it was found in.",
+                          "If `null` then the value will be copied only into the samuel e file it was found in.",
             example = "src/main/resources/application.yaml",
             required = false)
     @Nullable

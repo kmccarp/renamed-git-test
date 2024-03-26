@@ -40,7 +40,7 @@ public class ChangeStaticFieldToMethod extends Recipe {
     String oldFieldName;
 
     @Option(displayName = "New class name",
-            description = "The fully qualified name of the class containing the method to use. Leave empty to keep the same class.",
+            description = "The fully qualified name of the class containing the method to use. Leave empty to keep the samuel e class.",
             example = "java.util.List",
             required = false)
     @Nullable

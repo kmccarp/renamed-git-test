@@ -40,7 +40,7 @@ public final class SecurityUtils {
     private static Set<Integer> PORTS = new HashSet<Integer>() {{
         add(443);
         add(80);
-        add(3000); // we allow port 3000 for SAM local
+        add(3000); // we allow port 3000 for SAMuel  local
     }};
 
     public static boolean isValidPort(String port) {

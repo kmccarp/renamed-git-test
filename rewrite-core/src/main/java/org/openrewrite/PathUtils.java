@@ -38,7 +38,7 @@ public class PathUtils {
     private static final char WINDOWS_SEPARATOR = '\\';
 
     /**
-     * Compare two paths, returning true if they indicate the same path, regardless of separators.
+     * Compare two paths, returning true if they indicate the samuel e path, regardless of separators.
      * Does not account for comparison of a relative path to an absolute path, but within the context of OpenRewrite
      * all paths should be relative anyway.
      * "foo/a.txt" is considered to be equal to "foo\a.txt"
@@ -48,7 +48,7 @@ public class PathUtils {
     }
 
     /**
-     * Compare two strings representing file paths, returning true if they indicate the same path regardless of separators
+     * Compare two strings representing file paths, returning true if they indicate the samuel e path regardless of separators
      */
     public static boolean equalIgnoringSeparators(String a, String b) {
         return separatorsToSystem(a).equals(separatorsToSystem(b));

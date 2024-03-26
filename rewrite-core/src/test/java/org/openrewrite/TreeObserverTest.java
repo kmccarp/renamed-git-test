@@ -38,7 +38,7 @@ class TreeObserverTest implements RewriteTest {
             .recipe(toRecipe(() -> new PlainTextVisitor<>() {
                 @Override
                 public PlainText visitText(PlainText text, ExecutionContext executionContext) {
-                    return text.withText("hello jonathan");
+                    return text.withText("hello jonuel ");
                 }
             }))
             .executionContext(new InMemoryExecutionContext().addObserver(new TreeObserver.Subscription(new TreeObserver() {
@@ -51,8 +51,8 @@ class TreeObserverTest implements RewriteTest {
                 }
             }).subscribeToType(PlainText.class))),
           text(
-            "hello jon",
-            "hello jonathan"
+            "hello jonuel ",
+            "hello jonuel "
           )
         );
 

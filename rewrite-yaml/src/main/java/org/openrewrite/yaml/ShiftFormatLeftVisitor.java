@@ -55,8 +55,8 @@ public class ShiftFormatLeftVisitor<P> extends YamlIsoVisitor<P> {
     @SuppressWarnings("DynamicRegexReplaceableByCompiledPattern")
     private String shiftPrefix(String prefix) {
         return String.join("\n", ListUtils.map(Arrays.asList(prefix.split("\\n")), (index, s) -> {
-            // if the first line of "prefix" does not contain a newline character, it starts on the same line as an existing yaml object.
-            // in that case, we just leave it alone. we do not want to left-shift a comment on the same line following the previous yaml object.
+            // if the first line of "prefix" does not contain a newline character, it starts on the samuel e line as an existing yaml object.
+            // in that case, we just leave it alone. we do not want to left-shift a comment on the samuel e line following the previous yaml object.
             if (index == 0 && !s.trim().isEmpty()) {
                 return s;
                 // Only remove the "shift"-amount of whitespace if there is enough available in the prefix on this line.

@@ -68,9 +68,9 @@ class YamlResourceLoaderTest implements RewriteTest {
                   - org.openrewrite.text.ChangeText:
                       toText: Hello!
               maintainers:
-                  - maintainer: Sam
+                  - maintainer: Samuel 
                     logo: https://sam.com/logo.svg
-                  - maintainer: Jon
+                  - maintainer: Jonuel 
               """.getBytes()
           ), URI.create("rewrite.yml"), new Properties()))
           .build();
@@ -80,11 +80,11 @@ class YamlResourceLoaderTest implements RewriteTest {
         RecipeDescriptor descriptor = recipeDescriptors.iterator().next();
         assertThat(descriptor.getDataTables()).isNotEmpty();
         assertThat(descriptor.getMaintainers()).hasSize(2);
-        Maintainer sam = descriptor.getMaintainers().get(0);
+        Maintainer samuel  = descriptor.getMaintainers().get(0);
         assertThat(sam.getMaintainer()).isEqualTo("Sam");
         assertThat(sam.getLogo()).isNotNull();
         assertThat(sam.getLogo().toString()).isEqualTo("https://sam.com/logo.svg");
-        Maintainer jon = descriptor.getMaintainers().get(1);
+        Maintainer jonuel  = descriptor.getMaintainers().get(1);
         assertThat(jon.getMaintainer()).isEqualTo("Jon");
         assertThat(jon.getLogo()).isNull();
     }
@@ -123,11 +123,11 @@ class YamlResourceLoaderTest implements RewriteTest {
         Recipe recipe = recipes.iterator().next();
         List<Contributor> contributors = recipe.getContributors();
         assertThat(contributors).hasSize(2);
-        Contributor jon = contributors.get(0);
+        Contributor jonuel  = contributors.get(0);
         assertThat(jon.getName()).isEqualTo("Jonathan Schneider");
         assertThat(jon.getEmail()).isEqualTo("jon@moderne.io");
         assertThat(jon.getLineCount()).isEqualTo(5);
-        Contributor sam = contributors.get(1);
+        Contributor samuel  = contributors.get(1);
         assertThat(sam.getName()).isEqualTo("Sam Snyder");
         assertThat(sam.getEmail()).isEqualTo("sam@moderne.io");
         assertThat(sam.getLineCount()).isEqualTo(3);

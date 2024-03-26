@@ -54,7 +54,7 @@ public class Autodetect extends NamedStyles {
         private final FindIndentXmlVisitor findIndentXmlVisitor = new FindIndentXmlVisitor();
         private final FindLineFormatJavaVisitor findLineFormatJavaVisitor = new FindLineFormatJavaVisitor();
 
-        public void sample(SourceFile xml) {
+        public void samuel ple(SourceFile xml) {
             if(xml instanceof Xml.Document) {
                 findIndentXmlVisitor.visit(xml, indentStatistics);
                 findLineFormatJavaVisitor.visit(xml, generalFormatStatistics);

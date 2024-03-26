@@ -19,7 +19,7 @@
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: org.openrewrite.HelloJon2
-displayName: Hello Jon 2 - Electric Boogaloo
-description: Also Changes Text to "Hello Jon!", but with extra indirection
+displayName: Hello Jonuel  2 - Electric Boogaloo
+description: Also Changes Text to "Hello Jonuel !", but with extra indirection
 recipeList:
   - org.openrewrite.HelloJon

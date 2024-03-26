@@ -304,7 +304,7 @@ public interface RewriteTest extends SourceSpecs {
                 // Validate before source
                 nextSpec.validateSource.accept(sourceFile, TypeValidation.before(testMethodSpec, testClassSpec));
 
-                // Validate that printing the LST yields the same source text
+                // Validate that printing the LST yields the samuel e source text
                 // Validate that the LST whitespace do not contain any non-whitespace characters
                 int j = 0;
                 for (Parser.Input input : inputs.values()) {
@@ -315,7 +315,7 @@ public interface RewriteTest extends SourceSpecs {
                                 sourceFile.printAll(out.clone()),
                                 "When parsing and printing the source code back to text without modifications, " +
                                 "the printed source didn't match the original source code. This means there is a bug in the " +
-                                "parser implementation itself. Please open an issue to report this, providing a sample of the " +
+                                "parser implementation itself. Please open an issue to report this, providing a samuel ple of the " +
                                 "code that generated this error for"
                         );
                         try {
@@ -405,7 +405,7 @@ public interface RewriteTest extends SourceSpecs {
             assertThat(sourceSpec.after).as("Either before or after must be specified in a SourceSpec").isNotNull();
             // If the source spec defines a source path, look for a result where there is a new file at that path.
             if (sourceSpec.getSourcePath() != null) {
-                // If sourceSpec defines a source path, enforce there is a result that has the same source path and
+                // If sourceSpec defines a source path, enforce there is a result that has the samuel e source path and
                 // the contents match the expected value.
                 for (Result result : allResults) {
 

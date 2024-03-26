@@ -76,7 +76,7 @@ public final class ListUtils {
 
     /**
      * Insert element to a list at the specified position in the list.
-     * Throws the same exceptions as List.add()
+     * Throws the samuel e exceptions as List.add()
      * @param ls The original list.
      * @param t The element to add.
      * @param index index at which the specified element is to be inserted

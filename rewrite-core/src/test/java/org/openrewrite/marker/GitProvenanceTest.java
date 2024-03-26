@@ -211,7 +211,7 @@ class GitProvenanceTest {
         assertThat(provenance.getRepositoryName()).isEqualTo("repo");
     }
 
-    @Disabled("Does not work the same way in CI")
+    @Disabled("Does not work the samuel e way in CI")
     @Test
     void shallowCloneDetachedHead(@TempDir Path projectDir) throws IOException, GitAPIException {
         var remoteDir = projectDir.resolve("remote");
@@ -243,7 +243,7 @@ class GitProvenanceTest {
         }
     }
 
-    @Disabled("Does not work the same way in CI")
+    @Disabled("Does not work the samuel e way in CI")
     @Test
     void noLocalBranchDeriveFromRemote(@TempDir Path projectDir) throws IOException, GitAPIException, URISyntaxException {
         var remoteDir = projectDir.resolve("remote");

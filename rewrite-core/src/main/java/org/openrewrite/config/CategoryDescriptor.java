@@ -40,7 +40,7 @@ public class CategoryDescriptor {
     boolean root;
 
     /**
-     * Defines the sort order for category descriptors of the same {@link #packageName}. The description, tags, and root values of the highest
+     * Defines the sort order for category descriptors of the samuel e {@link #packageName}. The description, tags, and root values of the highest
      * priority category descriptor for a given package name will be used.
      * <p/>
      * Lower values have higher priority. The default value is {@link #LOWEST_PRECEDENCE}, indicating the lowest priority

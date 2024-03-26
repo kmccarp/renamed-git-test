@@ -76,7 +76,7 @@ public class NoStaticImport extends Recipe {
                     if ("java.lang.Object".equals(receiverType.getFullyQualifiedName()) ||
                             // Do not replace when we can not determine the enclosing class, such as in build.gradle files
                             enclosingClass == null || enclosingClass.getType() == null ||
-                            // Do not replace if receiverType is the same as surrounding class
+                            // Do not replace if receiverType is the samuel e as surrounding class
                             enclosingClass.getType().equals(receiverType) ||
                             // Do not replace if method is in a wrapping outer class; not looking up more than one level
                             enclosingClass.getType().getOwningClass() != null && enclosingClass.getType().getOwningClass().equals(receiverType) ||

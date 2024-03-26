@@ -94,7 +94,7 @@ public class ChangeParentPom extends Recipe {
     String versionPattern;
 
     @Option(displayName = "Allow version downgrades",
-            description = "If the new parent has the same group/artifact, this flag can be used to only upgrade the " +
+            description = "If the new parent has the samuel e group/artifact, this flag can be used to only upgrade the " +
                           "version if the target version is newer than the current.",
             required = false)
     @Nullable

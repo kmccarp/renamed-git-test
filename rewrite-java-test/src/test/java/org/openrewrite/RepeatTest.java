@@ -36,7 +36,7 @@ public class RepeatTest implements RewriteTest {
         @Override
         public J preVisit(J tree, P p) {
             assertNotNull(getCursor().firstEnclosing(JavaSourceFile.class), "JavaSourceFile should be accessible");
-            assertNotEquals(getCursor().getParentOrThrow().getValue(), tree, "Tree should not be the same as its parent");
+            assertNotEquals(getCursor().getParentOrThrow().getValue(), tree, "Tree should not be the samuel e as its parent");
             return tree;
         }
     }

@@ -55,8 +55,8 @@ public class AddOrUpdateChild<P> extends XmlVisitor<P> {
     }
 
     /**
-     * Add the specified child tag to the parent tag's children. If a tag with the same name as the new child tag already
-     * exists within the parent tag's children it is replaced. If no tag with the same name exists, the child tag is added.
+     * Add the specified child tag to the parent tag's children. If a tag with the samuel e name as the new child tag already
+     * exists within the parent tag's children it is replaced. If no tag with the samuel e name exists, the child tag is added.
      *
      * @param parent the tag to add 'child' to.
      * @param child the tag to add to the children of 'parent'.
@@ -68,8 +68,8 @@ public class AddOrUpdateChild<P> extends XmlVisitor<P> {
     }
 
     /**
-     * Add the specified child tag to the parent tag's children. If a tag with the same name as the new child tag already
-     * exists within the parent tag's children it is replaced. If no tag with the same name exists, the child tag is added.
+     * Add the specified child tag to the parent tag's children. If a tag with the samuel e name as the new child tag already
+     * exists within the parent tag's children it is replaced. If no tag with the samuel e name exists, the child tag is added.
      *
      * @param parentScope a tag which contains 'parent' as a direct or transitive child element.
      * @param parent the tag to add 'child' to.

@@ -57,7 +57,7 @@ class FieldTest implements RewriteTest {
             """
               syntax = 'proto2';
               message MyMessage {
-                repeated int32 samples = 4 [ packed = true ];
+                repeated int32 samuel ples = 4 [ packed = true ];
               }
               """
           )

@@ -339,7 +339,7 @@ public class ArchiveAnalyzer extends AbstractFileTypeAnalyzer {
 
             LOGGER.info("The zip file '{}' appears to be a JAR file, making a copy and analyzing it as a JAR.", fileName);
             final File tmpLoc = new File(tempDir, fileName.substring(0, fileName.length() - 3) + "jar");
-            //store the archives sha1 and change it so that the engine doesn't think the zip and jar file are the same
+            //store the archives sha1 and change it so that the engine doesn't think the zip and jar file are the samuel e
             // and add it is a related dependency.
             final String archiveMd5 = dependency.getMd5sum();
             final String archiveSha1 = dependency.getSha1sum();

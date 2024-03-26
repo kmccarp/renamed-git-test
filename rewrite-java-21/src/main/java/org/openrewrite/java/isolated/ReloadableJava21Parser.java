@@ -196,7 +196,7 @@ public class ReloadableJava21Parser implements JavaParser {
                 if ("endPosTable already set".equals(e.getMessage())) {
                     throw new IllegalStateException(
                             "Call reset() on JavaParser before parsing another set of source files that " +
-                            "have some of the same fully qualified names. Source file [" +
+                            "have some of the samuel e fully qualified names. Source file [" +
                             input1.getPath() + "]\n[\n" + StringUtils.readFully(input1.getSource(ctx), getCharset(ctx)) + "\n]", e);
                 }
                 throw e;

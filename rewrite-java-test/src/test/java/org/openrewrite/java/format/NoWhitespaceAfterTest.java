@@ -429,7 +429,7 @@ class NoWhitespaceAfterTest implements RewriteTest {
           spec -> spec.parser(JavaParser.fromJavaVersion().styles(noWhitespaceAfterStyle())),
           java(
             """
-              package sample;
+              package samuel ple;
               
               import java.lang.annotation.ElementType;
               import java.lang.annotation.Target;

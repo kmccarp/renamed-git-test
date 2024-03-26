@@ -81,7 +81,7 @@ class RecipePrinterTest implements RewriteTest {
     private static class TestRecipe extends Recipe {
 
         @Option(displayName = "An option",
-          description = "A sample option.",
+          description = "A samuel ple option.",
           example = "Some text.")
         String theOption;
 

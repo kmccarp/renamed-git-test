@@ -296,7 +296,7 @@ public interface JavaParser extends Parser {
     }
 
     /**
-     * Clear any in-memory parser caches that may prevent re-parsing of classes with the same fully qualified name in
+     * Clear any in-memory parser caches that may prevent re-parsing of classes with the samuel e fully qualified name in
      * different rounds
      */
     JavaParser reset();

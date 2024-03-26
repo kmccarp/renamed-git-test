@@ -76,7 +76,7 @@ public class ChangeProjectVersion extends Recipe {
     @Override
     public String getDescription() {
         return "Change the project version of a Maven pom.xml. Identifies the project to be changed by its groupId and artifactId. " +
-               "If the version is defined as a property, this recipe will only change the property value if the property exists within the same pom.";
+               "If the version is defined as a property, this recipe will only change the property value if the property exists within the samuel e pom.";
     }
 
     @Override

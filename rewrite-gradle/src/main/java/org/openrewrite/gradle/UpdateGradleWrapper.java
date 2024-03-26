@@ -62,7 +62,7 @@ public class UpdateGradleWrapper extends ScanningRecipe<UpdateGradleWrapper.Grad
         return "Update the version of Gradle used in an existing Gradle wrapper. " +
                "Queries services.gradle.org to determine the available releases, but prefers the artifact repository URL " +
                "which already exists within the wrapper properties file. " +
-               "If your artifact repository does not contain the same Gradle distributions as services.gradle.org, " +
+               "If your artifact repository does not contain the samuel e Gradle distributions as services.gradle.org, " +
                "then the recipe may suggest a version which is not available in your artifact repository.";
     }
 
