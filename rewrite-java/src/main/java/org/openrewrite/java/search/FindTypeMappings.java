@@ -64,8 +64,8 @@ public class FindTypeMappings extends ScanningRecipe<Map<FindTypeMappings.TypeAs
                                 javaType == null ? null : javaType.getClass(),
                                 javaType == null ?
                                         cursor.getPathAsStream()
-                                                .filter(t -> t instanceof TypedTree &&
-                                                             ((TypedTree) t).getType() != null)
+                                                .filter(t -> t instanceof TypedTree tt &&
+                                                             tt.getType() != null)
                                                 .findFirst()
                                                 .map(Object::getClass)
                                                 .orElse(null) :

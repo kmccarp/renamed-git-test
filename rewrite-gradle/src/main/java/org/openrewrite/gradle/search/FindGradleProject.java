@@ -69,9 +69,8 @@ public class FindGradleProject extends Recipe {
         return new TreeVisitor<Tree, ExecutionContext>() {
             @Override
             public Tree preVisit(Tree tree, ExecutionContext ctx) {
-                if (tree instanceof SourceFile) {
+                if (tree instanceof SourceFile sourceFile) {
                     stopAfterPreVisit();
-                    SourceFile sourceFile = (SourceFile) tree;
                     if (sourceFile.getSourcePath().endsWith(Paths.get("build.gradle")) ||
                         sourceFile.getSourcePath().endsWith(Paths.get("build.gradle.kts"))) {
                         return SearchResult.found(sourceFile);

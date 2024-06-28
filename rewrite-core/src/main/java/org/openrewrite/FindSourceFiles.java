@@ -53,8 +53,7 @@ public class FindSourceFiles extends Recipe {
             @Nullable
             @Override
             public Tree visit(@Nullable Tree tree, ExecutionContext ctx) {
-                if (tree instanceof SourceFile) {
-                    SourceFile sourceFile = (SourceFile) tree;
+                if (tree instanceof SourceFile sourceFile) {
                     Path sourcePath = sourceFile.getSourcePath();
                     if (StringUtils.isBlank(filePattern) || PathUtils.matchesGlob(sourcePath, normalize(filePattern))) {
                         results.insertRow(ctx, new SourcesFiles.Row(sourcePath.toString(),

@@ -238,7 +238,7 @@ public class MethodMatcher {
     }
 
     public boolean matches(@Nullable Expression maybeMethod) {
-        return maybeMethod instanceof MethodCall && matches((MethodCall) maybeMethod);
+        return maybeMethod instanceof MethodCall mc && matches(mc);
     }
 
     public boolean matches(J.MethodDeclaration method, J.ClassDeclaration enclosing) {
@@ -297,11 +297,10 @@ public class MethodMatcher {
 
     @Nullable
     private static JavaType variableDeclarationsType(Statement v) {
-        if (v instanceof J.VariableDeclarations) {
-            J.VariableDeclarations vd = (J.VariableDeclarations) v;
+        if (v instanceof J.VariableDeclarations vd) {
             List<J.VariableDeclarations.NamedVariable> variables = vd.getVariables();
-            if (!variables.isEmpty() && variables.get(0).getType() != null) {
-                return variables.get(0).getType();
+            if (!variables.isEmpty() && variables.getFirst().getType() != null) {
+                return variables.getFirst().getType();
             } else if (vd.getTypeAsFullyQualified() != null) {
                 return vd.getTypeAsFullyQualified();
             } else {
@@ -388,28 +387,28 @@ public class MethodMatcher {
         }
 
         Expression target = fieldAccess.getTarget();
-        if (target instanceof J.Identifier) {
-            return targetType != null && targetType.equals(((J.Identifier) target).getSimpleName()) ||
-                    targetTypePattern != null && targetTypePattern.matcher(((J.Identifier) target).getSimpleName()).matches();
-        } else if (target instanceof J.FieldAccess) {
-            return ((J.FieldAccess) target).isFullyQualifiedClassReference(targetType != null ? targetType : targetTypePattern.pattern());
+        if (target instanceof J.Identifier identifier) {
+            return targetType != null && targetType.equals(identifier.getSimpleName()) ||
+                    targetTypePattern != null && targetTypePattern.matcher(identifier.getSimpleName()).matches();
+        } else if (target instanceof J.FieldAccess access) {
+            return access.isFullyQualifiedClassReference(targetType != null ? targetType : targetTypePattern.pattern());
         }
         return false;
     }
 
     @Nullable
     private static String typePattern(JavaType type) {
-        if (type instanceof JavaType.Primitive) {
+        if (type instanceof JavaType.Primitive primitive) {
             if (type.equals(JavaType.Primitive.String)) {
-                return ((JavaType.Primitive) type).getClassName();
+                return primitive.getClassName();
             }
-            return ((JavaType.Primitive) type).getKeyword();
+            return primitive.getKeyword();
         } else if (type instanceof JavaType.Unknown) {
             return "*";
-        } else if (type instanceof JavaType.FullyQualified) {
-            return ((JavaType.FullyQualified) type).getFullyQualifiedName();
-        } else if (type instanceof JavaType.Array) {
-            JavaType elemType = ((JavaType.Array) type).getElemType();
+        } else if (type instanceof JavaType.FullyQualified qualified) {
+            return qualified.getFullyQualifiedName();
+        } else if (type instanceof JavaType.Array array) {
+            JavaType elemType = array.getElemType();
             return typePattern(elemType) + "[]";
         }
         return null;
@@ -523,7 +522,7 @@ class FormalParameterVisitor extends MethodSignatureParserBaseVisitor<String> {
     @Override
     public String visitTerminal(TerminalNode node) {
         if ("...".equals(node.getText())) {
-            ((Argument.FormalType) arguments.get(arguments.size() - 1)).setVariableArgs(true);
+            ((Argument.FormalType) arguments.getLast()).setVariableArgs(true);
         }
         return super.visitTerminal(node);
     }

@@ -32,9 +32,12 @@ public class EndOfLineAtEndOfFile extends Recipe {
 
     @Override
     public String getDescription() {
-        return "Ensure that the file ends with the newline character.\n\n" +
-                "*Note*: If this recipe modifies a file, it converts the file into plain text. " +
-                "As such, this recipe should be run after any recipe that modifies the language-specific LST.";
+        return """
+                Ensure that the file ends with the newline character.
+                
+                *Note*: If this recipe modifies a file, it converts the file into plain text. \
+                As such, this recipe should be run after any recipe that modifies the language-specific LST.\
+                """;
     }
 
     @Override

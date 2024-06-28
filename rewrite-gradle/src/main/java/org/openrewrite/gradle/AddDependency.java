@@ -54,26 +54,32 @@ public class AddDependency extends ScanningRecipe<AddDependency.Scanned> {
     String artifactId;
 
     @Option(displayName = "Version",
-            description = "An exact version number or node-style semver selector used to select the version number. " +
-                          "You can also use `latest.release` for the latest available version and `latest.patch` if " +
-                          "the current version is a valid semantic version. For more details, you can look at the documentation " +
-                          "page of [version selectors](https://docs.openrewrite.org/reference/dependency-version-selectors).",
+            description = """
+                          An exact version number or node-style semver selector used to select the version number. \
+                          You can also use `latest.release` for the latest available version and `latest.patch` if \
+                          the current version is a valid semantic version. For more details, you can look at the documentation \
+                          page of [version selectors](https://docs.openrewrite.org/reference/dependency-version-selectors).\
+                          """,
             example = "29.X",
             required = false)
     @Nullable
     String version;
 
     @Option(displayName = "Version pattern",
-            description = "Allows version selection to be extended beyond the original Node Semver semantics. So for example, " +
-                          "Setting 'version' to \"25-29\" can be paired with a metadata pattern of \"-jre\" to select Guava 29.0-jre",
+            description = """
+                          Allows version selection to be extended beyond the original Node Semver semantics. So for example, \
+                          Setting 'version' to "25-29" can be paired with a metadata pattern of "-jre" to select Guava 29.0-jre\
+                          """,
             example = "-jre",
             required = false)
     @Nullable
     String versionPattern;
 
     @Option(displayName = "Configuration",
-            description = "A configuration to use when it is not what can be inferred from usage. Most of the time this will be left empty, but " +
-                          "is used when adding a new as of yet unused dependency.",
+            description = """
+                          A configuration to use when it is not what can be inferred from usage. Most of the time this will be left empty, but \
+                          is used when adding a new as of yet unused dependency.\
+                          """,
             example = "implementation",
             required = false)
     @Nullable
@@ -101,8 +107,10 @@ public class AddDependency extends ScanningRecipe<AddDependency.Scanned> {
     String extension;
 
     @Option(displayName = "Family pattern",
-            description = "A pattern, applied to groupIds, used to determine which other dependencies should have aligned version numbers. " +
-                          "Accepts '*' as a wildcard character.",
+            description = """
+                          A pattern, applied to groupIds, used to determine which other dependencies should have aligned version numbers. \
+                          Accepts '*' as a wildcard character.\
+                          """,
             example = "com.fasterxml.jackson*",
             required = false)
     @Nullable
@@ -124,7 +132,7 @@ public class AddDependency extends ScanningRecipe<AddDependency.Scanned> {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s:%s:%s`", groupId, artifactId, version);
+        return "`%s:%s:%s`".formatted(groupId, artifactId, version);
     }
 
     @Override
@@ -198,7 +206,7 @@ public class AddDependency extends ScanningRecipe<AddDependency.Scanned> {
                         }
 
                         Optional<JavaProject> maybeJp = s.getMarkers().findFirst(JavaProject.class);
-                        if (!maybeJp.isPresent()) {
+                        if (maybeJp.isEmpty()) {
                             return s;
                         }
 
@@ -208,7 +216,7 @@ public class AddDependency extends ScanningRecipe<AddDependency.Scanned> {
                         }
 
                         Optional<GradleProject> maybeGp = s.getMarkers().findFirst(GradleProject.class);
-                        if (!maybeGp.isPresent()) {
+                        if (maybeGp.isEmpty()) {
                             return s;
                         }
 

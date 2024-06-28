@@ -31,10 +31,10 @@ public class RecipeException extends RuntimeException {
     }
 
     public RecipeException(String message, Object... args) {
-        super(String.format(message, args));
+        super(message.formatted(args));
     }
 
     public RecipeException(Throwable cause, String message, Object... args) {
-        super(String.format(message, args), cause);
+        super(message.formatted(args), cause);
     }
 }

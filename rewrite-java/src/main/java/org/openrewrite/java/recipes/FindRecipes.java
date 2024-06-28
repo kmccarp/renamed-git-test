@@ -49,8 +49,10 @@ public class FindRecipes extends Recipe {
 
     @Override
     public String getDescription() {
-        return "This recipe finds all OpenRewrite recipes, primarily to produce a data table that is being used " +
-               "to experiment with fine-tuning a large language model to produce more recipes.";
+        return """
+               This recipe finds all OpenRewrite recipes, primarily to produce a data table that is being used \
+               to experiment with fine-tuning a large language model to produce more recipes.\
+               """;
     }
 
     @Override
@@ -88,8 +90,7 @@ public class FindRecipes extends Recipe {
             @Override
             public J.Return visitReturn(J.Return aReturn, ExecutionContext ctx) {
                 J j = getCursor().dropParentUntil(it -> it instanceof J.MethodDeclaration || it instanceof J.ClassDeclaration).getValue();
-                if (j instanceof J.MethodDeclaration) {
-                    J.MethodDeclaration method = (J.MethodDeclaration) j;
+                if (j instanceof J.MethodDeclaration method) {
                     if (getDisplayName.matches(method.getMethodType()) && aReturn.getExpression() instanceof J.Literal) {
                         getCursor().putMessageOnFirstEnclosing(J.ClassDeclaration.class, "displayName",
                                 requireNonNull(((J.Literal) aReturn.getExpression()).getValue()));
@@ -107,7 +108,7 @@ public class FindRecipes extends Recipe {
                 ArrayNode optionsArray = JsonNodeFactory.instance.arrayNode();
                 for (J.VariableDeclarations option : options) {
                     ObjectNode optionNode = optionsArray.addObject();
-                    optionNode.put("name", option.getVariables().get(0).getSimpleName());
+                    optionNode.put("name", option.getVariables().getFirst().getSimpleName());
                     mapOptionAnnotation(option.getLeadingAnnotations(), optionNode);
                 }
                 return optionsArray.toString();
@@ -117,8 +118,7 @@ public class FindRecipes extends Recipe {
                 for (J.Annotation annotation : leadingAnnotations) {
                     if (optionAnnotation.matches(annotation) && annotation.getArguments() != null) {
                         for (Expression argument : annotation.getArguments()) {
-                            if (argument instanceof J.Assignment) {
-                                J.Assignment assignment = (J.Assignment) argument;
+                            if (argument instanceof J.Assignment assignment) {
                                 if (assignment.getVariable() instanceof J.Identifier) {
                                     J.Identifier identifier = (J.Identifier) assignment.getVariable();
                                     if (assignment.getAssignment() instanceof J.Literal) {
@@ -128,8 +128,8 @@ public class FindRecipes extends Recipe {
                                         if (newArray.getInitializer() != null) {
                                             ArrayNode valuesArray = optionNode.putArray(identifier.getSimpleName());
                                             for (Expression expression : newArray.getInitializer()) {
-                                                if (expression instanceof J.Literal) {
-                                                    valuesArray.add(mapValue(((J.Literal) expression).getValue()));
+                                                if (expression instanceof J.Literal literal) {
+                                                    valuesArray.add(mapValue(literal.getValue()));
                                                 }
                                             }
                                         }
@@ -143,12 +143,12 @@ public class FindRecipes extends Recipe {
             }
 
             private ValueNode mapValue(@Nullable Object value) {
-                if (value instanceof String) {
-                    return JsonNodeFactory.instance.textNode((String) value);
-                } else if (value instanceof Boolean) {
-                    return JsonNodeFactory.instance.booleanNode((Boolean) value);
-                } else if (value instanceof Integer) {
-                    return JsonNodeFactory.instance.numberNode((Integer) value);
+                if (value instanceof String string) {
+                    return JsonNodeFactory.instance.textNode(string);
+                } else if (value instanceof Boolean boolean1) {
+                    return JsonNodeFactory.instance.booleanNode(boolean1);
+                } else if (value instanceof Integer integer) {
+                    return JsonNodeFactory.instance.numberNode(integer);
                 } else if (value == null) {
                     return JsonNodeFactory.instance.nullNode();
                 }

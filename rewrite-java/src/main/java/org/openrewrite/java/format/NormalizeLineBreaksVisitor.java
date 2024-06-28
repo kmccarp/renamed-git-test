@@ -53,9 +53,9 @@ public class NormalizeLineBreaksVisitor<P> extends JavaIsoVisitor<P> {
         return s.withComments(ListUtils.map(s.getComments(), comment -> {
             Comment c = comment;
             if (c.isMultiline()) {
-                if (c instanceof Javadoc) {
+                if (c instanceof Javadoc javadoc) {
                     c = c.withSuffix(normalizeNewLines(c.getSuffix(), style.isUseCRLFNewLines()));
-                    return (Comment) lineBreakJavadocVisitor.visitNonNull((Javadoc) c, 0);
+                    return (Comment) lineBreakJavadocVisitor.visitNonNull(javadoc, 0);
                 } else {
                     TextComment textComment = (TextComment) c;
                     c = textComment.withText(normalizeNewLines(textComment.getText(), style.isUseCRLFNewLines()));

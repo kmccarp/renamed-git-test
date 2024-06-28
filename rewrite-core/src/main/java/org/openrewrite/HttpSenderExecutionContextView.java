@@ -27,8 +27,8 @@ public class HttpSenderExecutionContextView extends DelegatingExecutionContext {
     }
 
     public static HttpSenderExecutionContextView view(ExecutionContext ctx) {
-        if (ctx instanceof HttpSenderExecutionContextView) {
-            return (HttpSenderExecutionContextView) ctx;
+        if (ctx instanceof HttpSenderExecutionContextView view) {
+            return view;
         }
         return new HttpSenderExecutionContextView(ctx);
     }

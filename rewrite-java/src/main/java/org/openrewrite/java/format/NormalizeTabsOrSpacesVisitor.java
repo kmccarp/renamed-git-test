@@ -48,14 +48,14 @@ public class NormalizeTabsOrSpacesVisitor<P> extends JavaIsoVisitor<P> {
         return s.withComments(ListUtils.map(s.getComments(), comment -> {
             Comment c = comment;
             if (c.isMultiline()) {
-                if (c instanceof Javadoc) {
+                if (c instanceof Javadoc javadoc) {
                     c = c.withSuffix(normalize(c.getSuffix(), false));
                     return (Comment) new JavadocVisitor<Integer>(new JavaVisitor<>()) {
                         @Override
                         public Javadoc visitLineBreak(Javadoc.LineBreak lineBreak, Integer integer) {
                             return lineBreak.withMargin(normalize(lineBreak.getMargin(), true));
                         }
-                    }.visitNonNull((Javadoc) c, 0);
+                    }.visitNonNull(javadoc, 0);
                 } else {
                     TextComment textComment = (TextComment) c;
                     if (textComment.getText().contains("\t")) {

@@ -46,10 +46,12 @@ public class FindAndReplace extends Recipe {
 
     @Override
     public String getDescription() {
-        return "Textual find and replace, optionally interpreting the search query as a Regular Expression (regex). " +
-               "When operating on source files that are language-specific Lossless Semantic " +
-               "Tree, such as Java or XML, this operation converts the source file to plain text for the rest of the recipe run. " +
-               "So if you are combining this recipe with language-specific recipes in a single recipe run put all the language-specific recipes before this recipe.";
+        return """
+               Textual find and replace, optionally interpreting the search query as a Regular Expression (regex). \
+               When operating on source files that are language-specific Lossless Semantic \
+               Tree, such as Java or XML, this operation converts the source file to plain text for the rest of the recipe run. \
+               So if you are combining this recipe with language-specific recipes in a single recipe run put all the language-specific recipes before this recipe.\
+               """;
     }
 
     @Option(displayName = "Find",
@@ -77,25 +79,31 @@ public class FindAndReplace extends Recipe {
     Boolean caseSensitive;
 
     @Option(displayName = "Regex multiline mode",
-            description = "When performing a regex search setting this to `true` allows \"^\" and \"$\" to match the beginning and end of lines, respectively. " +
-                          "When performing a regex search when this is `false` \"^\" and \"$\" will match only the beginning and ending of the entire source file, respectively." +
-                          "Has no effect when not performing a regex search. Default `false`.",
+            description = """
+                          When performing a regex search setting this to `true` allows "^" and "$" to match the beginning and end of lines, respectively. \
+                          When performing a regex search when this is `false` "^" and "$" will match only the beginning and ending of the entire source file, respectively.\
+                          Has no effect when not performing a regex search. Default `false`.\
+                          """,
             required = false)
     @Nullable
     Boolean multiline;
 
     @Option(displayName = "Regex dot all",
-            description = "When performing a regex search setting this to `true` allows \".\" to match line terminators." +
-                          "Has no effect when not performing a regex search. Default `false`.",
+            description = """
+                          When performing a regex search setting this to `true` allows "." to match line terminators.\
+                          Has no effect when not performing a regex search. Default `false`.\
+                          """,
             required = false)
     @Nullable
     Boolean dotAll;
 
     @Option(displayName = "File pattern",
-            description = "A glob expression that can be used to constrain which directories or source files should be searched. " +
-                          "Multiple patterns may be specified, separated by a semicolon `;`. " +
-                          "If multiple patterns are supplied any of the patterns matching will be interpreted as a match. " +
-                          "When not set, all source files are searched. ",
+            description = """
+                          A glob expression that can be used to constrain which directories or source files should be searched. \
+                          Multiple patterns may be specified, separated by a semicolon `;`. \
+                          If multiple patterns are supplied any of the patterns matching will be interpreted as a match. \
+                          When not set, all source files are searched. \
+                          """,
             required = false,
             example = "**/*.java")
     @Nullable
@@ -116,8 +124,7 @@ public class FindAndReplace extends Recipe {
                     return sourceFile;
                 }
                 for (Marker marker : sourceFile.getMarkers().getMarkers()) {
-                    if (marker instanceof AlreadyReplaced) {
-                        AlreadyReplaced alreadyReplaced = (AlreadyReplaced) marker;
+                    if (marker instanceof AlreadyReplaced alreadyReplaced) {
                         if (Objects.equals(find, alreadyReplaced.getFind()) && Objects.equals(replace, alreadyReplaced.getReplace())) {
                             return sourceFile;
                         }

@@ -44,9 +44,11 @@ public class ParentPomInsight extends Recipe {
     String artifactIdPattern;
 
     @Option(displayName = "Version",
-            description = "Match only dependencies with the specified version. " +
-                          "Node-style [version selectors](https://docs.openrewrite.org/reference/dependency-version-selectors) may be used." +
-                          "All versions are searched by default.",
+            description = """
+                          Match only dependencies with the specified version. \
+                          Node-style [version selectors](https://docs.openrewrite.org/reference/dependency-version-selectors) may be used.\
+                          All versions are searched by default.\
+                          """,
             example = "1.x",
             required = false)
     @Nullable
@@ -59,7 +61,7 @@ public class ParentPomInsight extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("for `%s:%s`", groupIdPattern, artifactIdPattern);
+        return "for `%s:%s`".formatted(groupIdPattern, artifactIdPattern);
     }
 
     @Override

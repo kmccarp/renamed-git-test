@@ -47,8 +47,10 @@ public class ChangeDependencyClassifier extends Recipe {
      * If null, strips the scope from an existing dependency.
      */
     @Option(displayName = "New classifier",
-            description = "Classifier to apply to specified Maven dependency. " +
-                          "May be omitted, which indicates that no classifier should be added and any existing scope be removed from the dependency.",
+            description = """
+                          Classifier to apply to specified Maven dependency. \
+                          May be omitted, which indicates that no classifier should be added and any existing scope be removed from the dependency.\
+                          """,
             example = "jar",
             required = false)
     @Nullable
@@ -61,7 +63,7 @@ public class ChangeDependencyClassifier extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("for `%s:%s` to `%s`", groupId, artifactId, newClassifier);
+        return "for `%s:%s` to `%s`".formatted(groupId, artifactId, newClassifier);
     }
 
     @Override

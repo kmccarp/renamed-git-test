@@ -27,8 +27,10 @@ public class ParseToPrintInequalities extends DataTable<ParseToPrintInequalities
     public ParseToPrintInequalities(Recipe recipe) {
         super(recipe,
                 "Parser to print inequalities",
-                "A list of files that parsers produced `SourceFile` which, when printed, " +
-                "didn't match the original source code.");
+                """
+                A list of files that parsers produced `SourceFile` which, when printed, \
+                didn't match the original source code.\
+                """);
     }
 
     @Value

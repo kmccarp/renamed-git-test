@@ -56,7 +56,7 @@ public class FindDeserializationErrors extends Recipe {
                             Optional<OutdatedSerializer> outdatedSerializer = tree.getMarkers().findFirst(OutdatedSerializer.class);
                             Optional<LstProvenance> lstProvenance = tree.getMarkers().findFirst(LstProvenance.class);
                             dataTable.insertRow(ctx, new DeserializationErrorTable.Row(
-                                    tree instanceof SourceFile ? ((SourceFile) tree).getSourcePath().toString() : null,
+                                    tree instanceof SourceFile sf ? sf.getSourcePath().toString() : null,
                                     error.getMessage(),
                                     error.getDetail(),
                                     outdatedSerializer.map(OutdatedSerializer::getLanguage).orElse(null),

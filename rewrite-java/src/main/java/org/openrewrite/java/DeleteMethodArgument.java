@@ -55,7 +55,7 @@ public class DeleteMethodArgument extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("%d in methods `%s`", argumentIndex, methodPattern);
+        return "%d in methods `%s`".formatted(argumentIndex, methodPattern);
     }
 
     @Override
@@ -117,8 +117,8 @@ public class DeleteMethodArgument extends Recipe {
                     m = m.withMethodType(methodType
                             .withParameterNames(parameterNames)
                             .withParameterTypes(parameterTypes));
-                    if (m instanceof J.MethodInvocation && ((J.MethodInvocation) m).getName().getType() != null) {
-                        m = ((J.MethodInvocation) m).withName(((J.MethodInvocation) m).getName().withType(m.getMethodType()));
+                    if (m instanceof J.MethodInvocation invocation && invocation.getName().getType() != null) {
+                        m = invocation.withName(invocation.getName().withType(m.getMethodType()));
                     }
                 }
             }

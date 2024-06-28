@@ -46,15 +46,19 @@ public class ChangePropertyValue extends Recipe {
     String oldValue;
 
     @Option(displayName = "Regex",
-            description = "Default `false`. If enabled, `oldValue` will be interpreted as a Regular Expression, " +
-                          "to replace only all parts that match the regex. Capturing group can be used in `newValue`.",
+            description = """
+                          Default `false`. If enabled, `oldValue` will be interpreted as a Regular Expression, \
+                          to replace only all parts that match the regex. Capturing group can be used in `newValue`.\
+                          """,
             required = false)
     @Nullable
     Boolean regex;
 
     @Option(displayName = "Use relaxed binding",
-            description = "Whether to match the `propertyKey` using [relaxed binding](https://docs.spring.io/spring-boot/docs/2.5.6/reference/html/features.html#features.external-config.typesafe-configuration-properties.relaxed-binding) " +
-                          "rules. Default is `true`. Set to `false`  to use exact matching.",
+            description = """
+                          Whether to match the `propertyKey` using [relaxed binding](https://docs.spring.io/spring-boot/docs/2.5.6/reference/html/features.html#features.external-config.typesafe-configuration-properties.relaxed-binding) \
+                          rules. Default is `true`. Set to `false`  to use exact matching.\
+                          """,
             required = false)
     @Nullable
     Boolean relaxedBinding;
@@ -66,7 +70,7 @@ public class ChangePropertyValue extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s` to `%s`", propertyKey, newValue);
+        return "`%s` to `%s`".formatted(propertyKey, newValue);
     }
 
     @Override
@@ -134,8 +138,7 @@ public class ChangePropertyValue extends Recipe {
         int i = 0;
         while (path.hasNext()) {
             Object next = path.next();
-            if (next instanceof Yaml.Mapping.Entry) {
-                Yaml.Mapping.Entry entry = (Yaml.Mapping.Entry) next;
+            if (next instanceof Yaml.Mapping.Entry entry) {
                 if (i++ > 0) {
                     asProperty.insert(0, '.');
                 }

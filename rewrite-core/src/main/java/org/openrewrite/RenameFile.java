@@ -51,12 +51,11 @@ public class RenameFile extends Recipe {
             @Nullable
             @Override
             public Tree visit(@Nullable Tree tree, ExecutionContext ctx) {
-                if (tree instanceof SourceFile) {
-                    SourceFile sourceFile = (SourceFile) tree;
+                if (tree instanceof SourceFile sourceFile) {
                     Path sourcePath = sourceFile.getSourcePath();
                     PathMatcher pathMatcher = sourcePath.getFileSystem().getPathMatcher("glob:" + fileMatcher);
                     if(pathMatcher.matches(sourcePath)) {
-                        return ((SourceFile) tree).withSourcePath(sourcePath.resolveSibling(fileName).normalize());
+                        return sourceFile.withSourcePath(sourcePath.resolveSibling(fileName).normalize());
                     }
                 }
                 return super.visit(tree, ctx);

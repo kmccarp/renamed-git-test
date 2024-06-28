@@ -121,10 +121,10 @@ public class ReloadableJava8ParserVisitor extends TreePathScanner<J, Space> {
             Space argsPrefix = sourceBefore("(");
             List<JRightPadded<Expression>> expressions;
             if (node.getArguments().size() == 1) {
-                ExpressionTree arg = node.getArguments().get(0);
-                if (arg instanceof JCAssign) {
+                ExpressionTree arg = node.getArguments().getFirst();
+                if (arg instanceof JCAssign assign) {
                     if (endPos(arg) < 0) {
-                        expressions = singletonList(convert(((JCAssign) arg).rhs, t -> sourceBefore(")")));
+                        expressions = singletonList(convert(assign.rhs, t -> sourceBefore(")")));
                     } else {
                         expressions = singletonList(convert(arg, t -> sourceBefore(")")));
                     }
@@ -397,8 +397,8 @@ public class ReloadableJava8ParserVisitor extends TreePathScanner<J, Space> {
         // enum values are required by the grammar to occur before any ordinary field, constructor, or method members
         List<Tree> jcEnums = new ArrayList<>(node.getMembers().size());
         for (Tree tree : node.getMembers()) {
-            if (tree instanceof JCVariableDecl) {
-                if (hasFlag(((JCVariableDecl) tree).getModifiers(), Flags.ENUM)) {
+            if (tree instanceof JCVariableDecl decl) {
+                if (hasFlag(decl.getModifiers(), Flags.ENUM)) {
                     jcEnums.add(tree);
                 }
             }
@@ -431,10 +431,10 @@ public class ReloadableJava8ParserVisitor extends TreePathScanner<J, Space> {
         for (Tree m : node.getMembers()) {
             // we don't care about the compiler-inserted default constructor,
             // since it will never be subject to refactoring
-            if (m instanceof JCMethodDecl && hasFlag(((JCMethodDecl) m).getModifiers(), Flags.GENERATEDCONSTR)) {
+            if (m instanceof JCMethodDecl decl && hasFlag(decl.getModifiers(), Flags.GENERATEDCONSTR)) {
                 continue;
             }
-            if (m instanceof JCVariableDecl && hasFlag(((JCVariableDecl) m).getModifiers(), Flags.ENUM)) {
+            if (m instanceof JCVariableDecl decl && hasFlag(decl.getModifiers(), Flags.ENUM)) {
                 continue;
             }
             membersMultiVariablesSeparated.add(m);
@@ -742,8 +742,7 @@ public class ReloadableJava8ParserVisitor extends TreePathScanner<J, Space> {
         String valueSource = source.substring(((JCLiteral) node).getStartPosition(), endPos(node));
         JavaType.Primitive type = typeMapping.primitive(((JCTree.JCLiteral) node).typetag);
 
-        if (value instanceof Character) {
-            char c = (Character) value;
+        if (value instanceof Character c) {
             if (c >= SURR_FIRST && c <= SURR_LAST) {
                 return new J.Literal(randomId(), fmt, Markers.EMPTY, null, "''",
                         singletonList(new J.Literal.UnicodeEscape(1,
@@ -799,14 +798,12 @@ public class ReloadableJava8ParserVisitor extends TreePathScanner<J, Space> {
         }
 
         JavaType.Method methodReferenceType = null;
-        if (ref.sym instanceof Symbol.MethodSymbol) {
-            Symbol.MethodSymbol methodSymbol = (Symbol.MethodSymbol) ref.sym;
+        if (ref.sym instanceof Symbol.MethodSymbol methodSymbol) {
             methodReferenceType = typeMapping.methodInvocationType(methodSymbol.type, methodSymbol);
         }
 
         JavaType.Variable fieldReferenceType = null;
-        if (ref.sym instanceof Symbol.VarSymbol) {
-            Symbol.VarSymbol varSymbol = (Symbol.VarSymbol) ref.sym;
+        if (ref.sym instanceof Symbol.VarSymbol varSymbol) {
             fieldReferenceType = typeMapping.variableType(varSymbol);
         }
 
@@ -844,8 +841,8 @@ public class ReloadableJava8ParserVisitor extends TreePathScanner<J, Space> {
         JCExpression jcSelect = ((JCTree.JCMethodInvocation) node).getMethodSelect();
 
         JRightPadded<Expression> select = null;
-        if (jcSelect instanceof JCFieldAccess) {
-            select = convert(((JCFieldAccess) jcSelect).selected, t -> sourceBefore("."));
+        if (jcSelect instanceof JCFieldAccess access) {
+            select = convert(access.selected, t -> sourceBefore("."));
         } else if (!(jcSelect instanceof JCIdent)) {
             throw new IllegalStateException("Unexpected method select type " + jcSelect.getClass().getSimpleName());
         }
@@ -858,8 +855,8 @@ public class ReloadableJava8ParserVisitor extends TreePathScanner<J, Space> {
         }
 
         J.Identifier name;
-        if (jcSelect instanceof JCFieldAccess) {
-            String selectName = ((JCFieldAccess) jcSelect).name.toString();
+        if (jcSelect instanceof JCFieldAccess access) {
+            String selectName = access.name.toString();
             name = new J.Identifier(randomId(), sourceBefore(selectName), Markers.EMPTY, emptyList(), selectName, null, null);
         } else {
             name = convert(jcSelect);
@@ -869,7 +866,7 @@ public class ReloadableJava8ParserVisitor extends TreePathScanner<J, Space> {
                 singletonList(padRight(new J.Empty(randomId(), sourceBefore(")"), Markers.EMPTY), EMPTY)) :
                 convertAll(node.getArguments(), commaDelim, t -> sourceBefore(")")), Markers.EMPTY);
 
-        Symbol genericSymbol = (jcSelect instanceof JCFieldAccess) ? ((JCFieldAccess) jcSelect).sym : ((JCIdent) jcSelect).sym;
+        Symbol genericSymbol = (jcSelect instanceof JCFieldAccess jcfa) ? jcfa.sym : ((JCIdent) jcSelect).sym;
 
         return new J.MethodInvocation(randomId(), fmt, Markers.EMPTY, select, typeParams, name, args,
                 typeMapping.methodInvocationType(jcSelect.type, genericSymbol));
@@ -909,8 +906,8 @@ public class ReloadableJava8ParserVisitor extends TreePathScanner<J, Space> {
             String owner = null;
             if (nodeSym == null) {
                 for (Tree tree : getCurrentPath()) {
-                    if (tree instanceof JCClassDecl) {
-                        owner = ((JCClassDecl) tree).getSimpleName().toString();
+                    if (tree instanceof JCClassDecl decl) {
+                        owner = decl.getSimpleName().toString();
                         break;
                     }
                 }
@@ -957,9 +954,9 @@ public class ReloadableJava8ParserVisitor extends TreePathScanner<J, Space> {
 
         JCExpression jcVarType = ((JCNewArray) node).elemtype;
         TypeTree typeExpr;
-        if (jcVarType instanceof JCArrayTypeTree) {
+        if (jcVarType instanceof JCArrayTypeTree tree) {
             // we'll capture the array dimensions in a bit, just convert the element type
-            JCExpression elementType = ((JCArrayTypeTree) jcVarType).elemtype;
+            JCExpression elementType = tree.elemtype;
             while (elementType instanceof JCArrayTypeTree) {
                 elementType = ((JCArrayTypeTree) elementType).elemtype;
             }
@@ -1010,7 +1007,7 @@ public class ReloadableJava8ParserVisitor extends TreePathScanner<J, Space> {
         Space whitespaceBeforeNew = EMPTY;
 
         Tree parent = getCurrentPath().getParentPath().getLeaf();
-        if (!(parent instanceof JCVariableDecl && ((((JCVariableDecl) parent).mods.flags & Flags.ENUM) != 0))) {
+        if (!(parent instanceof JCVariableDecl decl && ((decl.mods.flags & Flags.ENUM) != 0))) {
             whitespaceBeforeNew = sourceBefore("new");
         }
 
@@ -1168,8 +1165,7 @@ public class ReloadableJava8ParserVisitor extends TreePathScanner<J, Space> {
                 Space resourcePrefix = resourceVar.getPrefix();
                 resourceVar = resourceVar.withPrefix(EMPTY); // moved to the containing Try.Resource
 
-                if (semicolonPresent && resourceVar instanceof J.VariableDeclarations) {
-                    J.VariableDeclarations resourceVarDecl = (J.VariableDeclarations) resourceVar;
+                if (semicolonPresent && resourceVar instanceof J.VariableDeclarations resourceVarDecl) {
                     resourceVar = resourceVarDecl.getPadding().withVariables(Space.formatLastSuffix(resourceVarDecl
                             .getPadding().getVariables(), sourceBefore(";")));
                 }
@@ -1242,9 +1238,8 @@ public class ReloadableJava8ParserVisitor extends TreePathScanner<J, Space> {
     }
 
     private TypeTree annotatedTypeTree(Tree node, Map<Integer, JCAnnotation> annotationPosTable) {
-        if (node instanceof JCFieldAccess) {
+        if (node instanceof JCFieldAccess fieldAccess) {
             Space prefix = whitespace();
-            JCFieldAccess fieldAccess = (JCFieldAccess) node;
             JavaType type = typeMapping.type(node);
             Expression select = (Expression) annotatedTypeTree(fieldAccess.selected, annotationPosTable);
             Space dotPrefix = sourceBefore(".");
@@ -1265,16 +1260,16 @@ public class ReloadableJava8ParserVisitor extends TreePathScanner<J, Space> {
         int count = 0;
         JCArrayTypeTree arrayTypeTree = null;
         while (typeIdent instanceof JCAnnotatedType || typeIdent instanceof JCArrayTypeTree) {
-            if (typeIdent instanceof JCAnnotatedType) {
-                mapAnnotations(((JCAnnotatedType) typeIdent).getAnnotations(), annotationPosTable);
-                typeIdent = ((JCAnnotatedType) typeIdent).getUnderlyingType();
+            if (typeIdent instanceof JCAnnotatedType type) {
+                mapAnnotations(type.getAnnotations(), annotationPosTable);
+                typeIdent = type.getUnderlyingType();
             }
-            if (typeIdent instanceof JCArrayTypeTree) {
+            if (typeIdent instanceof JCArrayTypeTree typeTree) {
                 if (count == 0) {
-                    arrayTypeTree = (JCArrayTypeTree) typeIdent;
+                    arrayTypeTree = typeTree;
                 }
                 count++;
-                typeIdent = ((JCArrayTypeTree) typeIdent).getType();
+                typeIdent = typeTree.getType();
             }
         }
 
@@ -1292,12 +1287,12 @@ public class ReloadableJava8ParserVisitor extends TreePathScanner<J, Space> {
 
     private TypeTree mapDimensions(TypeTree baseType, Tree tree, Map<Integer, JCAnnotation> annotationPosTable) {
         Tree typeIdent = tree;
-        if (typeIdent instanceof JCAnnotatedType) {
-            mapAnnotations(((JCAnnotatedType) typeIdent).getAnnotations(), annotationPosTable);
-            typeIdent = ((JCAnnotatedType) typeIdent).getUnderlyingType();
+        if (typeIdent instanceof JCAnnotatedType type) {
+            mapAnnotations(type.getAnnotations(), annotationPosTable);
+            typeIdent = type.getUnderlyingType();
         }
 
-        if (typeIdent instanceof JCArrayTypeTree) {
+        if (typeIdent instanceof JCArrayTypeTree typeTree) {
             List<J.Annotation> annotations = leadingAnnotations(annotationPosTable);
             int saveCursor = cursor;
             whitespace();
@@ -1308,7 +1303,7 @@ public class ReloadableJava8ParserVisitor extends TreePathScanner<J, Space> {
                         randomId(),
                         EMPTY,
                         Markers.EMPTY,
-                        mapDimensions(baseType, ((JCArrayTypeTree) typeIdent).elemtype, annotationPosTable),
+                        mapDimensions(baseType, typeTree.elemtype, annotationPosTable),
                         annotations,
                         dimension,
                         typeMapping.type(tree)
@@ -1439,7 +1434,7 @@ public class ReloadableJava8ParserVisitor extends TreePathScanner<J, Space> {
     }
 
     private J.VariableDeclarations visitVariables(List<VariableTree> nodes, Space fmt) {
-        JCTree.JCVariableDecl node = (JCVariableDecl) nodes.get(0);
+        JCTree.JCVariableDecl node = (JCVariableDecl) nodes.getFirst();
 
         JCExpression vartype = node.vartype;
 
@@ -1455,11 +1450,11 @@ public class ReloadableJava8ParserVisitor extends TreePathScanner<J, Space> {
         } else if (vartype instanceof JCArrayTypeTree) {
             JCExpression elementType = vartype;
             while (elementType instanceof JCArrayTypeTree || elementType instanceof JCAnnotatedType) {
-                if (elementType instanceof JCAnnotatedType) {
-                    elementType = ((JCAnnotatedType) elementType).underlyingType;
+                if (elementType instanceof JCAnnotatedType type) {
+                    elementType = type.underlyingType;
                 }
-                if (elementType instanceof JCArrayTypeTree) {
-                    elementType = ((JCArrayTypeTree) elementType).elemtype;
+                if (elementType instanceof JCArrayTypeTree tree) {
+                    elementType = tree.elemtype;
                 }
             }
             String check = source.substring(elementType.getEndPosition(endPosTable)).trim();
@@ -1471,7 +1466,7 @@ public class ReloadableJava8ParserVisitor extends TreePathScanner<J, Space> {
         }
 
         if (typeExpr != null && !typeExprAnnotations.isEmpty()) {
-            Space prefix = typeExprAnnotations.get(0).getPrefix();
+            Space prefix = typeExprAnnotations.getFirst().getPrefix();
             typeExpr = new J.AnnotatedType(randomId(), prefix, Markers.EMPTY, ListUtils.mapFirst(typeExprAnnotations, a -> a.withPrefix(EMPTY)), typeExpr);
         }
 
@@ -1495,8 +1490,8 @@ public class ReloadableJava8ParserVisitor extends TreePathScanner<J, Space> {
 
             JavaType type = typeMapping.type(n);
             J.Identifier name = new J.Identifier(randomId(), EMPTY, Markers.EMPTY, emptyList(), n.getName().toString(),
-                    type instanceof JavaType.Variable ? ((JavaType.Variable) type).getType() : type,
-                    type instanceof JavaType.Variable ? (JavaType.Variable) type : null);
+                    type instanceof JavaType.Variable v ? v.getType() : type,
+                    type instanceof JavaType.Variable v ? v : null);
             List<JLeftPadded<Space>> dimensionsAfterName = arrayDimensions();
 
             vars.add(
@@ -1584,12 +1579,12 @@ public class ReloadableJava8ParserVisitor extends TreePathScanner<J, Space> {
             List<Tree> paths = stream(getCurrentPath().spliterator(), false).collect(toList());
             for (int i = paths.size(); i-- > 0; ) {
                 JCTree tree = (JCTree) paths.get(i);
-                if (tree instanceof JCCompilationUnit) {
-                    message.append("JCCompilationUnit(sourceFile = ").append(((JCCompilationUnit) tree).sourcefile.getName()).append(")\n");
-                } else if (tree instanceof JCClassDecl) {
-                    message.append("JCClassDecl(name = ").append(((JCClassDecl) tree).name).append(", line = ").append(lineNumber(tree)).append(")\n");
-                } else if (tree instanceof JCVariableDecl) {
-                    message.append("JCVariableDecl(name = ").append(((JCVariableDecl) tree).name).append(", line = ").append(lineNumber(tree)).append(")\n");
+                if (tree instanceof JCCompilationUnit unit) {
+                    message.append("JCCompilationUnit(sourceFile = ").append(unit.sourcefile.getName()).append(")\n");
+                } else if (tree instanceof JCClassDecl decl) {
+                    message.append("JCClassDecl(name = ").append(decl.name).append(", line = ").append(lineNumber(tree)).append(")\n");
+                } else if (tree instanceof JCVariableDecl decl) {
+                    message.append("JCVariableDecl(name = ").append(decl.name).append(", line = ").append(lineNumber(tree)).append(")\n");
                 } else {
                     message.append(tree.getClass().getSimpleName()).append("(line = ").append(lineNumber(tree)).append(")\n");
                 }
@@ -1688,12 +1683,11 @@ public class ReloadableJava8ParserVisitor extends TreePathScanner<J, Space> {
             return sourceBefore(";");
         }
 
-        if (t instanceof JCLabeledStatement) {
-            return statementDelim(((JCLabeledStatement) t).getStatement());
+        if (t instanceof JCLabeledStatement statement) {
+            return statementDelim(statement.getStatement());
         }
 
-        if (t instanceof JCMethodDecl) {
-            JCMethodDecl m = (JCMethodDecl) t;
+        if (t instanceof JCMethodDecl m) {
             return sourceBefore(m.body == null || m.defaultValue != null ? ";" : "");
         }
 
@@ -1719,13 +1713,13 @@ public class ReloadableJava8ParserVisitor extends TreePathScanner<J, Space> {
         List<JRightPadded<Statement>> converted = new ArrayList<>(treesGroupedByStartPosition.size());
         for (List<? extends Tree> treeGroup : treesGroupedByStartPosition.values()) {
             if (treeGroup.size() == 1) {
-                converted.add(convert(treeGroup.get(0), suffix));
+                converted.add(convert(treeGroup.getFirst(), suffix));
             } else {
                 // multi-variable declarations are split into independent overlapping JCVariableDecl's by the OpenJDK AST
-                String prefix = source.substring(cursor, max(((JCTree) treeGroup.get(0)).getStartPosition(), cursor));
+                String prefix = source.substring(cursor, max(((JCTree) treeGroup.getFirst()).getStartPosition(), cursor));
                 cursor += prefix.length();
 
-                Tree last = treeGroup.get(treeGroup.size() - 1);
+                Tree last = treeGroup.getLast();
 
                 @SuppressWarnings("unchecked")
                 J.VariableDeclarations vars = visitVariables((List<VariableTree>) treeGroup, format(prefix));

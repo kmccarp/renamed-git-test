@@ -79,16 +79,16 @@ public class AttributeSpaceVisitor<P> extends HclIsoVisitor<P> {
 
     private List<Hcl.Attribute> getSiblingAttributes(final Hcl parent) {
         List<Hcl.Attribute> allAttributes = new ArrayList<>();
-        if (parent instanceof Hcl.Block) {
-            for (final BodyContent bc : ((Hcl.Block) parent).getBody()) {
-                if (bc instanceof Hcl.Attribute) {
-                    allAttributes.add((Hcl.Attribute) bc);
+        if (parent instanceof Hcl.Block block) {
+            for (final BodyContent bc : block.getBody()) {
+                if (bc instanceof Hcl.Attribute attribute) {
+                    allAttributes.add(attribute);
                 }
             }
         }else {
             for (final Expression expr : ((Hcl.ObjectValue) parent).getAttributes()) {
-                if (expr instanceof Hcl.Attribute) {
-                    allAttributes.add((Hcl.Attribute) expr);
+                if (expr instanceof Hcl.Attribute attribute) {
+                    allAttributes.add(attribute);
                 }
             }
         }

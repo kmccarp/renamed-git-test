@@ -37,7 +37,7 @@ public class RemoveAnnotationVisitor extends JavaIsoVisitor<ExecutionContext> {
 
         List<J.Annotation> leadingAnnotations = classDecl.getLeadingAnnotations();
         if (annotationRemoved != null && !leadingAnnotations.isEmpty()) {
-            if (leadingAnnotations.get(0) == annotationRemoved && leadingAnnotations.size() == 1) {
+            if (leadingAnnotations.getFirst() == annotationRemoved && leadingAnnotations.size() == 1) {
                 if (!c.getModifiers().isEmpty()) {
                     c = c.withModifiers(Space.formatFirstPrefix(c.getModifiers(), Space.firstPrefix(c.getModifiers()).withWhitespace("")));
                 } else if (c.getPadding().getTypeParameters() != null) {
@@ -62,7 +62,7 @@ public class RemoveAnnotationVisitor extends JavaIsoVisitor<ExecutionContext> {
 
         List<J.Annotation> leadingAnnotations = method.getLeadingAnnotations();
         if (annotationRemoved != null && !leadingAnnotations.isEmpty()) {
-            if (leadingAnnotations.get(0) == annotationRemoved && leadingAnnotations.size() == 1) {
+            if (leadingAnnotations.getFirst() == annotationRemoved && leadingAnnotations.size() == 1) {
                 if (!m.getModifiers().isEmpty()) {
                     m = m.withModifiers(Space.formatFirstPrefix(m.getModifiers(), Space.firstPrefix(m.getModifiers()).withWhitespace("")));
                 } else if (m.getPadding().getTypeParameters() != null) {
@@ -89,7 +89,7 @@ public class RemoveAnnotationVisitor extends JavaIsoVisitor<ExecutionContext> {
 
         List<J.Annotation> leadingAnnotations = multiVariable.getLeadingAnnotations();
         if (annotationRemoved != null && !leadingAnnotations.isEmpty()) {
-            if (leadingAnnotations.get(0) == annotationRemoved && leadingAnnotations.size() == 1) {
+            if (leadingAnnotations.getFirst() == annotationRemoved && leadingAnnotations.size() == 1) {
                 if (!v.getModifiers().isEmpty()) {
                     v = v.withModifiers(Space.formatFirstPrefix(v.getModifiers(), Space.firstPrefix(v.getModifiers()).withWhitespace("")));
                 } else if (v.getTypeExpression() != null) {
@@ -149,8 +149,7 @@ public class RemoveAnnotationVisitor extends JavaIsoVisitor<ExecutionContext> {
         List<Expression> arguments = annotation.getArguments();
 
         arguments.forEach(argument -> {
-            if (argument instanceof J.Assignment) {
-                J.Assignment assignment = (J.Assignment) argument;
+            if (argument instanceof J.Assignment assignment) {
                 Expression expression = assignment.getAssignment();
                 maybeRemoveImportFromExpression(expression);
             } else {
@@ -160,12 +159,12 @@ public class RemoveAnnotationVisitor extends JavaIsoVisitor<ExecutionContext> {
     }
 
     private void maybeRemoveImportFromExpression(Expression expression) {
-        if (expression instanceof J.NewArray) {
-            maybeRemoveAnnotationFromArray((J.NewArray) expression);
-        } else if (expression instanceof J.FieldAccess) {
-            maybeRemoveAnnotationFromFieldAccess((J.FieldAccess) expression);
-        } else if (expression instanceof J.Identifier) {
-            JavaType.Variable fieldType = ((J.Identifier) expression).getFieldType();
+        if (expression instanceof J.NewArray array) {
+            maybeRemoveAnnotationFromArray(array);
+        } else if (expression instanceof J.FieldAccess access) {
+            maybeRemoveAnnotationFromFieldAccess(access);
+        } else if (expression instanceof J.Identifier identifier) {
+            JavaType.Variable fieldType = identifier.getFieldType();
             if (fieldType != null) {
                 maybeRemoveImport(TypeUtils.asFullyQualified(fieldType.getOwner()));
             }

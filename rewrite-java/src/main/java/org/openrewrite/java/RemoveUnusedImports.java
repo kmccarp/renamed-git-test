@@ -52,9 +52,11 @@ public class RemoveUnusedImports extends Recipe {
 
     @Override
     public String getDescription() {
-        return "Remove imports for types that are not referenced. As a precaution against incorrect changes no imports " +
-               "will be removed from any source where unknown types are referenced. The most common cause of unknown " +
-               "types is the use of annotation processors not supported by OpenRewrite, such as lombok.";
+        return """
+               Remove imports for types that are not referenced. As a precaution against incorrect changes no imports \
+               will be removed from any source where unknown types are referenced. The most common cause of unknown \
+               types is the use of annotation processors not supported by OpenRewrite, such as lombok.\
+               """;
     }
 
     @Override
@@ -99,8 +101,7 @@ public class RemoveUnusedImports extends Recipe {
             }
 
             for (JavaType javaType : cu.getTypesInUse().getTypesInUse()) {
-                if (javaType instanceof JavaType.Parameterized) {
-                    JavaType.Parameterized parameterized = (JavaType.Parameterized) javaType;
+                if (javaType instanceof JavaType.Parameterized parameterized) {
                     typesByPackage.computeIfAbsent(parameterized.getType().getPackageName(), f -> new HashSet<>())
                             .add(parameterized.getType());
                     for (JavaType typeParameter : parameterized.getTypeParameters()) {
@@ -109,8 +110,7 @@ public class RemoveUnusedImports extends Recipe {
                             typesByPackage.computeIfAbsent(fq.getPackageName(), f -> new HashSet<>()).add(fq);
                         }
                     }
-                } else if (javaType instanceof JavaType.FullyQualified) {
-                    JavaType.FullyQualified fq = (JavaType.FullyQualified) javaType;
+                } else if (javaType instanceof JavaType.FullyQualified fq) {
                     typesByPackage.computeIfAbsent(fq.getPackageName(), f -> new HashSet<>()).add(fq);
                 }
             }
@@ -131,7 +131,7 @@ public class RemoveUnusedImports extends Recipe {
             Set<String> usedWildcardImports = new HashSet<>();
             Set<String> usedStaticWildcardImports = new HashSet<>();
             for (ImportUsage anImport : importUsage) {
-                J.Import elem = anImport.imports.get(0).getElement();
+                J.Import elem = anImport.imports.getFirst().getElement();
                 J.FieldAccess qualid = elem.getQualid();
                 J.Identifier name = qualid.getName();
 
@@ -191,7 +191,7 @@ public class RemoveUnusedImports extends Recipe {
                             }
 
                             // move whatever the original prefix of the star import was to the first unfolded import
-                            anImport.imports.set(0, anImport.imports.get(0).withElement(anImport.imports.get(0)
+                            anImport.imports.set(0, anImport.imports.getFirst().withElement(anImport.imports.getFirst()
                                     .getElement().withPrefix(elem.getPrefix())));
 
                             changed = true;
@@ -231,7 +231,7 @@ public class RemoveUnusedImports extends Recipe {
                             );
 
                             // move whatever the original prefix of the star import was to the first unfolded import
-                            anImport.imports.set(0, anImport.imports.get(0).withElement(anImport.imports.get(0)
+                            anImport.imports.set(0, anImport.imports.getFirst().withElement(anImport.imports.getFirst()
                                     .getElement().withPrefix(elem.getPrefix())));
 
                             changed = true;
@@ -253,7 +253,7 @@ public class RemoveUnusedImports extends Recipe {
 
             // Do not use direct imports that are imported by a wildcard import
             for (ImportUsage anImport : importUsage) {
-                J.Import elem = anImport.imports.get(0).getElement();
+                J.Import elem = anImport.imports.getFirst().getElement();
                 if (!"*".equals(elem.getQualid().getSimpleName())) {
                     if (elem.isStatic()) {
                         if (usedStaticWildcardImports.contains(elem.getTypeName())) {
@@ -285,13 +285,13 @@ public class RemoveUnusedImports extends Recipe {
                         }
                         lastUnusedImportSpace = null;
                     } else if (lastUnusedImportSpace == null) {
-                        lastUnusedImportSpace = anImportGroup.imports.get(0).getElement().getPrefix();
+                        lastUnusedImportSpace = anImportGroup.imports.getFirst().getElement().getPrefix();
                     }
                 }
 
                 cu = cu.getPadding().withImports(imports);
                 if (cu.getImports().isEmpty() && !cu.getClasses().isEmpty()) {
-                    cu = autoFormat(cu, cu.getClasses().get(0).getName(), ctx, getCursor().getParentOrThrow());
+                    cu = autoFormat(cu, cu.getClasses().getFirst().getName(), ctx, getCursor().getParentOrThrow());
                 }
             }
 

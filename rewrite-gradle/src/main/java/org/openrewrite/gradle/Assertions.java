@@ -47,8 +47,10 @@ public class Assertions {
      */
     @Deprecated
     public static UncheckedConsumer<List<SourceFile>> withToolingApi(@Nullable String version, @Nullable String distribution) {
-        throw new UnsupportedOperationException("This method has moved to org.openrewrite.gradle.toolingapi.Assertions. " +
-                                                "Add a dependency on org.openrewrite.gradle.tooling:model to continue using it.");
+        throw new UnsupportedOperationException("""
+                                                This method has moved to org.openrewrite.gradle.toolingapi.Assertions. \
+                                                Add a dependency on org.openrewrite.gradle.tooling:model to continue using it.\
+                                                """);
     }
 
     /**
@@ -60,8 +62,10 @@ public class Assertions {
      */
     @Deprecated
     public static UncheckedConsumer<List<SourceFile>> withToolingApi(String version) {
-        throw new UnsupportedOperationException("This method has moved to org.openrewrite.gradle.toolingapi.Assertions. " +
-                                                "Add a dependency on org.openrewrite.gradle.tooling:model to continue using it.");
+        throw new UnsupportedOperationException("""
+                                                This method has moved to org.openrewrite.gradle.toolingapi.Assertions. \
+                                                Add a dependency on org.openrewrite.gradle.tooling:model to continue using it.\
+                                                """);
     }
 
     /**
@@ -72,8 +76,10 @@ public class Assertions {
      */
     @Deprecated
     public static UncheckedConsumer<List<SourceFile>> withToolingApi() {
-        throw new UnsupportedOperationException("This method has moved to org.openrewrite.gradle.toolingapi.Assertions. " +
-                                                "Add a dependency on org.openrewrite.gradle.tooling:model to continue using it.");
+        throw new UnsupportedOperationException("""
+                                                This method has moved to org.openrewrite.gradle.toolingapi.Assertions. \
+                                                Add a dependency on org.openrewrite.gradle.tooling:model to continue using it.\
+                                                """);
     }
 
     public static SourceSpecs buildGradle(@Language("groovy") @Nullable String before) {

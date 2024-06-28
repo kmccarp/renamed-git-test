@@ -64,13 +64,15 @@ class RecipePrinterTest implements RewriteTest {
 
         String output = sb.toString();
 
-        String expected = String.format(
-          "%1$s%n" +
-          "  %2$s: {theOption=the option}%n" +
-          "  %3$s%n" +
-          "  %1$s%n" +
-          "    %3$s%n",
-          CompositeRecipe.class.getName(), TestRecipe.class.getName(), SelectRecipeExamples.class.getName()
+        String expected = (
+                """
+                %1$s%n\
+                  %2$s: {theOption=the option}%n\
+                  %3$s%n\
+                  %1$s%n\
+                    %3$s%n\
+                """).formatted(
+                CompositeRecipe.class.getName(), TestRecipe.class.getName(), SelectRecipeExamples.class.getName()
         );
 
         assertThat(output).isEqualTo(expected);

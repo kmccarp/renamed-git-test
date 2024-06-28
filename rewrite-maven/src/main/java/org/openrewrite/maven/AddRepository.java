@@ -131,7 +131,7 @@ public class AddRepository extends Recipe {
             @Override
             public Xml.Document visitDocument(Xml.Document document, ExecutionContext ctx) {
                 Xml.Tag root = document.getRoot();
-                if (!root.getChild(getType().xmlTagPlural).isPresent()) {
+                if (root.getChild(getType().xmlTagPlural).isEmpty()) {
                     document = (Xml.Document) new AddToTagVisitor<>(root, Xml.Tag.build("<" + getType().xmlTagPlural + "/>"))
                             .visitNonNull(document, ctx, getCursor().getParentOrThrow());
                 }

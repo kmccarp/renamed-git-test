@@ -47,8 +47,10 @@ public class IncrementProjectVersion extends ScanningRecipe<Map<GroupArtifact, S
     String artifactId;
 
     @Option(displayName = "Semver digit",
-            description = "`MAJOR` increments the first digit, `MINOR` increments the second digit, and `PATCH` " +
-                          "increments the third digit.",
+            description = """
+                          `MAJOR` increments the first digit, `MINOR` increments the second digit, and `PATCH` \
+                          increments the third digit.\
+                          """,
             example = "PATCH")
     SemverDigit digit;
 
@@ -65,13 +67,15 @@ public class IncrementProjectVersion extends ScanningRecipe<Map<GroupArtifact, S
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s:%s:%s`", groupId, artifactId, digit);
+        return "`%s:%s:%s`".formatted(groupId, artifactId, digit);
     }
 
     @Override
     public String getDescription() {
-        return "Increase Maven project version by incrementing either the major, minor, or patch version as defined by " +
-               "[semver](https://semver.org/). Other versioning schemes are not supported.";
+        return """
+               Increase Maven project version by incrementing either the major, minor, or patch version as defined by \
+               [semver](https://semver.org/). Other versioning schemes are not supported.\
+               """;
     }
 
     @Override

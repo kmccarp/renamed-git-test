@@ -53,8 +53,10 @@ public class WorkingDirectoryExecutionContextView extends DelegatingExecutionCon
      */
     public void setRoot(Path path) {
         if (getMessage(CURRENT_CYCLE) != null) {
-            throw new IllegalStateException("The root working directory cannot be set once " +
-                                            "recipe execution has begun.");
+            throw new IllegalStateException("""
+                                            The root working directory cannot be set once \
+                                            recipe execution has begun.\
+                                            """);
         }
         putMessage(WORKING_DIRECTORY_ROOT, path);
     }

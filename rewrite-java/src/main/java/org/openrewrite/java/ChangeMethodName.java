@@ -44,8 +44,10 @@ public class ChangeMethodName extends Recipe {
     Boolean matchOverrides;
 
     @Option(displayName = "Ignore type definition",
-            description = "When set to `true` the definition of the old type will be left untouched. " +
-                          "This is useful when you're replacing usage of a class but don't want to rename it.",
+            description = """
+                          When set to `true` the definition of the old type will be left untouched. \
+                          This is useful when you're replacing usage of a class but don't want to rename it.\
+                          """,
             required = false)
     @Nullable
     Boolean ignoreDefinition;
@@ -57,7 +59,7 @@ public class ChangeMethodName extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s` to `%s`", methodPattern, newMethodName);
+        return "`%s` to `%s`".formatted(methodPattern, newMethodName);
     }
 
     @Override
@@ -70,8 +72,7 @@ public class ChangeMethodName extends Recipe {
         JavaIsoVisitor<ExecutionContext> condition = new JavaIsoVisitor<ExecutionContext>() {
             @Override
             public J visit(@Nullable Tree tree, ExecutionContext ctx) {
-                if (tree instanceof JavaSourceFile) {
-                    JavaSourceFile cu = (JavaSourceFile) tree;
+                if (tree instanceof JavaSourceFile cu) {
                     if (Boolean.TRUE.equals(ignoreDefinition)) {
                         J j = new DeclaresMethod<>(methodPattern, matchOverrides).visitNonNull(cu, ctx);
                         if (cu != j) {

@@ -62,8 +62,8 @@ public class AutoFormatVisitor<P> extends HclVisitor<P> {
                 .orElse(BlankLinesStyle.DEFAULT), stopAfter)
                 .visit(t, p, cursor.fork());
 
-        if (t instanceof Hcl.ConfigFile) {
-            t = visitConfigFile((Hcl.ConfigFile) t, p);
+        if (t instanceof Hcl.ConfigFile file) {
+            t = visitConfigFile(file, p);
         }
 
         return t;

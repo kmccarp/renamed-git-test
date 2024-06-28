@@ -66,7 +66,7 @@ public class HclTemplateParser {
         return (Expression) cache(stub, () -> {
             Hcl.ConfigFile cf = compileTemplate(stub);
             return Collections.singletonList(((Hcl.Attribute) cf.getBody().get(0)).getValue());
-        }).get(0);
+        }).getFirst();
     }
 
     private Hcl.ConfigFile compileTemplate(String stub) {

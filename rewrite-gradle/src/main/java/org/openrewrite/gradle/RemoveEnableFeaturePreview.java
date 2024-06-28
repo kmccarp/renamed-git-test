@@ -47,7 +47,7 @@ public class RemoveEnableFeaturePreview extends Recipe {
             public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {
                 if ("enableFeaturePreview".equals(method.getSimpleName()) &&
                     method.getArguments().size() == 1 &&
-                    J.Literal.isLiteralValue(method.getArguments().get(0), previewFeatureName)) {
+                    J.Literal.isLiteralValue(method.getArguments().getFirst(), previewFeatureName)) {
                     return null;
                 }
                 return method;

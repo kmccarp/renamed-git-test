@@ -89,7 +89,7 @@ public class JavaTemplateParser {
         onBeforeParseTemplate.accept(stub);
         return cache(cursor, stub, () -> {
             JavaSourceFile cu = compileTemplate(stub);
-            J.MethodDeclaration m = (J.MethodDeclaration) cu.getClasses().get(0).getBody().getStatements().get(0);
+            J.MethodDeclaration m = (J.MethodDeclaration) cu.getClasses().getFirst().getBody().getStatements().get(0);
             return m.getParameters();
         });
     }
@@ -100,12 +100,12 @@ public class JavaTemplateParser {
 
         return (J.Lambda.Parameters) cache(cursor, stub, () -> {
             JavaSourceFile cu = compileTemplate(stub);
-            J.Block b = (J.Block) cu.getClasses().get(0).getBody().getStatements().get(0);
-            J.VariableDeclarations v = (J.VariableDeclarations) b.getStatements().get(0);
-            J.Lambda l = (J.Lambda) v.getVariables().get(0).getInitializer();
+            J.Block b = (J.Block) cu.getClasses().getFirst().getBody().getStatements().get(0);
+            J.VariableDeclarations v = (J.VariableDeclarations) b.getStatements().getFirst();
+            J.Lambda l = (J.Lambda) v.getVariables().getFirst().getInitializer();
             assert l != null;
             return singletonList(l.getParameters());
-        }).get(0);
+        }).getFirst();
     }
 
     public J parseExpression(Cursor cursor, String template, Space.Location location) {
@@ -124,10 +124,10 @@ public class JavaTemplateParser {
 
         return (TypeTree) cache(cursor, stub, () -> {
             JavaSourceFile cu = compileTemplate(stub);
-            TypeTree anExtends = cu.getClasses().get(0).getExtends();
+            TypeTree anExtends = cu.getClasses().getFirst().getExtends();
             assert anExtends != null;
             return singletonList(anExtends);
-        }).get(0);
+        }).getFirst();
     }
 
     public List<TypeTree> parseImplements(Cursor cursor, String template) {
@@ -135,7 +135,7 @@ public class JavaTemplateParser {
         onBeforeParseTemplate.accept(stub);
         return cache(cursor, stub, () -> {
             JavaSourceFile cu = compileTemplate(stub);
-            List<TypeTree> anImplements = cu.getClasses().get(0).getImplements();
+            List<TypeTree> anImplements = cu.getClasses().getFirst().getImplements();
             assert anImplements != null;
             return anImplements;
         });
@@ -146,7 +146,7 @@ public class JavaTemplateParser {
         onBeforeParseTemplate.accept(stub);
         return cache(cursor, stub, () -> {
             JavaSourceFile cu = compileTemplate(stub);
-            J.MethodDeclaration m = (J.MethodDeclaration) cu.getClasses().get(0).getBody().getStatements().get(0);
+            J.MethodDeclaration m = (J.MethodDeclaration) cu.getClasses().getFirst().getBody().getStatements().get(0);
             List<NameTree> aThrows = m.getThrows();
             assert aThrows != null;
             return aThrows;
@@ -158,7 +158,7 @@ public class JavaTemplateParser {
         onBeforeParseTemplate.accept(stub);
         return cache(cursor, stub, () -> {
             JavaSourceFile cu = compileTemplate(stub);
-            List<J.TypeParameter> tps = cu.getClasses().get(0).getTypeParameters();
+            List<J.TypeParameter> tps = cu.getClasses().getFirst().getTypeParameters();
             assert tps != null;
             return tps;
         });
@@ -193,7 +193,7 @@ public class JavaTemplateParser {
         onBeforeParseTemplate.accept(stub);
         JavaSourceFile cu = compileTemplate(stub);
         return (J.MethodInvocation) statementTemplateGenerator
-                .listTemplatedTrees(cu, Statement.class).get(0);
+                .listTemplatedTrees(cu, Statement.class).getFirst();
     }
 
     public J.MethodInvocation parseMethodArguments(Cursor cursor, String template, Space.Location location) {
@@ -207,7 +207,7 @@ public class JavaTemplateParser {
         onBeforeParseTemplate.accept(stub);
         JavaSourceFile cu = compileTemplate(stub);
         return (J.MethodInvocation) statementTemplateGenerator
-                .listTemplatedTrees(cu, Statement.class).get(0);
+                .listTemplatedTrees(cu, Statement.class).getFirst();
     }
 
     public List<J.Annotation> parseAnnotations(Cursor cursor, String template) {
@@ -229,7 +229,7 @@ public class JavaTemplateParser {
             @SuppressWarnings("ConstantConditions") Expression expression = cu.getPackageDeclaration()
                     .getExpression();
             return singletonList(expression);
-        }).get(0);
+        }).getFirst();
     }
 
     private String substitute(String stub, String template) {

@@ -41,8 +41,10 @@ public class RemoveImplements extends Recipe {
 
     @Override
     public String getDescription() {
-        return "Removes `implements` clauses from classes implementing the specified interface. " +
-               "Removes `@Overrides` annotations from methods which no longer override anything.";
+        return """
+               Removes `implements` clauses from classes implementing the specified interface. \
+               Removes `@Overrides` annotations from methods which no longer override anything.\
+               """;
     }
 
     @Option(displayName = "Interface Type",
@@ -51,8 +53,10 @@ public class RemoveImplements extends Recipe {
     String interfaceType;
 
     @Option(displayName = "Filter",
-            description = "Only apply the interface removal to classes with fully qualified names that begin with this filter. " +
-                          "`null` or empty matches all classes.",
+            description = """
+                          Only apply the interface removal to classes with fully qualified names that begin with this filter. \
+                          `null` or empty matches all classes.\
+                          """,
             example = "com.yourorg.",
             required = false)
     @Nullable

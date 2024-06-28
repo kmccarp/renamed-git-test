@@ -79,8 +79,7 @@ public interface JavaType {
     }
 
     default boolean isAssignableFrom(Pattern pattern) {
-        if (this instanceof FullyQualified) {
-            FullyQualified fq = (FullyQualified) this;
+        if (this instanceof FullyQualified fq) {
             if (pattern.matcher(fq.getFullyQualifiedName()).matches()) {
                 return true;
             }
@@ -93,8 +92,7 @@ public interface JavaType {
                 }
             }
             return false;
-        } else if (this instanceof GenericTypeVariable) {
-            GenericTypeVariable generic = (GenericTypeVariable) this;
+        } else if (this instanceof GenericTypeVariable generic) {
             for (JavaType bound : generic.getBounds()) {
                 if (bound.isAssignableFrom(pattern)) {
                     return true;
@@ -334,13 +332,11 @@ public interface JavaType {
         }
 
         public boolean isAssignableFrom(@Nullable JavaType type) {
-            if (type instanceof FullyQualified) {
-                FullyQualified clazz = (FullyQualified) type;
+            if (type instanceof FullyQualified clazz) {
                 return TypeUtils.fullyQualifiedNamesAreEqual(getFullyQualifiedName(), clazz.getFullyQualifiedName()) ||
                        isAssignableFrom(clazz.getSupertype()) ||
                        clazz.getInterfaces().stream().anyMatch(this::isAssignableFrom);
-            } else if (type instanceof GenericTypeVariable) {
-                GenericTypeVariable generic = (GenericTypeVariable) type;
+            } else if (type instanceof GenericTypeVariable generic) {
                 for (JavaType bound : generic.getBounds()) {
                     if (isAssignableFrom(bound)) {
                         return true;
@@ -1242,8 +1238,7 @@ public interface JavaType {
                             JavaType param = params.get(i);
                             JavaType subtypeParam = getParameterTypes().get(i);
                             if (!TypeUtils.isOfType(subtypeParam, param)) {
-                                if (param instanceof GenericTypeVariable) {
-                                    GenericTypeVariable genericParam = (GenericTypeVariable) param;
+                                if (param instanceof GenericTypeVariable genericParam) {
                                     if (genericParam.getBounds().isEmpty()) {
                                         continue;
                                     }

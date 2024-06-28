@@ -236,7 +236,7 @@ public class ChangeNamespaceValue extends Recipe {
                 Optional<Xml.Attribute> maybeSchemaLocation = maybeGetSchemaLocation(cursor, newRoot);
                 if (maybeSchemaLocation.isPresent() && oldValue != null) {
                     newRoot = updateSchemaLocation(newRoot, maybeSchemaLocation.get());
-                } else if (!maybeSchemaLocation.isPresent()) {
+                } else if (maybeSchemaLocation.isEmpty()) {
                     newRoot = addSchemaLocation(newRoot);
                 }
                 return newRoot;
@@ -270,11 +270,11 @@ public class ChangeNamespaceValue extends Recipe {
                     return newRoot;
                 }
                 String oldSchemaLocation = attribute.getValueAsString();
-                Matcher pattern = Pattern.compile(String.format(SCHEMA_LOCATION_MATCH_PATTERN, Pattern.quote(oldValue)))
+                Matcher pattern = Pattern.compile(SCHEMA_LOCATION_MATCH_PATTERN.formatted(Pattern.quote(oldValue)))
                         .matcher(oldSchemaLocation);
                 if (pattern.find()) {
                     String newSchemaLocationValue = pattern.replaceFirst(
-                            String.format(SCHEMA_LOCATION_REPLACEMENT_PATTERN, newValue, newSchemaLocation)
+                            SCHEMA_LOCATION_REPLACEMENT_PATTERN.formatted(newValue, newSchemaLocation)
                     );
                     Xml.Attribute newAttribute = attribute.withValue(attribute.getValue().withValue(newSchemaLocationValue));
                     newRoot = newRoot.withAttributes(ListUtils.map(newRoot.getAttributes(), a -> a == attribute ? newAttribute : a));
@@ -294,7 +294,7 @@ public class ChangeNamespaceValue extends Recipe {
                                                 randomId(),
                                                 "",
                                                 Markers.EMPTY,
-                                                String.format("%s:schemaLocation", XML_SCHEMA_INSTANCE_PREFIX)
+                                                "%s:schemaLocation".formatted(XML_SCHEMA_INSTANCE_PREFIX)
                                         ),
                                         "",
                                         new Xml.Attribute.Value(
@@ -302,7 +302,7 @@ public class ChangeNamespaceValue extends Recipe {
                                                 "",
                                                 Markers.EMPTY,
                                                 Xml.Attribute.Value.Quote.Double,
-                                                String.format("%s %s", newValue, newSchemaLocation)
+                                                "%s %s".formatted(newValue, newSchemaLocation)
                                         )
                                 )
                         )

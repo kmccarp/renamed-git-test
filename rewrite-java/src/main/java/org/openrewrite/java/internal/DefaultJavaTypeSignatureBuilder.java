@@ -44,10 +44,10 @@ public class DefaultJavaTypeSignatureBuilder implements JavaTypeSignatureBuilder
             return genericSignature(type);
         } else if (type instanceof JavaType.Primitive) {
             return primitiveSignature(type);
-        } else if (type instanceof JavaType.Method) {
-            return methodSignature((JavaType.Method) type);
-        } else if (type instanceof JavaType.Variable) {
-            return variableSignature((JavaType.Variable) type);
+        } else if (type instanceof JavaType.Method method) {
+            return methodSignature(method);
+        } else if (type instanceof JavaType.Variable variable) {
+            return variableSignature(variable);
         } else if (type instanceof JavaType.Intersection) {
             return intersectionSignature(type);
         }

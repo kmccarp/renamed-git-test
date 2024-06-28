@@ -93,10 +93,12 @@ class RecipeWithDescriptionListOfLinks extends Recipe {
 
     @Override
     public String getDescription() {
-        return "A fancy description.\n" +
-                "For more information, see:\n" +
-                "  - [link 1](https://example.com/link1)\n" +
-                "  - [link 2](https://example.com/link2)";
+        return """
+                A fancy description.
+                For more information, see:
+                  - [link 1](https://example.com/link1)
+                  - [link 2](https://example.com/link2)\
+                """;
     }
 }
 
@@ -110,10 +112,12 @@ class RecipeWithDescriptionListOfDescribedLinks extends Recipe {
 
     @Override
     public String getDescription() {
-        return "A fancy description.\n" +
-               "For more information, see:\n" +
-               "  - First Resource [link 1](https://example.com/link1).\n" +
-               "  - Second Resource [link 2](https://example.com/link2).";
+        return """
+               A fancy description.
+               For more information, see:
+                 - First Resource [link 1](https://example.com/link1).
+                 - Second Resource [link 2](https://example.com/link2).\
+               """;
     }
 }
 

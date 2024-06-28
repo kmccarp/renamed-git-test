@@ -118,12 +118,11 @@ public class FindFieldsOfType extends Recipe {
 
     private static boolean hasElementType(@Nullable JavaType type, String fullyQualifiedName,
                                           boolean matchOverrides) {
-        if (type instanceof JavaType.Array) {
-            return hasElementType(((JavaType.Array) type).getElemType(), fullyQualifiedName, matchOverrides);
+        if (type instanceof JavaType.Array array) {
+            return hasElementType(array.getElemType(), fullyQualifiedName, matchOverrides);
         } else if (type instanceof JavaType.FullyQualified) {
             return new TypeMatcher(fullyQualifiedName, matchOverrides).matches(type);
-        } else if (type instanceof JavaType.GenericTypeVariable) {
-            JavaType.GenericTypeVariable generic = (JavaType.GenericTypeVariable) type;
+        } else if (type instanceof JavaType.GenericTypeVariable generic) {
             for (JavaType bound : generic.getBounds()) {
                 if (hasElementType(bound, fullyQualifiedName, matchOverrides)) {
                     return true;

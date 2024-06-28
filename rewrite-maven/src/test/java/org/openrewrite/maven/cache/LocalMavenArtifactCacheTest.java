@@ -67,9 +67,9 @@ class LocalMavenArtifactCacheTest {
 
         MavenParser mavenParser = MavenParser.builder().build();
         SourceFile parsed = mavenParser.parse(ctx,
-          String.format(
-            //language=xml
-            """
+                
+                        //language=xml
+                        """
               <project>
                   <groupId>org.openrewrite</groupId>
                   <artifactId>maven-downloader-test</artifactId>
@@ -82,12 +82,12 @@ class LocalMavenArtifactCacheTest {
                       </dependency>
                   </dependencies>
               </project>
-              """.formatted(recipeGav.getGroupId(), recipeGav.getArtifactId(), recipeGav.getVersion()))
+              """.formatted(recipeGav.getGroupId(), recipeGav.getArtifactId(), recipeGav.getVersion()).formatted()
         ).findFirst().orElseThrow(() -> new IllegalArgumentException("Could not parse as XML"));
 
         MavenResolutionResult mavenModel = parsed.getMarkers().findFirst(MavenResolutionResult.class).orElseThrow();
         assertThat(mavenModel.getDependencies()).isNotEmpty();
         List<ResolvedDependency> runtimeDependencies = mavenModel.getDependencies().get(Scope.Runtime);
-        return runtimeDependencies.get(0);
+        return runtimeDependencies.getFirst();
     }
 }

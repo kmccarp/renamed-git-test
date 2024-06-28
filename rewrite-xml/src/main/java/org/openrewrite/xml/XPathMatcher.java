@@ -152,8 +152,8 @@ public class XPathMatcher {
                 if (path.size() > blankPartIndex && path.size() >= parts.length - 1) {
                     String newExpression;
                     if (Objects.equals(path.get(blankPartIndex).getName(), parts[blankPartIndex + 1])) {
-                        newExpression = String.format(
-                                "%s/%s",
+                        newExpression = 
+                                "%s/%s".formatted(
                                 expression.substring(0, doubleSlashIndex),
                                 expression.substring(doubleSlashIndex + 2)
                         );

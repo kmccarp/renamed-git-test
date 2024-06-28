@@ -662,9 +662,9 @@ class MavenPomDownloaderTest {
         assertThat(merged.getVersioning().getSnapshot().getBuildNumber()).isEqualTo("223");
         assertThat(merged.getVersioning().getVersions()).hasSize(4).contains("2.3.2", "2.3.3", "2.4.1", "2.4.2");
         assertThat(merged.getVersioning().getSnapshotVersions()).hasSize(2);
-        assertThat(merged.getVersioning().getSnapshotVersions().get(0).getExtension()).isNotNull();
-        assertThat(merged.getVersioning().getSnapshotVersions().get(0).getValue()).isNotNull();
-        assertThat(merged.getVersioning().getSnapshotVersions().get(0).getUpdated()).isNotNull();
+        assertThat(merged.getVersioning().getSnapshotVersions().getFirst().getExtension()).isNotNull();
+        assertThat(merged.getVersioning().getSnapshotVersions().getFirst().getValue()).isNotNull();
+        assertThat(merged.getVersioning().getSnapshotVersions().getFirst().getUpdated()).isNotNull();
     }
 
     @Test

@@ -388,8 +388,8 @@ public interface G extends J {
             J j = v.visit(getExpression(), p);
             if(j instanceof ExpressionStatement) {
                 return j;
-            } else if (j instanceof Expression) {
-                return withExpression((Expression) j);
+            } else if (j instanceof Expression expression1) {
+                return withExpression(expression1);
             }
             return j;
         }
@@ -421,12 +421,12 @@ public interface G extends J {
 
         @Override
         public <T extends J> T withType(@Nullable JavaType type) {
-            if(expression instanceof J.MethodInvocation) {
+            if(expression instanceof J.MethodInvocation invocation) {
                 if (!(type instanceof JavaType.Method)) {
                     return (T) this;
                 }
                 JavaType.Method m = (JavaType.Method) type;
-                return (T) withExpression(((J.MethodInvocation) expression).withMethodType(m));
+                return (T) withExpression(invocation.withMethodType(m));
             }
             return (T) withExpression(expression.withType(type));
         }

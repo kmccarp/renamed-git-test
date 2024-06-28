@@ -124,13 +124,13 @@ class ReloadableJava11TypeMapping implements JavaTypeMapping<Tree> {
         while (tree instanceof JCTree.JCAnnotatedType || tree instanceof JCTree.JCArrayTypeTree) {
             if (tree instanceof JCTree.JCAnnotatedType) {
                 if (((JCTree.JCAnnotatedType) tree).getUnderlyingType() instanceof JCTree.JCArrayTypeTree) {
-                    trees.add(0, tree);
+                    trees.addFirst(tree);
                     tree = ((JCTree.JCArrayTypeTree) ((JCTree.JCAnnotatedType) tree).getUnderlyingType()).getType();
                 } else {
                     tree = ((JCTree.JCAnnotatedType) tree).getUnderlyingType();
                 }
             } else {
-                trees.add(0, tree);
+                trees.addFirst(tree);
                 tree = ((JCTree.JCArrayTypeTree) tree).getType();
             }
         }
@@ -146,7 +146,7 @@ class ReloadableJava11TypeMapping implements JavaTypeMapping<Tree> {
                 new JavaType.Array(
                         null,
                         elementType,
-                        trees.get(0) instanceof JCTree.JCAnnotatedType ? mapAnnotations(((JCTree.JCAnnotatedType) trees.get(0)).annotations) : null
+                        trees.getFirst() instanceof JCTree.JCAnnotatedType ? mapAnnotations(((JCTree.JCAnnotatedType) trees.getFirst()).annotations) : null
                 ),
                 trees.subList(1, count)
         );
@@ -186,7 +186,7 @@ class ReloadableJava11TypeMapping implements JavaTypeMapping<Tree> {
                 break;
         }
 
-        if (bounds != null && bounds.get(0) instanceof JavaType.FullyQualified && "java.lang.Object".equals(((JavaType.FullyQualified) bounds.get(0))
+        if (bounds != null && bounds.getFirst() instanceof JavaType.FullyQualified && "java.lang.Object".equals(((JavaType.FullyQualified) bounds.getFirst())
                 .getFullyQualifiedName())) {
             bounds = null;
         }
@@ -229,7 +229,7 @@ class ReloadableJava11TypeMapping implements JavaTypeMapping<Tree> {
         Type.ClassType symType = (Type.ClassType) sym.type;
 
         JavaType.FullyQualified fq = typeCache.get(sym.flatName().toString());
-        JavaType.Class clazz = (JavaType.Class) (fq instanceof JavaType.Parameterized ? ((JavaType.Parameterized) fq).getType() : fq);
+        JavaType.Class clazz = (JavaType.Class) (fq instanceof JavaType.Parameterized p ? p.getType() : fq);
         if (clazz == null) {
             if (!sym.completer.isTerminal()) {
                 completeClassSymbol(sym);

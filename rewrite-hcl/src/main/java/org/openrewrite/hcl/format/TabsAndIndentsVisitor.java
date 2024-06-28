@@ -56,14 +56,14 @@ public class TabsAndIndentsVisitor<P> extends HclIsoVisitor<P> {
         for (Cursor c = parent; c != null; c = c.getParent()) {
             Object v = c.getValue();
             Space space = null;
-            if (v instanceof Hcl) {
-                space = ((Hcl) v).getPrefix();
-            } else if (v instanceof HclRightPadded) {
-                space = ((HclRightPadded<?>) v).getAfter();
-            } else if (v instanceof HclLeftPadded) {
-                space = ((HclLeftPadded<?>) v).getBefore();
-            } else if (v instanceof HclContainer) {
-                space = ((HclContainer<?>) v).getBefore();
+            if (v instanceof Hcl hcl) {
+                space = hcl.getPrefix();
+            } else if (v instanceof HclRightPadded<?> padded) {
+                space = padded.getAfter();
+            } else if (v instanceof HclLeftPadded<?> padded) {
+                space = padded.getBefore();
+            } else if (v instanceof HclContainer<?> container) {
+                space = container.getBefore();
             }
 
             if (space != null && space.getLastWhitespace().contains("\n")) {
@@ -254,8 +254,8 @@ public class TabsAndIndentsVisitor<P> extends HclIsoVisitor<P> {
         } else {
             if (!StringUtils.isNullOrEmpty(space.getWhitespace()) &&
                 // Preserve whitespace of trailing line comments.
-                (Comment.Style.INLINE.equals(space.getComments().get(0).getStyle()) ||
-                 (!Comment.Style.INLINE.equals(space.getComments().get(0).getStyle()) &&
+                (Comment.Style.INLINE.equals(space.getComments().getFirst().getStyle()) ||
+                 (!Comment.Style.INLINE.equals(space.getComments().getFirst().getStyle()) &&
                   (space.getWhitespace().contains("\n") || space.getWhitespace().contains("\r"))))) {
                 if (style.getUseTabCharacter()) {
                     space = space.withWhitespace(space.getWhitespace().replaceAll(" ", ""));

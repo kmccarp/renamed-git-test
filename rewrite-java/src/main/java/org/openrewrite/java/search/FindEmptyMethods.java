@@ -107,9 +107,9 @@ public class FindEmptyMethods extends Recipe {
                         .filter(J.MethodDeclaration::isConstructor)
                         .collect(Collectors.toList());
                 return constructors.size() == 1 &&
-                       constructors.get(0).hasModifier(J.Modifier.Type.Public) &&
-                       constructors.get(0).getParameters().size() == 1 &&
-                       constructors.get(0).getParameters().get(0) instanceof J.Empty;
+                       constructors.getFirst().hasModifier(J.Modifier.Type.Public) &&
+                       constructors.getFirst().getParameters().size() == 1 &&
+                       constructors.getFirst().getParameters().getFirst() instanceof J.Empty;
             }
         };
     }

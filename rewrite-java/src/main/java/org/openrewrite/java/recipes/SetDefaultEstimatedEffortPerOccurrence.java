@@ -52,9 +52,11 @@ public class SetDefaultEstimatedEffortPerOccurrence extends Recipe {
     public TreeVisitor<?, ExecutionContext> getVisitor() {
         return Preconditions.check(new UsesType<>("org.openrewrite.Recipe", false), new JavaIsoVisitor<ExecutionContext>() {
             final JavaTemplate addMethod = JavaTemplate.builder(
-                            "@Override public Duration getEstimatedEffortPerOccurrence() {\n" +
-                            "return Duration.ofMinutes(5);\n" +
-                            "}")
+                            """
+                            @Override public Duration getEstimatedEffortPerOccurrence() {
+                            return Duration.ofMinutes(5);
+                            }\
+                            """)
                     .imports("java.time.Duration")
                     .build();
 
@@ -64,8 +66,7 @@ public class SetDefaultEstimatedEffortPerOccurrence extends Recipe {
                 if (TypeUtils.isAssignableTo("org.openrewrite.Recipe", type)) {
                     assert type != null;
                     for (Statement statement : classDecl.getBody().getStatements()) {
-                        if (statement instanceof J.MethodDeclaration) {
-                            J.MethodDeclaration method = (J.MethodDeclaration) statement;
+                        if (statement instanceof J.MethodDeclaration method) {
                             if ("getEstimatedEffortPerOccurrence".equals(method.getSimpleName())) {
                                 return classDecl;
                             }

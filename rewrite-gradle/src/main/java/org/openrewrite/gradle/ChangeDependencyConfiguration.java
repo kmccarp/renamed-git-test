@@ -64,13 +64,15 @@ public class ChangeDependencyConfiguration extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s:%s` to `%s`", groupId, artifactId, newConfiguration);
+        return "`%s:%s` to `%s`".formatted(groupId, artifactId, newConfiguration);
     }
 
     @Override
     public String getDescription() {
-        return "A common example is the need to change `compile` to `api`/`implementation` as " +
-               "[part of the move](https://docs.gradle.org/current/userguide/upgrading_version_6.html) to Gradle 7.x and later.";
+        return """
+               A common example is the need to change `compile` to `api`/`implementation` as \
+               [part of the move](https://docs.gradle.org/current/userguide/upgrading_version_6.html) to Gradle 7.x and later.\
+               """;
     }
 
     @Override
@@ -97,8 +99,8 @@ public class ChangeDependencyConfiguration extends Recipe {
 
                 DependencyMatcher dependencyMatcher = new DependencyMatcher(groupId, artifactId, null);
                 List<Expression> args = m.getArguments();
-                if (args.get(0) instanceof J.Literal) {
-                    J.Literal arg = (J.Literal) args.get(0);
+                if (args.getFirst() instanceof J.Literal) {
+                    J.Literal arg = (J.Literal) args.getFirst();
                     if (!(arg.getValue() instanceof String)) {
                         return m;
                     }
@@ -107,13 +109,13 @@ public class ChangeDependencyConfiguration extends Recipe {
                     if (dependency == null || !dependencyMatcher.matches(dependency.getGroupId(), dependency.getArtifactId())) {
                         return m;
                     }
-                } else if (args.get(0) instanceof G.GString) {
-                    G.GString gString = (G.GString) args.get(0);
+                } else if (args.getFirst() instanceof G.GString) {
+                    G.GString gString = (G.GString) args.getFirst();
                     List<J> strings = gString.getStrings();
-                    if (strings.size() != 2 || !(strings.get(0) instanceof J.Literal) || !(strings.get(1) instanceof G.GString.Value)) {
+                    if (strings.size() != 2 || !(strings.getFirst() instanceof J.Literal) || !(strings.get(1) instanceof G.GString.Value)) {
                         return m;
                     }
-                    J.Literal groupArtifact = (J.Literal) strings.get(0);
+                    J.Literal groupArtifact = (J.Literal) strings.getFirst();
                     if (!(groupArtifact.getValue() instanceof String)) {
                         return m;
                     }
@@ -122,8 +124,8 @@ public class ChangeDependencyConfiguration extends Recipe {
                     if (dependency == null || !dependencyMatcher.matches(dependency.getGroupId(), dependency.getArtifactId())) {
                         return m;
                     }
-                } else if (args.get(0) instanceof G.MapEntry && args.size() >= 2) {
-                    Expression groupValue = ((G.MapEntry) args.get(0)).getValue();
+                } else if (args.getFirst() instanceof G.MapEntry && args.size() >= 2) {
+                    Expression groupValue = ((G.MapEntry) args.getFirst()).getValue();
                     Expression artifactValue = ((G.MapEntry) args.get(1)).getValue();
                     if (!(groupValue instanceof J.Literal) || !(artifactValue instanceof J.Literal)) {
                         return m;
@@ -137,16 +139,16 @@ public class ChangeDependencyConfiguration extends Recipe {
                     if (!dependencyMatcher.matches((String) groupLiteral.getValue(), (String) artifactLiteral.getValue())) {
                         return m;
                     }
-                } else if (args.get(0) instanceof J.MethodInvocation) {
-                    J.MethodInvocation inner = (J.MethodInvocation) args.get(0);
+                } else if (args.getFirst() instanceof J.MethodInvocation) {
+                    J.MethodInvocation inner = (J.MethodInvocation) args.getFirst();
                     if (!(inner.getSimpleName().equals("project") || inner.getSimpleName().equals("platform") || inner.getSimpleName().equals("enforcedPlatform"))) {
                         return m;
                     }
                     List<Expression> innerArgs = inner.getArguments();
-                    if (!(innerArgs.get(0) instanceof J.Literal)) {
+                    if (!(innerArgs.getFirst() instanceof J.Literal)) {
                         return m;
                     }
-                    J.Literal value = (J.Literal) innerArgs.get(0);
+                    J.Literal value = (J.Literal) innerArgs.getFirst();
                     if (!(value.getValue() instanceof String)) {
                         return m;
                     }

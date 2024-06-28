@@ -59,8 +59,10 @@ public class DependenciesInUse extends DataTable<DependenciesInUse.Row> {
         String datedSnapshotVersion;
 
         @Column(displayName = "Scope",
-                description = "Dependency scope. This will be `compile` if the dependency is direct and a scope is not explicitly " +
-                              "specified in the POM.")
+                description = """
+                              Dependency scope. This will be `compile` if the dependency is direct and a scope is not explicitly \
+                              specified in the POM.\
+                              """)
         String scope;
 
         @Column(displayName = "Depth",

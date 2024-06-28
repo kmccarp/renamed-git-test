@@ -449,7 +449,7 @@ class AutodetectTest implements RewriteTest {
         var styles = detector.build();
         var importLayout = NamedStyles.merge(ImportLayoutStyle.class, singletonList(styles));
 
-        assertThat(importLayout.getLayout().get(0)).isInstanceOf(ImportLayoutStyle.Block.AllOthers.class);
+        assertThat(importLayout.getLayout().getFirst()).isInstanceOf(ImportLayoutStyle.Block.AllOthers.class);
         assertThat(importLayout.getLayout().get(1)).isInstanceOf(ImportLayoutStyle.Block.BlankLines.class);
 
         assertThat(importLayout.getLayout().get(2))
@@ -508,7 +508,7 @@ class AutodetectTest implements RewriteTest {
         var styles = detector.build();
         var importLayout = NamedStyles.merge(ImportLayoutStyle.class, singletonList(styles));
 
-        assertThat(importLayout.getLayout().get(0))
+        assertThat(importLayout.getLayout().getFirst())
           .isInstanceOf(ImportLayoutStyle.Block.ImportPackage.class)
           .matches(b -> ((ImportLayoutStyle.Block.ImportPackage) b).isStatic())
           .matches(b -> ((ImportLayoutStyle.Block.ImportPackage) b).getPackageWildcard().toString().equals("com\\.example\\..+"));
@@ -929,12 +929,14 @@ class AutodetectTest implements RewriteTest {
     @Test
     void detectCrlfLineFormat() {
         @SuppressWarnings("TextBlockMigration") var cus = jp().parse(
-          "class Test {\r\n" +
-          "    // some comment\r\n" +
-          "    public void test() {\n" +
-          "        System.out.println();\n" +
-          "    }\r\n" +
-          "}\r\n"
+          """
+          class Test {
+              // some comment
+              public void test() {
+                  System.out.println();
+              }
+          }
+          """
         );
 
         var detector = Autodetect.detector();
@@ -948,12 +950,14 @@ class AutodetectTest implements RewriteTest {
     @Test
     void detectLfLineFormat() {
         @SuppressWarnings("TextBlockMigration") var cus = jp().parse(
-          "class Test {\n" +
-          "    // some comment\r\n" +
-          "    public void test() {\n" +
-          "        System.out.println();\n" +
-          "    }\n" +
-          "}\r\n"
+          """
+          class Test {
+              // some comment
+              public void test() {
+                  System.out.println();
+              }
+          }
+          """
         );
 
         var detector = Autodetect.detector();

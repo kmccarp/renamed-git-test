@@ -51,10 +51,10 @@ public class MissingOptionExample extends Recipe {
 
                         // Skip if there is already an example value, or valid options
                         boolean hasExample = an.getArguments().stream().anyMatch(exp -> {
-                            if (exp instanceof J.Assignment) {
-                                Expression variable = ((J.Assignment) exp).getVariable();
-                                if (variable instanceof J.Identifier) {
-                                    String simpleName = ((J.Identifier) variable).getSimpleName();
+                            if (exp instanceof J.Assignment assignment) {
+                                Expression variable = assignment.getVariable();
+                                if (variable instanceof J.Identifier identifier) {
+                                    String simpleName = identifier.getSimpleName();
                                     return "example".equals(simpleName) || "valid".equals(simpleName);
                                 }
                             }
@@ -72,8 +72,8 @@ public class MissingOptionExample extends Recipe {
                                 JavaType type = variableDeclarations.getTypeExpression().getType();
                                 if (!TypeUtils.isString(type)) {
                                     if (type instanceof JavaType.Primitive ||
-                                        type instanceof JavaType.FullyQualified &&
-                                        "java.lang".equals(((JavaType.FullyQualified) type).getPackageName())) {
+                                        type instanceof JavaType.FullyQualified qualified &&
+                                        "java.lang".equals(qualified.getPackageName())) {
                                         return an;
                                     }
                                 }

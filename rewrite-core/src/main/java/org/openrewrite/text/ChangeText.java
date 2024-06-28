@@ -52,8 +52,10 @@ public class ChangeText extends Recipe {
 
     @Override
     public String getDescription() {
-        return "Completely replaces the contents of the text file with other text. " +
-               "Use together with a `FindSourceFiles` precondition to limit which files are changed.";
+        return """
+               Completely replaces the contents of the text file with other text. \
+               Use together with a `FindSourceFiles` precondition to limit which files are changed.\
+               """;
     }
 
     @Override

@@ -97,14 +97,14 @@ public class DeclarativeRecipe extends Recipe {
         initialized.clear();
         for (int i = 0; i < uninitialized.size(); i++) {
             Recipe recipe = uninitialized.get(i);
-            if (recipe instanceof LazyLoadedRecipe) {
-                String recipeFqn = ((LazyLoadedRecipe) recipe).getRecipeFqn();
+            if (recipe instanceof LazyLoadedRecipe loadedRecipe) {
+                String recipeFqn = loadedRecipe.getRecipeFqn();
                 Optional<Recipe> next = availableRecipes.stream()
                         .filter(r -> recipeFqn.equals(r.getName())).findAny();
                 if (next.isPresent()) {
                     Recipe subRecipe = next.get();
-                    if (subRecipe instanceof DeclarativeRecipe) {
-                        ((DeclarativeRecipe) subRecipe).initialize(availableRecipes, recipeToContributors);
+                    if (subRecipe instanceof DeclarativeRecipe declarativeRecipe) {
+                        declarativeRecipe.initialize(availableRecipes, recipeToContributors);
                     }
                     initialized.add(subRecipe);
                 } else {
@@ -117,8 +117,8 @@ public class DeclarativeRecipe extends Recipe {
                 }
             } else {
                 recipe.setContributors(recipeToContributors.getOrDefault(recipe.getName(), emptyList()));
-                if (recipe instanceof DeclarativeRecipe) {
-                    ((DeclarativeRecipe) recipe).initialize(availableRecipes, recipeToContributors);
+                if (recipe instanceof DeclarativeRecipe declarativeRecipe) {
+                    declarativeRecipe.initialize(availableRecipes, recipeToContributors);
                 }
                 initialized.add(recipe);
             }
@@ -137,8 +137,10 @@ public class DeclarativeRecipe extends Recipe {
 
         @Override
         public String getDescription() {
-            return "Evaluates a precondition and makes that result available to the preconditions of other recipes. " +
-                   "\"bellwether\", noun - One that serves as a leader or as a leading indicator of future trends. ";
+            return """
+                   Evaluates a precondition and makes that result available to the preconditions of other recipes. \
+                   "bellwether", noun - One that serves as a leader or as a leading indicator of future trends. \
+                   """;
         }
 
         Supplier<TreeVisitor<?, ExecutionContext>> precondition;
@@ -294,8 +296,8 @@ public class DeclarativeRecipe extends Recipe {
     private static List<Recipe> decorateWithPreconditionBellwether(PreconditionBellwether bellwether, List<Recipe> recipeList) {
         List<Recipe> mappedRecipeList = new ArrayList<>(recipeList.size());
         for (Recipe recipe : recipeList) {
-            if (recipe instanceof ScanningRecipe) {
-                mappedRecipeList.add(new BellwetherDecoratedScanningRecipe<>(bellwether, (ScanningRecipe<?>) recipe));
+            if (recipe instanceof ScanningRecipe<?> scanningRecipe) {
+                mappedRecipeList.add(new BellwetherDecoratedScanningRecipe<>(bellwether, scanningRecipe));
             } else {
                 mappedRecipeList.add(new BellwetherDecoratedRecipe(bellwether, recipe));
             }

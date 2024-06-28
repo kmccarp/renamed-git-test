@@ -36,7 +36,7 @@ class RenameJavaDocParamNameVisitorTest implements RewriteTest {
             public J.MethodDeclaration visitMethodDeclaration(J.MethodDeclaration method, ExecutionContext executionContext) {
                 J.MethodDeclaration md = method;
                 if (md.getSimpleName().equals("method") && md.getParameters().stream()
-                  .anyMatch(p -> p instanceof J.VariableDeclarations && ((J.VariableDeclarations) p).getVariables().stream()
+                  .anyMatch(p -> p instanceof J.VariableDeclarations vd && vd.getVariables().stream()
                     .anyMatch(v -> v.getSimpleName().equals("oldName")))) {
                     md = new RenameJavaDocParamNameVisitor<>(md, "oldName", "newName")
                       .visitMethodDeclaration(md, executionContext);

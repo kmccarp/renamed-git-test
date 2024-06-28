@@ -313,10 +313,12 @@ public interface RewriteTest extends SourceSpecs {
                                 sourceFile,
                                 StringUtils.readFully(input.getSource(ctx), parser.getCharset(ctx)),
                                 sourceFile.printAll(out.clone()),
-                                "When parsing and printing the source code back to text without modifications, " +
-                                "the printed source didn't match the original source code. This means there is a bug in the " +
-                                "parser implementation itself. Please open an issue to report this, providing a sample of the " +
-                                "code that generated this error for"
+                                """
+                                When parsing and printing the source code back to text without modifications, \
+                                the printed source didn't match the original source code. This means there is a bug in the \
+                                parser implementation itself. Please open an issue to report this, providing a sample of the \
+                                code that generated this error for\
+                                """
                         );
                         try {
                             WhitespaceValidationService service = sourceFile.service(WhitespaceValidationService.class);
@@ -481,8 +483,7 @@ public interface RewriteTest extends SourceSpecs {
         for (Map.Entry<SourceFile, SourceSpec<?>> specForSourceFile : specBySourceFile.entrySet()) {
             SourceSpec<?> sourceSpec = specForSourceFile.getValue();
             SourceFile source = specForSourceFile.getKey();
-            if (source instanceof ParseError) {
-                ParseError parseError = (ParseError) source;
+            if (source instanceof ParseError parseError) {
                 if (parseError.getErroneous() != null) {
                     assertContentEquals(
                             parseError,

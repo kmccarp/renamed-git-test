@@ -45,7 +45,7 @@ public class ChangeMethodAccessLevel extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s` to `%s`", methodPattern, newAccessLevel);
+        return "`%s` to `%s`".formatted(methodPattern, newAccessLevel);
     }
 
     @Override

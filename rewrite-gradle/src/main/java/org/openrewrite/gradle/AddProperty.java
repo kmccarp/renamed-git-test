@@ -50,8 +50,10 @@ public class AddProperty extends ScanningRecipe<AddProperty.NeedsProperty> {
     Boolean overwrite;
 
     @Option(displayName = "File pattern",
-            description = "A glob expression that can be used to constrain which directories or source files should be searched. " +
-                          "When not set, all source files are searched.",
+            description = """
+                          A glob expression that can be used to constrain which directories or source files should be searched. \
+                          When not set, all source files are searched.\
+                          """,
             example = "**/*.properties")
     @Nullable
     String filePattern;
@@ -63,7 +65,7 @@ public class AddProperty extends ScanningRecipe<AddProperty.NeedsProperty> {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s=%s`", key, value);
+        return "`%s=%s`".formatted(key, value);
     }
 
     @Override

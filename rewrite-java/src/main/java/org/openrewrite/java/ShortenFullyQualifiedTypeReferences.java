@@ -38,9 +38,11 @@ public class ShortenFullyQualifiedTypeReferences extends Recipe {
 
     @Override
     public String getDescription() {
-        return "Any fully qualified references to Java types will be replaced with corresponding simple "
-               + "names and import statements, provided that it doesn't result in "
-               + "any conflicts with other imports or types declared in the local compilation unit.";
+        return """
+               Any fully qualified references to Java types will be replaced with corresponding simple \
+               names and import statements, provided that it doesn't result in \
+               any conflicts with other imports or types declared in the local compilation unit.\
+               """;
     }
 
     @Override
@@ -54,8 +56,8 @@ public class ShortenFullyQualifiedTypeReferences extends Recipe {
         return new JavaVisitor<ExecutionContext>() {
             @Override
             public @Nullable J visit(@Nullable Tree tree, ExecutionContext ctx) {
-                if (tree instanceof JavaSourceFile) {
-                    return ((JavaSourceFile) tree).service(ImportService.class).shortenFullyQualifiedTypeReferencesIn((J) tree).visit(tree, ctx);
+                if (tree instanceof JavaSourceFile file) {
+                    return file.service(ImportService.class).shortenFullyQualifiedTypeReferencesIn(file).visit(tree, ctx);
                 }
                 return (J) tree;
             }
@@ -165,7 +167,7 @@ public class ShortenFullyQualifiedTypeReferences extends Recipe {
                 }
 
                 JavaType type = fieldAccess.getType();
-                if (fieldAccess.getName().getFieldType() == null && type instanceof JavaType.Class && ((JavaType.Class) type).getOwningClass() == null) {
+                if (fieldAccess.getName().getFieldType() == null && type instanceof JavaType.Class class1 && class1.getOwningClass() == null) {
                     ensureInitialized();
 
                     String simpleName = fieldAccess.getSimpleName();
@@ -173,7 +175,7 @@ public class ShortenFullyQualifiedTypeReferences extends Recipe {
                     if (type == usedType || signatureBuilder.signature(type).equals(signatureBuilder.signature(usedType))) {
                         return !fieldAccess.getPrefix().isEmpty() ? fieldAccess.getName().withPrefix(fieldAccess.getPrefix()) : fieldAccess.getName();
                     } else if (!usedTypes.containsKey(simpleName)) {
-                        String fullyQualifiedName = ((JavaType.FullyQualified) type).getFullyQualifiedName();
+                        String fullyQualifiedName = class1.getFullyQualifiedName();
                         if (!fullyQualifiedName.startsWith("java.lang.")) {
                             maybeAddImport(fullyQualifiedName);
                             usedTypes.put(simpleName, type);

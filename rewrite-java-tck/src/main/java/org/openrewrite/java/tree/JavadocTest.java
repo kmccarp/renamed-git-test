@@ -1529,12 +1529,13 @@ class JavadocTest implements RewriteTest {
     @Test
     void javaDocWithCRLF() {
         rewriteRun(
-          java("" +
-                          "/**\r\n" +
-                          " * JavaDoc.\r\n" +
-                          " */\r\n" +
-                          "public class A {\r\n" +
-                          "}"
+          java("""
+                          /**
+                           * JavaDoc.
+                           */
+                          public class A {
+                          }\
+                          """
           )
         );
     }
@@ -1543,13 +1544,14 @@ class JavadocTest implements RewriteTest {
     @Test
     void noMarginWithCRLF() {
         rewriteRun(
-          java("" +
-                          "/**\r\n" +
-                          " * Line 1.\r\n" +
-                          "   Text with no margin.\r\n" +
-                          " */\r\n" +
-                          "public class A {\r\n" +
-                          "}"
+          java("""
+                          /**
+                           * Line 1.
+                             Text with no margin.
+                           */
+                          public class A {
+                          }\
+                          """
           )
         );
     }
@@ -1558,15 +1560,16 @@ class JavadocTest implements RewriteTest {
     @Test
     void emptyLinesWithCRLF() {
         rewriteRun(
-          java("" +
-                          "public class A {\r\n" +
-                          "  /** Text \r\n" +
-                          "         \r\n" +
-                          "         \r\n" +
-                          "     @param arg0 desc\r\n" +
-                          "   */\r\n" +
-                          "  void method(int arg0) {}\r\n" +
-                          "}"
+          java("""
+                          public class A {
+                            /** Text 
+                                   
+                                   
+                               @param arg0 desc
+                             */
+                            void method(int arg0) {}
+                          }\
+                          """
           )
         );
     }
@@ -1575,18 +1578,19 @@ class JavadocTest implements RewriteTest {
     @Test
     void multilineJavaDocWithCRLF() {
         rewriteRun(
-          java("" +
-                          "/**\r\n" +
-                          " * Line 1.\r\n" +
-                          " * Line 2.\r\n" +
-                          " */\r\n" +
-                          "public class A {\r\n" +
-                          "    /**\r\n" +
-                          "     * Line 1.\r\n" +
-                          "     * Line 2.\r\n" +
-                          "     */\r\n" +
-                          "    void method() {}\r\n" +
-                          "}"
+          java("""
+                          /**
+                           * Line 1.
+                           * Line 2.
+                           */
+                          public class A {
+                              /**
+                               * Line 1.
+                               * Line 2.
+                               */
+                              void method() {}
+                          }\
+                          """
           )
         );
     }
@@ -1596,17 +1600,18 @@ class JavadocTest implements RewriteTest {
     @Test
     void multilineWithThrowsAndCRLF() {
         rewriteRun(
-          java("" +
-                          "import java.io.IOException;\r\n" +
-                          "\r\n" +
-                          "public class A {\r\n" +
-                          "    /**\r\n" +
-                          "     * Line 1.\r\n" +
-                          "     * Line 2.\r\n" +
-                          "     * @throws IOException text.\r\n" +
-                          "     */\r\n" +
-                          "    void method() throws IOException {}\r\n" +
-                          "}"
+          java("""
+                          import java.io.IOException;
+                          
+                          public class A {
+                              /**
+                               * Line 1.
+                               * Line 2.
+                               * @throws IOException text.
+                               */
+                              void method() throws IOException {}
+                          }\
+                          """
           )
         );
     }
@@ -1615,15 +1620,16 @@ class JavadocTest implements RewriteTest {
     @Test
     void paramNoDescriptionWithCRLF() {
         rewriteRun(
-          java("" +
-                          "import org.foo;\r\n" +
-                          "\r\n" +
-                          "public class A {\r\n" +
-                          "    /**\r\n" +
-                          "     * @param arg0\r\n" +
-                          "     */\r\n" +
-                          "    void method(String arg0) {}\r\n" +
-                          "}"
+          java("""
+                          import org.foo;
+                          
+                          public class A {
+                              /**
+                               * @param arg0
+                               */
+                              void method(String arg0) {}
+                          }\
+                          """
           )
         );
     }
@@ -1632,12 +1638,13 @@ class JavadocTest implements RewriteTest {
     @Test
     void trailingWhitespaceWithLF() {
         rewriteRun(
-          java("" +
-                          "/**\n" +
-                          " * Text followed by trailing whitespace with CRLF.\n" +
-                          " * \n" +
-                          " */\n" +
-                          "class A {}"
+          java("""
+                          /**
+                           * Text followed by trailing whitespace with CRLF.
+                           *\s
+                           */
+                          class A {}\
+                          """
           )
         );
     }
@@ -1646,11 +1653,12 @@ class JavadocTest implements RewriteTest {
     @Issue("https://github.com/openrewrite/rewrite/issues/3530")
     void arrayTypeLiterals() {
         rewriteRun(
-          java("" +
-            "/**\n" +
-            "  * Create an instance of {@link byte[]} and {@link byte[][]}\n" +
-            "  */\n" +
-            "class A {}"
+          java("""
+            /**
+              * Create an instance of {@link byte[]} and {@link byte[][]}
+              */
+            class A {}\
+            """
           )
         );
     }
@@ -1660,11 +1668,12 @@ class JavadocTest implements RewriteTest {
     @MinimumJava11
     void arrayTypeLiterals2() {
         rewriteRun(
-          java("" +
-            "/**\n" +
-            " * <p>Values are converted to strings using {@link java.util.Arrays#compare(Comparable[], Comparable[])}}.\n" +
-            " */\n" +
-            "class A {}"
+          java("""
+            /**
+             * <p>Values are converted to strings using {@link java.util.Arrays#compare(Comparable[], Comparable[])}}.
+             */
+            class A {}\
+            """
           )
         );
     }

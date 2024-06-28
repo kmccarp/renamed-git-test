@@ -38,38 +38,42 @@ class NormalizeLineBreaksTest implements RewriteTest {
     }
 
     @Language("java")
-    String windows = "" +
-                     "class Test {\r\n" +
-                     "    // some comment\r\n" +
-                     "    public void test() {\r\n" +
-                     "        System.out.println();\r\n" +
-                     "    }\r\n" +
-                     "}";
+    String windows = """
+                     class Test {
+                         // some comment
+                         public void test() {
+                             System.out.println();
+                         }
+                     }\
+                     """;
 
     @Language("java")
-    String linux = "" +
-                   "class Test {\n" +
-                   "    // some comment\n" +
-                   "    public void test() {\n" +
-                   "        System.out.println();\n" +
-                   "    }\n" +
-                   "}";
+    String linux = """
+                   class Test {
+                       // some comment
+                       public void test() {
+                           System.out.println();
+                       }
+                   }\
+                   """;
 
     @Language("java")
-    String windowsJavadoc = "" +
-                            "/**\r\n" +
-                            " *\r\n" +
-                            " */\r\n" +
-                            "class Test {\r\n" +
-                            "}";
+    String windowsJavadoc = """
+                            /**
+                             *
+                             */
+                            class Test {
+                            }\
+                            """;
 
     @Language("java")
-    String linuxJavadoc = "" +
-                          "/**\n" +
-                          " *\n" +
-                          " */\n" +
-                          "class Test {\n" +
-                          "}";
+    String linuxJavadoc = """
+                          /**
+                           *
+                           */
+                          class Test {
+                          }\
+                          """;
 
     @Test
     void trimKeepCRLF() {

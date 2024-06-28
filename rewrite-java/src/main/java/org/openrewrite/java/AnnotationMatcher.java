@@ -135,17 +135,16 @@ public class AnnotationMatcher {
 
     private boolean argumentValueMatches(String matchOnArgumentName, Expression arg, String matchText) {
         if ("value".equals(matchOnArgumentName)) {
-            if (arg instanceof J.Literal) {
-                String valueSource = ((J.Literal) arg).getValueSource();
+            if (arg instanceof J.Literal literal) {
+                String valueSource = literal.getValueSource();
                 return valueSource != null && valueSource.equals(matchText);
             }
-            if (arg instanceof J.FieldAccess) {
-                J.FieldAccess fa = (J.FieldAccess) arg;
+            if (arg instanceof J.FieldAccess fa) {
                 if ("class".equals(fa.getSimpleName()) && matchText.endsWith(".class")) {
                     JavaType argType = fa.getTarget().getType();
-                    if (argType instanceof JavaType.FullyQualified) {
+                    if (argType instanceof JavaType.FullyQualified qualified) {
                         String queryTypeFqn = JavaType.ShallowClass.build(matchText.substring(0, matchText.length() - 6)).getFullyQualifiedName();
-                        String targetTypeFqn = ((JavaType.FullyQualified) argType).getFullyQualifiedName();
+                        String targetTypeFqn = qualified.getFullyQualifiedName();
                         return TypeUtils.fullyQualifiedNamesAreEqual(queryTypeFqn, targetTypeFqn);
                     }
                     return false;
@@ -159,12 +158,11 @@ public class AnnotationMatcher {
                     }
                 }
             }
-            if (arg instanceof J.NewArray) {
-                J.NewArray na = (J.NewArray) arg;
+            if (arg instanceof J.NewArray na) {
                 if (na.getInitializer() == null || na.getInitializer().size() != 1) {
                     return false;
                 }
-                return argumentValueMatches("value", na.getInitializer().get(0), matchText);
+                return argumentValueMatches("value", na.getInitializer().getFirst(), matchText);
             }
         }
 

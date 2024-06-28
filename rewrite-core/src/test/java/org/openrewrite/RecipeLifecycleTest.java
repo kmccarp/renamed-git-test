@@ -77,7 +77,7 @@ class RecipeLifecycleTest implements RewriteTest {
               .withMaxCycles(1)
             )
             .afterRecipe(run -> assertThat(run.getChangeset().getAllResults().stream()
-              .map(r -> r.getRecipeDescriptorsThatMadeChanges().get(0).getName()))
+              .map(r -> r.getRecipeDescriptorsThatMadeChanges().getFirst().getName()))
               .containsOnly("test.GeneratingRecipe")),
           text(null, "test", spec -> spec.path("test.txt"))
         );
@@ -94,8 +94,10 @@ class RecipeLifecycleTest implements RewriteTest {
 
         @Override
         public String getDescription() {
-            return "Deletes a file early on in the recipe pipeline. " +
-                   "Subsequent recipes should not be passed a null source file.";
+            return """
+                   Deletes a file early on in the recipe pipeline. \
+                   Subsequent recipes should not be passed a null source file.\
+                   """;
         }
 
         @Override
@@ -251,7 +253,7 @@ class RecipeLifecycleTest implements RewriteTest {
             .afterRecipe(run -> {
                 var changes = run.getChangeset().getAllResults();
                 assertThat(changes).hasSize(1);
-                assertThat(changes.get(0).getRecipeDescriptorsThatMadeChanges().stream().map(RecipeDescriptor::getName))
+                assertThat(changes.getFirst().getRecipeDescriptorsThatMadeChanges().stream().map(RecipeDescriptor::getName))
                   .containsExactlyInAnyOrder("Change1", "Change2");
             }),
           text(
@@ -390,8 +392,8 @@ class RecipeLifecycleTest implements RewriteTest {
     @Test
     void declarativeRecipeChainFromResourcesIncludesImperativeRecipesInDescriptors() {
         rewriteRun(spec -> spec.recipeFromResources("test.declarative.sample.a")
-            .afterRecipe(recipeRun -> assertThat(recipeRun.getChangeset().getAllResults().get(0)
-              .getRecipeDescriptorsThatMadeChanges().get(0).getRecipeList().get(0).getRecipeList().get(0)
+            .afterRecipe(recipeRun -> assertThat(recipeRun.getChangeset().getAllResults().getFirst()
+              .getRecipeDescriptorsThatMadeChanges().getFirst().getRecipeList().getFirst().getRecipeList().getFirst()
               .getDisplayName()).isEqualTo("Change text")),
           text("Hi", "after"));
     }

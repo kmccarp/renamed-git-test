@@ -41,7 +41,7 @@ public class InsertDependencyComparator implements Comparator<Statement> {
         }
 
         List<Statement> ideallySortedDependencies = existingStatements.stream()
-                .filter(s -> s instanceof J.MethodInvocation || (s instanceof J.Return && ((J.Return) s).getExpression() instanceof J.MethodInvocation))
+                .filter(s -> s instanceof J.MethodInvocation || (s instanceof J.Return r && r.getExpression() instanceof J.MethodInvocation))
                 .collect(Collectors.toList());
 
         ideallySortedDependencies.add(dependencyToAdd);
@@ -64,7 +64,7 @@ public class InsertDependencyComparator implements Comparator<Statement> {
         List<Statement> statements = new ArrayList<>(positions.keySet());
         for (float f = afterDependency == null ? 0 : positions.get(afterDependency); f < statements.size(); f++) {
             Statement s = statements.get((int) f);
-            if (!(s instanceof J.MethodInvocation || (s instanceof J.Return && ((J.Return) s).getExpression() instanceof J.MethodInvocation))) {
+            if (!(s instanceof J.MethodInvocation || (s instanceof J.Return return1 && return1.getExpression() instanceof J.MethodInvocation))) {
                 continue;
             }
             positions.put(dependencyToAdd, positions.get(statements.get((int) f)) + insertPos);
@@ -79,15 +79,15 @@ public class InsertDependencyComparator implements Comparator<Statement> {
 
     private static final Comparator<Statement> dependenciesComparator = (s1, s2) -> {
         J.MethodInvocation d1;
-        if (s1 instanceof J.Return) {
-            d1 = (J.MethodInvocation) ((J.Return) s1).getExpression();
+        if (s1 instanceof J.Return return1) {
+            d1 = (J.MethodInvocation) return1.getExpression();
         } else {
             d1 = (J.MethodInvocation) s1;
         }
 
         J.MethodInvocation d2;
-        if (s2 instanceof J.Return) {
-            d2 = (J.MethodInvocation) ((J.Return) s2).getExpression();
+        if (s2 instanceof J.Return return1) {
+            d2 = (J.MethodInvocation) return1.getExpression();
         } else {
             d2 = (J.MethodInvocation) s2;
         }
@@ -131,8 +131,8 @@ public class InsertDependencyComparator implements Comparator<Statement> {
     };
 
     private static Optional<String> getEntry(String entry, J.MethodInvocation invocation) {
-        if (invocation.getArguments().get(0) instanceof J.Literal) {
-            Object value = ((J.Literal) invocation.getArguments().get(0)).getValue();
+        if (invocation.getArguments().getFirst() instanceof J.Literal) {
+            Object value = ((J.Literal) invocation.getArguments().getFirst()).getValue();
             if(value == null) {
                 return Optional.empty();
             }
@@ -150,7 +150,7 @@ public class InsertDependencyComparator implements Comparator<Statement> {
                 case "classifier":
                     return Optional.ofNullable(dependency.getClassifier());
             }
-        } else if (invocation.getArguments().get(0) instanceof G.MapEntry) {
+        } else if (invocation.getArguments().getFirst() instanceof G.MapEntry) {
             for (Expression e : invocation.getArguments()) {
                 if (!(e instanceof G.MapEntry)) {
                     continue;

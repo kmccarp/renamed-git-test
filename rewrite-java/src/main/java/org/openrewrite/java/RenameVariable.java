@@ -63,8 +63,8 @@ public class RenameVariable<P> extends JavaIsoVisitor<P> {
             if (getCursor().getParent() != null && getCursor().getParent().getValue() instanceof J.ClassDeclaration) {
                 boolean isClassScope = false;
                 for (Statement statement : block.getStatements()) {
-                    if (statement instanceof J.VariableDeclarations) {
-                        if (((J.VariableDeclarations) statement).getVariables().contains(renameVariable)) {
+                    if (statement instanceof J.VariableDeclarations declarations) {
+                        if (declarations.getVariables().contains(renameVariable)) {
                             isClassScope = true;
                             break;
                         }
@@ -102,12 +102,11 @@ public class RenameVariable<P> extends JavaIsoVisitor<P> {
                     if (parent.getValue() instanceof J.VariableDeclarations.NamedVariable) {
                         Tree variableDeclaration = parent.getParentTreeCursor().getValue();
                         J maybeParameter = getCursor().dropParentUntil(is -> is instanceof JavaSourceFile || is instanceof J.ClassDeclaration || is instanceof J.MethodDeclaration).getValue();
-                        if (maybeParameter instanceof J.MethodDeclaration) {
-                            J.MethodDeclaration methodDeclaration = (J.MethodDeclaration) maybeParameter;
+                        if (maybeParameter instanceof J.MethodDeclaration methodDeclaration) {
                             if (methodDeclaration.getParameters().contains((Statement) variableDeclaration) &&
                                 methodDeclaration.getComments().stream().anyMatch(it -> it instanceof Javadoc.DocComment) &&
-                                ((J.MethodDeclaration) maybeParameter).getMethodType() != null) {
-                                doAfterVisit(new RenameJavaDocParamNameVisitor<>((J.MethodDeclaration) maybeParameter, renameVariable.getSimpleName(), newName));
+                                methodDeclaration.getMethodType() != null) {
+                                doAfterVisit(new RenameJavaDocParamNameVisitor<>(methodDeclaration, renameVariable.getSimpleName(), newName));
                             }
                         }
                     }
@@ -133,17 +132,13 @@ public class RenameVariable<P> extends JavaIsoVisitor<P> {
         }
 
         private boolean isVariableName(Object value, J.Identifier ident) {
-            if (value instanceof J.MethodInvocation) {
-                J.MethodInvocation m = (J.MethodInvocation) value;
+            if (value instanceof J.MethodInvocation m) {
                 return m.getName() != ident;
-            } else if(value instanceof J.NewClass) {
-                J.NewClass m = (J.NewClass) value;
+            } else if(value instanceof J.NewClass m) {
                 return m.getClazz() != ident;
-            } else if(value instanceof J.NewArray) {
-                J.NewArray a = (J.NewArray) value;
+            } else if(value instanceof J.NewArray a) {
                 return a.getTypeExpression() != ident;
-            } else if(value instanceof J.VariableDeclarations) {
-                J.VariableDeclarations v = (J.VariableDeclarations) value;
+            } else if(value instanceof J.VariableDeclarations v) {
                 return ident != v.getTypeExpression();
             } else return !(value instanceof J.ParameterizedType);
         }
@@ -168,8 +163,8 @@ public class RenameVariable<P> extends JavaIsoVisitor<P> {
                 }
                 if (target instanceof J.TypeCast) {
                     return TypeUtils.isOfType(variableNameFieldType, targetType);
-                } else if (target instanceof J.Identifier) {
-                    return TypeUtils.isOfType(variableNameFieldType, ((J.Identifier) target).getFieldType());
+                } else if (target instanceof J.Identifier identifier) {
+                    return TypeUtils.isOfType(variableNameFieldType, identifier.getFieldType());
                 }
             }
             return false;
@@ -181,13 +176,13 @@ public class RenameVariable<P> extends JavaIsoVisitor<P> {
             if (target instanceof J.Identifier) {
                 return target;
             }
-            if (target instanceof J.FieldAccess) {
-                return getTarget((J.FieldAccess) target);
+            if (target instanceof J.FieldAccess access) {
+                return getTarget(access);
             }
-            if (target instanceof J.Parentheses<?>) {
-                J tree = ((J.Parentheses<?>) target).getTree();
-                if (tree instanceof J.TypeCast) {
-                    return (J.TypeCast) tree;
+            if (target instanceof J.Parentheses<?> parentheses) {
+                J tree = parentheses.getTree();
+                if (tree instanceof J.TypeCast cast) {
+                    return cast;
                 }
                 return null;
             }
@@ -196,7 +191,7 @@ public class RenameVariable<P> extends JavaIsoVisitor<P> {
 
         @Nullable
         private JavaType resolveType(@Nullable JavaType type) {
-            return type instanceof JavaType.Parameterized ? ((JavaType.Parameterized) type).getType() : type;
+            return type instanceof JavaType.Parameterized p ? p.getType() : type;
         }
 
         @Override

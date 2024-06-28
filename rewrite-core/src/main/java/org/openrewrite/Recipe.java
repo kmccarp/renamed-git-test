@@ -138,7 +138,7 @@ public abstract class Recipe implements Cloneable {
         }
         if (options.size() == 1) {
             try {
-                OptionDescriptor option = options.get(0);
+                OptionDescriptor option = options.getFirst();
                 String name = option.getName();
                 Field optionField = getClass().getDeclaredField(name);
                 optionField.setAccessible(true);
@@ -146,7 +146,7 @@ public abstract class Recipe implements Cloneable {
                 if (optionValue != null &&
                     !Iterable.class.isAssignableFrom(optionValue.getClass()) &&
                     !optionValue.getClass().isArray()) {
-                    return String.format("%s `%s`", getDisplayName(), optionValue);
+                    return "%s `%s`".formatted(getDisplayName(), optionValue);
                 }
             } catch (NoSuchFieldException | IllegalAccessException ignore) {
                 // we tried...

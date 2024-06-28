@@ -58,14 +58,14 @@ public interface RecipePrinter {
             String opts = options.stream()
                     .map(option -> {
                         if (option.getValue() != null) {
-                            return String.format("%s=%s", option.getName(), option.getValue());
+                            return "%s=%s".formatted(option.getName(), option.getValue());
                         }
                         return null;
                     }).
                     filter(Objects::nonNull)
                     .collect(Collectors.joining(", "));
             if (!opts.isEmpty()) {
-                recipeString.append(String.format(": {%s}", opts));
+                recipeString.append(": {%s}".formatted(opts));
             }
         }
         recipeString.append(System.lineSeparator());

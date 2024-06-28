@@ -75,8 +75,10 @@ public class ChangeDependencyGroupIdAndArtifactId extends Recipe {
     String newVersion;
 
     @Option(displayName = "Version pattern",
-            description = "Allows version selection to be extended beyond the original Node Semver semantics. So for example," +
-                          "Setting 'version' to \"25-29\" can be paired with a metadata pattern of \"-jre\" to select Guava 29.0-jre",
+            description = """
+                          Allows version selection to be extended beyond the original Node Semver semantics. So for example,\
+                          Setting 'version' to "25-29" can be paired with a metadata pattern of "-jre" to select Guava 29.0-jre\
+                          """,
             example = "-jre",
             required = false)
     @Nullable
@@ -117,13 +119,15 @@ public class ChangeDependencyGroupIdAndArtifactId extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s:%s`", oldGroupId, oldArtifactId);
+        return "`%s:%s`".formatted(oldGroupId, oldArtifactId);
     }
 
     @Override
     public String getDescription() {
-        return "Change a Maven dependency coordinates. The `newGroupId` or `newArtifactId` **MUST** be different from before. " +
-               "Matching `<dependencyManagement>` coordinates are also updated if a `newVersion` or `versionPattern` is provided.";
+        return """
+               Change a Maven dependency coordinates. The `newGroupId` or `newArtifactId` **MUST** be different from before. \
+               Matching `<dependencyManagement>` coordinates are also updated if a `newVersion` or `versionPattern` is provided.\
+               """;
     }
 
     @Override

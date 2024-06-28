@@ -66,7 +66,7 @@ class JavaSourceSetTest {
         var shaded = JavaSourceSet.build("test", JavaParser.dependenciesFromClasspath("hbase-shaded-client"), typeCache, false)
           .getClasspath().stream().filter(o -> o.getFullyQualifiedName().startsWith("org.apache.hadoop.hbase.shaded")).collect(Collectors.toList());
         assertThat(shaded).isNotEmpty();
-        assertThat(shaded.get(0)).isInstanceOf(JavaType.ShallowClass.class);
+        assertThat(shaded.getFirst()).isInstanceOf(JavaType.ShallowClass.class);
     }
 
     // This test uses a lot of memory and examines the "fullTypeInformation" path that we don't actually take anywhere right now

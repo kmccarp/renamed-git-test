@@ -56,8 +56,7 @@ public class RemoveImport<P> extends JavaIsoVisitor<P> {
     public @Nullable J preVisit(J tree, P p) {
         stopAfterPreVisit();
         J j = tree;
-        if (tree instanceof JavaSourceFile) {
-            JavaSourceFile cu = (JavaSourceFile) tree;
+        if (tree instanceof JavaSourceFile cu) {
             ImportLayoutStyle importLayoutStyle = Optional.ofNullable(((SourceFile) cu).getStyle(ImportLayoutStyle.class))
                     .orElse(IntelliJ.importLayout());
 
@@ -97,8 +96,7 @@ public class RemoveImport<P> extends JavaIsoVisitor<P> {
             }
 
             for (JavaType javaType : cu.getTypesInUse().getTypesInUse()) {
-                if (javaType instanceof JavaType.FullyQualified) {
-                    JavaType.FullyQualified fullyQualified = (JavaType.FullyQualified) javaType;
+                if (javaType instanceof JavaType.FullyQualified fullyQualified) {
                     if (TypeUtils.fullyQualifiedNamesAreEqual(fullyQualified.getFullyQualifiedName(), type)) {
                         typeUsed = true;
                     } else if (TypeUtils.fullyQualifiedNamesAreEqual(fullyQualified.getFullyQualifiedName(), owner)

@@ -53,8 +53,8 @@ public class MavenExecutionContextView extends DelegatingExecutionContext {
     }
 
     public static MavenExecutionContextView view(ExecutionContext ctx) {
-        if (ctx instanceof MavenExecutionContextView) {
-            return (MavenExecutionContextView) ctx;
+        if (ctx instanceof MavenExecutionContextView view) {
+            return view;
         }
         return new MavenExecutionContextView(ctx);
     }

@@ -50,8 +50,8 @@ public interface Expression extends J {
 
     @Nullable
     static Expression unwrap(@Nullable Expression expr) {
-        if (expr instanceof J.Parentheses<?> && ((J.Parentheses<?>) expr).getTree() instanceof Expression) {
-            return ((Expression) ((J.Parentheses<?>) expr).getTree()).unwrap();
+        if (expr instanceof J.Parentheses<?> parentheses && parentheses.getTree() instanceof Expression) {
+            return ((Expression) parentheses.getTree()).unwrap();
         } else {
             return expr;
         }

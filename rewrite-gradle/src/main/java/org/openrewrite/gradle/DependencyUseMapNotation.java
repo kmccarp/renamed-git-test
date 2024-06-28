@@ -44,9 +44,11 @@ public class DependencyUseMapNotation extends Recipe {
 
     @Override
     public String getDescription() {
-        return "In Gradle, dependencies can be expressed as a `String` like `\"groupId:artifactId:version\"`, " +
-                "or equivalently as a `Map` like `group: 'groupId', name: 'artifactId', version: 'version'`. " +
-                "This recipe replaces dependencies represented as `Strings` with an equivalent dependency represented as a `Map`.";
+        return """
+                In Gradle, dependencies can be expressed as a `String` like `"groupId:artifactId:version"`, \
+                or equivalently as a `Map` like `group: 'groupId', name: 'artifactId', version: 'version'`. \
+                This recipe replaces dependencies represented as `Strings` with an equivalent dependency represented as a `Map`.\
+                """;
     }
 
     @Override
@@ -65,7 +67,7 @@ public class DependencyUseMapNotation extends Recipe {
             }
 
             private J.MethodInvocation forBasicString(J.MethodInvocation m) {
-                Expression e = m.getArguments().get(0);
+                Expression e = m.getArguments().getFirst();
                 if (!(e instanceof J.Literal)) {
                     return m;
                 }
@@ -111,7 +113,7 @@ public class DependencyUseMapNotation extends Recipe {
             }
 
             private J.MethodInvocation forGString(J.MethodInvocation m) {
-                Expression e = m.getArguments().get(0);
+                Expression e = m.getArguments().getFirst();
                 if (!(e instanceof G.GString)) {
                     return m;
                 }
@@ -119,11 +121,11 @@ public class DependencyUseMapNotation extends Recipe {
                 // Supporting all possible GString interpolations is impossible
                 // Supporting all probable GString interpolations is difficult
                 // This focuses on the most common case: When only the version number is interpolated
-                if (g.getStrings().size() != 2 || !(g.getStrings().get(0) instanceof J.Literal)
+                if (g.getStrings().size() != 2 || !(g.getStrings().getFirst() instanceof J.Literal)
                         || !(g.getStrings().get(1) instanceof G.GString.Value)) {
                     return m;
                 }
-                J.Literal arg1 = (J.Literal)g.getStrings().get(0);
+                J.Literal arg1 = (J.Literal)g.getStrings().getFirst();
                 if (arg1.getType() != JavaType.Primitive.String || arg1.getValue() == null) {
                     return m;
                 }

@@ -74,7 +74,7 @@ public class ChangeDependencyArtifactId extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s:%s`", groupId, artifactId);
+        return "`%s:%s`".formatted(groupId, artifactId);
     }
 
     @Override
@@ -100,8 +100,8 @@ public class ChangeDependencyArtifactId extends Recipe {
                 G.CompilationUnit cu = (G.CompilationUnit) super.visitCompilationUnit(compilationUnit, ctx);
                 if(cu != compilationUnit) {
                     cu = cu.withMarkers(cu.getMarkers().withMarkers(ListUtils.map(cu.getMarkers().getMarkers(), m -> {
-                        if (m instanceof GradleProject) {
-                            return updateModel((GradleProject) m, updatedDependencies);
+                        if (m instanceof GradleProject project) {
+                            return updateModel(project, updatedDependencies);
                         }
                         return m;
                     })));
@@ -117,11 +117,11 @@ public class ChangeDependencyArtifactId extends Recipe {
                 }
 
                 List<Expression> depArgs = m.getArguments();
-                if (depArgs.get(0) instanceof J.Literal || depArgs.get(0) instanceof G.GString || depArgs.get(0) instanceof G.MapEntry) {
+                if (depArgs.getFirst() instanceof J.Literal || depArgs.getFirst() instanceof G.GString || depArgs.getFirst() instanceof G.MapEntry) {
                     m = updateDependency(m);
-                } else if (depArgs.get(0) instanceof J.MethodInvocation &&
-                           (((J.MethodInvocation) depArgs.get(0)).getSimpleName().equals("platform") ||
-                            ((J.MethodInvocation) depArgs.get(0)).getSimpleName().equals("enforcedPlatform"))) {
+                } else if (depArgs.getFirst() instanceof J.MethodInvocation &&
+                           (((J.MethodInvocation) depArgs.getFirst()).getSimpleName().equals("platform") ||
+                            ((J.MethodInvocation) depArgs.getFirst()).getSimpleName().equals("enforcedPlatform"))) {
                     m = m.withArguments(ListUtils.map(depArgs, platform -> updateDependency((J.MethodInvocation) platform)));
                 }
 
@@ -130,8 +130,8 @@ public class ChangeDependencyArtifactId extends Recipe {
 
             private J.MethodInvocation updateDependency(J.MethodInvocation m) {
                 List<Expression> depArgs = m.getArguments();
-                if (depArgs.get(0) instanceof J.Literal) {
-                    String gav = (String) ((J.Literal) depArgs.get(0)).getValue();
+                if (depArgs.getFirst() instanceof J.Literal) {
+                    String gav = (String) ((J.Literal) depArgs.getFirst()).getValue();
                     if (gav != null) {
                         Dependency dependency = DependencyStringNotationConverter.parse(gav);
                         if (dependency != null && !newArtifactId.equals(dependency.getArtifactId()) &&
@@ -142,11 +142,11 @@ public class ChangeDependencyArtifactId extends Recipe {
                             m = m.withArguments(ListUtils.mapFirst(m.getArguments(), arg -> ChangeStringLiteral.withStringValue((J.Literal) arg, newDependency.toStringNotation())));
                         }
                     }
-                } else if (depArgs.get(0) instanceof G.GString) {
-                    List<J> strings = ((G.GString) depArgs.get(0)).getStrings();
+                } else if (depArgs.getFirst() instanceof G.GString) {
+                    List<J> strings = ((G.GString) depArgs.getFirst()).getStrings();
                     if (strings.size() >= 2 &&
-                        strings.get(0) instanceof J.Literal) {
-                        Dependency dependency = DependencyStringNotationConverter.parse((String) requireNonNull(((J.Literal) strings.get(0)).getValue()));
+                        strings.getFirst() instanceof J.Literal) {
+                        Dependency dependency = DependencyStringNotationConverter.parse((String) requireNonNull(((J.Literal) strings.getFirst()).getValue()));
                         if (dependency != null && !newArtifactId.equals(dependency.getArtifactId())
                             && depMatcher.matches(dependency.getGroupId(), dependency.getArtifactId())) {
                             Dependency newDependency = dependency.withArtifactId(newArtifactId);
@@ -158,7 +158,7 @@ public class ChangeDependencyArtifactId extends Recipe {
                             }));
                         }
                     }
-                } else if (depArgs.get(0) instanceof G.MapEntry) {
+                } else if (depArgs.getFirst() instanceof G.MapEntry) {
                     G.MapEntry artifactEntry = null;
                     String groupId = null;
                     String artifactId = null;

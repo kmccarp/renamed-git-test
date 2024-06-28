@@ -49,8 +49,7 @@ public class SourceSpecTextBlockIndentation extends Recipe {
                 if (method.getMethodType() != null && TypeUtils.isOfClassType(method.getMethodType().getReturnType(),
                         "org.openrewrite.test.SourceSpecs")) {
                     return method.withArguments(ListUtils.map(method.getArguments(), argument -> {
-                        if (TypeUtils.isString(argument.getType()) && argument instanceof J.Literal) {
-                            J.Literal source = (J.Literal) argument;
+                        if (TypeUtils.isString(argument.getType()) && argument instanceof J.Literal source) {
                             if (source.getValueSource() != null && source.getValueSource().startsWith("\"\"\"") &&
                                 endTextBlockOnOwnLine.matcher(source.getValueSource()).find()) {
 

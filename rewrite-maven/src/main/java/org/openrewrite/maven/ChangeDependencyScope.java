@@ -47,8 +47,10 @@ public class ChangeDependencyScope extends Recipe {
      * If null, strips the scope from an existing dependency.
      */
     @Option(displayName = "New scope",
-            description = "Scope to apply to specified Maven dependency. " +
-                    "May be omitted, which indicates that no scope should be added and any existing scope be removed from the dependency.",
+            description = """
+                    Scope to apply to specified Maven dependency. \
+                    May be omitted, which indicates that no scope should be added and any existing scope be removed from the dependency.\
+                    """,
             valid = {"compile", "test", "runtime", "provided"},
             example = "compile",
             required = false)
@@ -62,7 +64,7 @@ public class ChangeDependencyScope extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("for `%s:%s` to `%s`", groupId, artifactId, newScope);
+        return "for `%s:%s` to `%s`".formatted(groupId, artifactId, newScope);
     }
 
     @Override

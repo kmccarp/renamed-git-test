@@ -70,7 +70,7 @@ public class ChangeDependencyClassifier extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s:%s` to `%s`", groupId, artifactId, newClassifier);
+        return "`%s:%s` to `%s`".formatted(groupId, artifactId, newClassifier);
     }
 
     @Override
@@ -97,8 +97,8 @@ public class ChangeDependencyClassifier extends Recipe {
                 }
 
                 List<Expression> depArgs = m.getArguments();
-                if (depArgs.get(0) instanceof J.Literal) {
-                    String gav = (String) ((J.Literal) depArgs.get(0)).getValue();
+                if (depArgs.getFirst() instanceof J.Literal) {
+                    String gav = (String) ((J.Literal) depArgs.getFirst()).getValue();
                     if (gav != null) {
                         Dependency dependency = DependencyStringNotationConverter.parse(gav);
                         if (dependency != null && dependency.getVersion() != null && !Objects.equals(newClassifier, dependency.getClassifier()) &&
@@ -107,7 +107,7 @@ public class ChangeDependencyClassifier extends Recipe {
                             m = m.withArguments(ListUtils.mapFirst(m.getArguments(), arg -> ChangeStringLiteral.withStringValue((J.Literal) arg, newDependency.toStringNotation())));
                         }
                     }
-                } else if (depArgs.get(0) instanceof G.MapEntry) {
+                } else if (depArgs.getFirst() instanceof G.MapEntry) {
                     G.MapEntry classifierEntry = null;
                     String groupId = null;
                     String artifactId = null;

@@ -48,9 +48,11 @@ public class ChangePluginDependencies extends Recipe {
     String artifactId;
 
     @Option(displayName = "Dependencies",
-            description = "Plugin dependencies provided as dependency coordinates of format \"groupId:artifactId:version\". " +
-                          "When supplying multiple coordinates separate them with \",\". " +
-                          "Supplying `null` will remove any existing plugin dependencies.",
+            description = """
+                          Plugin dependencies provided as dependency coordinates of format "groupId:artifactId:version". \
+                          When supplying multiple coordinates separate them with ",". \
+                          Supplying `null` will remove any existing plugin dependencies.\
+                          """,
             example = "org.openrewrite.recipe:rewrite-spring:1.0.0, org.openrewrite.recipe:rewrite-testing-frameworks:1.0.0",
             required = false)
     @Nullable
@@ -63,7 +65,7 @@ public class ChangePluginDependencies extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("for `%s:%s`", groupId, artifactId);
+        return "for `%s:%s`".formatted(groupId, artifactId);
     }
 
     @Override
@@ -103,7 +105,7 @@ public class ChangePluginDependencies extends Recipe {
                     if (maybePlugin.isPresent()) {
                         Xml.Tag plugin = maybePlugin.get();
                         if (dependencies == null) {
-                            plugins = filterChildren(plugins, plugin, child -> !(child instanceof Xml.Tag && "dependencies".equals(((Xml.Tag) child).getName())));
+                            plugins = filterChildren(plugins, plugin, child -> !(child instanceof Xml.Tag t && "dependencies".equals(t.getName())));
                         } else {
                             plugins = addOrUpdateChild(plugins, plugin, dependenciesTag, getCursor().getParentOrThrow());
                         }

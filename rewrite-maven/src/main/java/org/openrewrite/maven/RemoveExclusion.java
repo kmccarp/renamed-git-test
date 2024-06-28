@@ -70,7 +70,7 @@ public class RemoveExclusion extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s:%s`", exclusionGroupId, exclusionArtifactId);
+        return "`%s:%s`".formatted(exclusionGroupId, exclusionArtifactId);
     }
 
     @Override
@@ -88,12 +88,10 @@ public class RemoveExclusion extends Recipe {
                     if (maybeExclusions.isPresent()) {
                         //noinspection unchecked
                         return tag.withContent(ListUtils.map((List<Content>) tag.getContent(), child -> {
-                            if (child instanceof Xml.Tag && "exclusions".equals(((Xml.Tag) child).getName())) {
-                                Xml.Tag e = (Xml.Tag) child;
+                            if (child instanceof Xml.Tag e && "exclusions".equals(e.getName())) {
                                 if (e.getContent() != null) {
                                     e = e.withContent(ListUtils.map(e.getContent(), child2 -> {
-                                        if (child2 instanceof Xml.Tag && "exclusion".equals(((Xml.Tag) child2).getName())) {
-                                            Xml.Tag exclusion = (Xml.Tag) child2;
+                                        if (child2 instanceof Xml.Tag exclusion && "exclusion".equals(exclusion.getName())) {
                                             if (exclusion.getChildValue("groupId").map(g -> matchesGlob(g, exclusionGroupId)).orElse(false) &&
                                                 exclusion.getChildValue("artifactId").map(g -> matchesGlob(g, exclusionArtifactId)).orElse(false) &&
                                                 !(isEffectiveExclusion(tag, groupArtifact(exclusion)) && Boolean.TRUE.equals(onlyIneffective))) {

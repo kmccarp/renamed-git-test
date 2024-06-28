@@ -31,8 +31,8 @@ public class RemoteExecutionContextView extends DelegatingExecutionContext {
     }
 
     public static RemoteExecutionContextView view(ExecutionContext ctx) {
-        if (ctx instanceof RemoteExecutionContextView) {
-            return (RemoteExecutionContextView) ctx;
+        if (ctx instanceof RemoteExecutionContextView view) {
+            return view;
         }
         return new RemoteExecutionContextView(ctx);
     }

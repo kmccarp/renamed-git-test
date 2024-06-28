@@ -55,8 +55,10 @@ public class SelectRecipeExamples extends Recipe {
 
     @Override
     public String getDescription() {
-        return "Add `@DocumentExample` to the first non-issue and not a disabled unit test of a recipe as an example," +
-               " if there are not any examples yet.";
+        return """
+               Add `@DocumentExample` to the first non-issue and not a disabled unit test of a recipe as an example,\
+                if there are not any examples yet.\
+               """;
     }
 
     @Override
@@ -68,7 +70,7 @@ public class SelectRecipeExamples extends Recipe {
             public J.ClassDeclaration visitClassDeclaration(J.ClassDeclaration classDecl,
                                                             ExecutionContext ctx) {
                 if (classDecl.getImplements() != null && !classDecl.getImplements().isEmpty()) {
-                    if (!TypeUtils.isOfClassType(classDecl.getImplements().get(0).getType(), REWRITE_TEST_FQN)) {
+                    if (!TypeUtils.isOfClassType(classDecl.getImplements().getFirst().getType(), REWRITE_TEST_FQN)) {
                         return classDecl;
                     }
                 }
@@ -119,12 +121,10 @@ public class SelectRecipeExamples extends Recipe {
 
                             Expression arg = method.getArguments().get(argIndex);
 
-                            if (arg instanceof J.MethodInvocation) {
-
-                                J.MethodInvocation methodInvocation = (J.MethodInvocation) arg;
+                            if (arg instanceof J.MethodInvocation methodInvocation) {
                                 methodInvocation.getArguments();
                                 if (methodInvocation.getArguments().size() > 1) {
-                                    Expression arg0 = methodInvocation.getArguments().get(0);
+                                    Expression arg0 = methodInvocation.getArguments().getFirst();
                                     Expression arg1 = methodInvocation.getArguments().get(1);
 
                                     if (isStringLiteral(arg0) && isStringLiteral(arg1)) {
@@ -156,7 +156,7 @@ public class SelectRecipeExamples extends Recipe {
     }
 
     private static boolean isStringLiteral(Expression expression) {
-        return expression instanceof J.Literal && TypeUtils.isString(((J.Literal) expression).getType());
+        return expression instanceof J.Literal l && TypeUtils.isString(l.getType());
     }
 
 }

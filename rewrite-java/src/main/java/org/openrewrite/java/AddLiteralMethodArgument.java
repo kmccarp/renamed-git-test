@@ -72,7 +72,7 @@ public class AddLiteralMethodArgument extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("%d in methods `%s`", argumentIndex, methodPattern);
+        return "%d in methods `%s`".formatted(argumentIndex, methodPattern);
     }
 
     @Override
@@ -115,8 +115,8 @@ public class AddLiteralMethodArgument extends Recipe {
             if (methodMatcher.matches(m) && (long) originalArgs.size() >= argumentIndex) {
                 List<Expression> args = new ArrayList<>(originalArgs);
 
-                if (args.size() == 1 && args.get(0) instanceof J.Empty) {
-                    args.remove(0);
+                if (args.size() == 1 && args.getFirst() instanceof J.Empty) {
+                    args.removeFirst();
                 }
                 JavaType.Primitive primitive;
                 String valueSource;
@@ -139,8 +139,8 @@ public class AddLiteralMethodArgument extends Recipe {
                     m = m.withMethodType(methodType
                             .withParameterNames(ListUtils.insert(methodType.getParameterNames(), "arg" + argumentIndex, argumentIndex))
                             .withParameterTypes(ListUtils.insert(methodType.getParameterTypes(), primitive, argumentIndex)));
-                    if (m instanceof J.MethodInvocation && ((J.MethodInvocation) m).getName().getType() != null) {
-                        m = ((J.MethodInvocation) m).withName(((J.MethodInvocation) m).getName().withType(m.getMethodType()));
+                    if (m instanceof J.MethodInvocation invocation && invocation.getName().getType() != null) {
+                        m = invocation.withName(invocation.getName().withType(m.getMethodType()));
                     }
                 }
             }

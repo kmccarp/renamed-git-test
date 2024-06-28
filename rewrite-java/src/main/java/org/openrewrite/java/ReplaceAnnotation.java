@@ -39,10 +39,12 @@ public class ReplaceAnnotation extends Recipe {
     String annotationTemplateToInsert;
 
     @Option(displayName = "Classpath resource",
-            description = "If the annotation's type is defined by a jar within the META-INF/rewrite/classpath directory provide its name here " +
-                    "so that it can be loaded. " +
-                    "When this parameter is not passed the runtime classpath of the recipe is provided to the parser producing the new annotation. " +
-                    "This is necessary when the annotation is not on the runtime classpath of the recipe and isn't in the Java standard library.",
+            description = """
+                    If the annotation's type is defined by a jar within the META-INF/rewrite/classpath directory provide its name here \
+                    so that it can be loaded. \
+                    When this parameter is not passed the runtime classpath of the recipe is provided to the parser producing the new annotation. \
+                    This is necessary when the annotation is not on the runtime classpath of the recipe and isn't in the Java standard library.\
+                    """,
             example = "annotations",
             required = false)
     @Nullable
@@ -55,8 +57,10 @@ public class ReplaceAnnotation extends Recipe {
 
     @Override
     public String getDescription() {
-        return "Replace an Annotation with another one if the annotation pattern matches. " +
-               "Only fixed parameters can be set in the replacement.";
+        return """
+               Replace an Annotation with another one if the annotation pattern matches. \
+               Only fixed parameters can be set in the replacement.\
+               """;
     }
 
     @Override

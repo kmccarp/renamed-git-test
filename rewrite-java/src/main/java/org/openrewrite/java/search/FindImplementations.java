@@ -41,9 +41,11 @@ public class FindImplementations extends Recipe {
 
     @Override
     public String getDescription() {
-        return "Find class declarations which implement the specified type. " +
-               "If the specified type is a class, its subclasses will be matched. " +
-               "If the specified type is an interface, classes which implement it will be matched.";
+        return """
+               Find class declarations which implement the specified type. \
+               If the specified type is a class, its subclasses will be matched. \
+               If the specified type is an interface, classes which implement it will be matched.\
+               """;
     }
 
     @Override

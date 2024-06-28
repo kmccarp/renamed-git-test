@@ -56,8 +56,7 @@ class GroovyTypeMapping implements JavaTypeMapping<ASTNode> {
         }
 
         try {
-            if (type instanceof ClassNode) {
-                ClassNode clazz = (ClassNode) type;
+            if (type instanceof ClassNode clazz) {
                 if (clazz.isArray()) {
                     return arrayType(clazz, signature);
                 } else if (ClassHelper.isPrimitiveType(clazz)) {
@@ -66,15 +65,15 @@ class GroovyTypeMapping implements JavaTypeMapping<ASTNode> {
                 } else if (clazz.isUsingGenerics() && clazz.getGenericsTypes() != null) {
                     return parameterizedType(clazz, signature);
                 }
-                return classType((ClassNode) type, signature);
-            } else if (type instanceof GenericsType) {
-                return genericType((GenericsType) type, signature);
-            } else if (type instanceof MethodNode) {
+                return classType(clazz, signature);
+            } else if (type instanceof GenericsType genericsType) {
+                return genericType(genericsType, signature);
+            } else if (type instanceof MethodNode node) {
                 //noinspection ConstantConditions
-                return methodType((MethodNode) type);
-            } else if (type instanceof FieldNode) {
+                return methodType(node);
+            } else if (type instanceof FieldNode node) {
                 //noinspection ConstantConditions
-                return variableType((FieldNode) type);
+                return variableType(node);
             }
         } catch (NoClassDefFoundError e) {
             // e.getMessage() returns fully qualified name of type that couldn't be found on the classpath
@@ -87,7 +86,7 @@ class GroovyTypeMapping implements JavaTypeMapping<ASTNode> {
     private JavaType.FullyQualified classType(ClassNode node, String signature) {
         try {
             JavaType type = reflectionTypeMapping.type(node.getTypeClass());
-            return (JavaType.FullyQualified) (type instanceof JavaType.Parameterized ? ((JavaType.Parameterized) type).getType() : type);
+            return (JavaType.FullyQualified) (type instanceof JavaType.Parameterized p ? p.getType() : type);
         } catch (GroovyBugError | NoClassDefFoundError ignored1) {
             JavaType.Class clazz;
             clazz = new JavaType.Class(null, Flag.Public.getBitMask(), node.getName(), JavaType.Class.Kind.Class,

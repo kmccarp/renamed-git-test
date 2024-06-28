@@ -45,8 +45,7 @@ public class DeclaresMethod<P> extends JavaIsoVisitor<P> {
 
     @Override
     public J visit(@Nullable Tree tree, P p) {
-        if (tree instanceof JavaSourceFile) {
-            JavaSourceFile cu = (JavaSourceFile) tree;
+        if (tree instanceof JavaSourceFile cu) {
             for (JavaType.Method method : cu.getTypesInUse().getDeclaredMethods()) {
                 if (methodMatcher.matches(method)) {
                     return SearchResult.found(cu);

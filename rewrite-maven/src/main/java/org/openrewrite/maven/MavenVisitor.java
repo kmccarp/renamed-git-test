@@ -65,8 +65,10 @@ public class MavenVisitor<P> extends XmlVisitor<P> {
             Xml.Document newDocument = (Xml.Document) itr.next();
             if(document != null && document != newDocument) {
                 throw new IllegalStateException(
-                        "The same MavenVisitor instance has been used on two different XML documents. " +
-                        "This violates the Recipe contract that they will return a unique visitor instance every time getVisitor() is called.");
+                        """
+                        The same MavenVisitor instance has been used on two different XML documents. \
+                        This violates the Recipe contract that they will return a unique visitor instance every time getVisitor() is called.\
+                        """);
             }
             document = newDocument;
         }

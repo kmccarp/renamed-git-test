@@ -152,8 +152,7 @@ public class GitProvenance implements Marker {
     @Nullable
     public static GitProvenance fromProjectDirectory(Path projectDir, @Nullable BuildEnvironment environment) {
         if (environment != null) {
-            if (environment instanceof JenkinsBuildEnvironment) {
-                JenkinsBuildEnvironment jenkinsBuildEnvironment = (JenkinsBuildEnvironment) environment;
+            if (environment instanceof JenkinsBuildEnvironment jenkinsBuildEnvironment) {
                 try (Repository repository = new RepositoryBuilder().findGitDir(projectDir.toFile()).build()) {
                     String branch = jenkinsBuildEnvironment.getLocalBranch() != null
                             ? jenkinsBuildEnvironment.getLocalBranch()

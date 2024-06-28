@@ -100,8 +100,8 @@ public class CreatePropertiesFile extends ScanningRecipe<AtomicBoolean> {
                             .findFirst();
                     if (sourceFiles.isPresent()) {
                         SourceFile sourceFile = sourceFiles.get();
-                        if (sourceFile instanceof Properties.File) {
-                            return file.withContent(((Properties.File) sourceFile).getContent());
+                        if (sourceFile instanceof Properties.File file1) {
+                            return file.withContent(file1.getContent());
                         }
                     }
                 }

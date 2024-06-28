@@ -57,8 +57,8 @@ public class Environment {
             recipes.addAll(r.listRecipes());
         }
         for (Recipe recipe : dependencyRecipes) {
-            if (recipe instanceof DeclarativeRecipe) {
-                ((DeclarativeRecipe) recipe).initialize(dependencyRecipes, recipeToContributors);
+            if (recipe instanceof DeclarativeRecipe declarativeRecipe) {
+                declarativeRecipe.initialize(dependencyRecipes, recipeToContributors);
             }
         }
         for (Recipe recipe : recipes) {
@@ -68,11 +68,11 @@ public class Environment {
                 recipe.setExamples(recipeExamples.get(recipe.getName()));
             }
 
-            if (recipe instanceof DeclarativeRecipe) {
+            if (recipe instanceof DeclarativeRecipe declarativeRecipe) {
                 List<Recipe> availableRecipes = new ArrayList<>();
                 availableRecipes.addAll(dependencyRecipes);
                 availableRecipes.addAll(recipes);
-                ((DeclarativeRecipe) recipe).initialize(availableRecipes, recipeToContributors);
+                declarativeRecipe.initialize(availableRecipes, recipeToContributors);
             }
         }
         return recipes;
@@ -91,8 +91,7 @@ public class Environment {
             if (r instanceof YamlResourceLoader) {
                 recipeToContributors.putAll(r.listContributors());
                 recipeToExamples.putAll(r.listRecipeExamples());
-            } else if (r instanceof ClasspathScanningLoader) {
-                ClasspathScanningLoader classpathScanningLoader = (ClasspathScanningLoader) r;
+            } else if (r instanceof ClasspathScanningLoader classpathScanningLoader) {
 
                 Map<String, List<Contributor>> contributors = classpathScanningLoader.listContributors();
                 for (String key : contributors.keySet()) {
@@ -116,8 +115,8 @@ public class Environment {
 
         List<RecipeDescriptor> result = new ArrayList<>();
         for (ResourceLoader r : resourceLoaders) {
-            if (r instanceof YamlResourceLoader) {
-                result.addAll((((YamlResourceLoader) r).listRecipeDescriptors(emptyList(), recipeToContributors, recipeToExamples)));
+            if (r instanceof YamlResourceLoader loader) {
+                result.addAll((loader.listRecipeDescriptors(emptyList(), recipeToContributors, recipeToExamples)));
             } else {
                 Collection<RecipeDescriptor> descriptors = r.listRecipeDescriptors();
                 for (RecipeDescriptor descriptor : descriptors) {
@@ -155,7 +154,7 @@ public class Environment {
                             .min(comparingInt(a -> StringUtils.getLevenshteinDistance(a, r)))
                             .orElse(r))
                     .collect(toList());
-            String message = String.format("Recipes not found: %s\nDid you mean: %s",
+            String message = "Recipes not found: %s\nDid you mean: %s".formatted(
                     String.join(", ", recipesNotFound),
                     String.join(", ", suggestions));
             throw new RecipeException(message);

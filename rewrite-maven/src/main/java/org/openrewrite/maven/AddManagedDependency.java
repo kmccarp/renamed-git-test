@@ -82,8 +82,10 @@ public class AddManagedDependency extends ScanningRecipe<AddManagedDependency.Sc
     String classifier;
 
     @Option(displayName = "Version pattern",
-            description = "Allows version selection to be extended beyond the original Node Semver semantics. So for example," +
-                          "Setting 'version' to \"25-29\" can be paired with a metadata pattern of \"-jre\" to select 29.0-jre",
+            description = """
+                          Allows version selection to be extended beyond the original Node Semver semantics. So for example,\
+                          Setting 'version' to "25-29" can be paired with a metadata pattern of "-jre" to select 29.0-jre\
+                          """,
             example = "-jre",
             required = false)
     @Nullable
@@ -134,7 +136,7 @@ public class AddManagedDependency extends ScanningRecipe<AddManagedDependency.Sc
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s:%s:%s`", groupId, artifactId, version);
+        return "`%s:%s:%s`".formatted(groupId, artifactId, version);
     }
 
     @Override

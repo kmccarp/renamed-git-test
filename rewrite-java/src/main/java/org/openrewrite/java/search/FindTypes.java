@@ -37,8 +37,10 @@ import java.util.regex.Pattern;
 public class FindTypes extends Recipe {
 
     @Option(displayName = "Fully-qualified type name",
-            description = "A fully-qualified type name, that is used to find matching type references. " +
-                          "Supports glob expressions. `java..*` finds every type from every subpackage of the `java` package.",
+            description = """
+                          A fully-qualified type name, that is used to find matching type references. \
+                          Supports glob expressions. `java..*` finds every type from every subpackage of the `java` package.\
+                          """,
             example = "java.util.List")
     String fullyQualifiedTypeName;
 

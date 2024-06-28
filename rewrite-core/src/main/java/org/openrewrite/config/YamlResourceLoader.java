@@ -285,8 +285,7 @@ public class YamlResourceLoader implements ResourceLoader {
                     Consumer<String> addLazyLoadRecipe,
                     Consumer<Recipe> addRecipe,
                     Consumer<Validated<Object>> addValidation) {
-        if (recipeData instanceof String) {
-            String recipeName = (String) recipeData;
+        if (recipeData instanceof String recipeName) {
             try {
                 // first try an explicitly-declared zero-arg constructor
                 addRecipe.accept((Recipe) Class.forName(recipeName, true,
@@ -428,8 +427,7 @@ public class YamlResourceLoader implements ResourceLoader {
                     if (styleConfigs != null) {
                         for (int i = 0; i < styleConfigs.size(); i++) {
                             Object next = styleConfigs.get(i);
-                            if (next instanceof String) {
-                                String styleClassName = (String) next;
+                            if (next instanceof String styleClassName) {
                                 try {
                                     styles.add((Style) Class.forName(styleClassName)
                                             .getDeclaredConstructor()

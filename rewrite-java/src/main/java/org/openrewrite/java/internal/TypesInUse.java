@@ -68,7 +68,7 @@ public class TypesInUse {
             if (parent instanceof J.ClassDeclaration) {
                 // skip type of class
                 return identifier;
-            } else if (parent instanceof J.MethodDeclaration && ((J.MethodDeclaration) parent).getName() == identifier) {
+            } else if (parent instanceof J.MethodDeclaration declaration && declaration.getName() == identifier) {
                 // skip method name
                 return identifier;
             }
@@ -79,13 +79,13 @@ public class TypesInUse {
         public @Nullable JavaType visitType(@Nullable JavaType javaType, Integer p) {
             if (javaType != null && !(javaType instanceof JavaType.Unknown)) {
                 Cursor cursor = getCursor();
-                if (javaType instanceof JavaType.Variable) {
-                    variables.add((JavaType.Variable) javaType);
-                } else if (javaType instanceof JavaType.Method) {
+                if (javaType instanceof JavaType.Variable variable) {
+                    variables.add(variable);
+                } else if (javaType instanceof JavaType.Method method) {
                     if (cursor.getValue() instanceof J.MethodDeclaration) {
-                        declaredMethods.add((JavaType.Method) javaType);
+                        declaredMethods.add(method);
                     } else {
-                        usedMethods.add((JavaType.Method) javaType);
+                        usedMethods.add(method);
                     }
                 } else if (!(cursor.getValue() instanceof J.ClassDeclaration) && !(cursor.getValue() instanceof J.Lambda)) {
                     // ignore type representing class declaration itself and inferred lambda types

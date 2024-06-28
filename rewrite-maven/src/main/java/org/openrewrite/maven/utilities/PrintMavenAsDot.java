@@ -47,7 +47,7 @@ public class PrintMavenAsDot extends Recipe {
             @Override
             public Xml.Document visitDocument(Xml.Document document, ExecutionContext ctx) {
                 MavenResolutionResult mrr = getResolutionResult();
-                if (!document.getMarkers().findFirst(SearchResult.class).isPresent()) {
+                if (document.getMarkers().findFirst(SearchResult.class).isEmpty()) {
                     return document.withMarkers(document.getMarkers().add(new SearchResult(Tree.randomId(), dot(mrr))));
                 }
                 return super.visitDocument(document, ctx);

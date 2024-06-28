@@ -27,9 +27,11 @@ public class RandomizeId extends Recipe {
 
     @Override
     public String getDescription() {
-        return "Scramble the IDs. This was intended as a utility to test _en masse_ " +
-                "different techniques for UUID generation and compare their relative performance " +
-                "outside a microbenchmark.";
+        return """
+                Scramble the IDs. This was intended as a utility to test _en masse_ \
+                different techniques for UUID generation and compare their relative performance \
+                outside a microbenchmark.\
+                """;
     }
 
     @Override

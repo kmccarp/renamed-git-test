@@ -46,8 +46,8 @@ public class PlainTextParser implements Parser {
      * Otherwise, a new {@link PlainText} instance with the same contents as the source file.
      */
     public static PlainText convert(SourceFile sourceFile) {
-        if (sourceFile instanceof PlainText) {
-            return (PlainText) sourceFile;
+        if (sourceFile instanceof PlainText text) {
+            return text;
         }
         PlainText text = PlainTextParser.builder().build()
                 .parse(sourceFile.printAll())

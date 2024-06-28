@@ -36,9 +36,9 @@ class JavaTemplateTest2Test implements RewriteTest {
         @Override
         public J visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {
             J mi = super.visitMethodInvocation(method, ctx);
-            if (mi instanceof J.MethodInvocation && toString.matches((J.MethodInvocation) mi)) {
-                return JavaTemplate.apply("#{any(java.lang.String)}", getCursor(), ((J.MethodInvocation) mi).getCoordinates().replace(),
-                  ((J.MethodInvocation) mi).getSelect());
+            if (mi instanceof J.MethodInvocation invocation && toString.matches(invocation)) {
+                return JavaTemplate.apply("#{any(java.lang.String)}", getCursor(), invocation.getCoordinates().replace(),
+                  invocation.getSelect());
             }
             return mi;
         }
@@ -190,7 +190,7 @@ class JavaTemplateTest2Test implements RewriteTest {
                       return JavaTemplate.builder("createBis(#{anyArray()})")
                         .contextSensitive()
                         .build()
-                        .apply(getCursor(), newClass.getCoordinates().replace(), newClass.getArguments().get(0));
+                        .apply(getCursor(), newClass.getCoordinates().replace(), newClass.getArguments().getFirst());
                   }
                   return newClass;
               }

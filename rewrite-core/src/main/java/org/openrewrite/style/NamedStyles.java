@@ -87,7 +87,7 @@ public class NamedStyles implements Marker {
         if (styles.isEmpty()) {
             return null;
         } else if (styles.size() == 1) {
-            return styles.get(0);
+            return styles.getFirst();
         }
         Set<Class<? extends Style>> styleClasses = new HashSet<>();
         for (NamedStyles namedStyles : styles) {

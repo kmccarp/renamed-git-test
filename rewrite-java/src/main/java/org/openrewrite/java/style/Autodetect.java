@@ -332,12 +332,12 @@ public class Autodetect extends NamedStyles {
         public J.MethodDeclaration visitMethodDeclaration(J.MethodDeclaration method, IndentStatistics stats) {
             if (method.getParameters().size() > 1) {
                 int alignTo;
-                if (method.getParameters().get(0).getPrefix().getLastWhitespace().contains("\n")) {
+                if (method.getParameters().getFirst().getPrefix().getLastWhitespace().contains("\n")) {
                     // Compare to the prefix of the first arg.
-                    alignTo = method.getParameters().get(0).getPrefix().getLastWhitespace().length() - 1;
+                    alignTo = method.getParameters().getFirst().getPrefix().getLastWhitespace().length() - 1;
                 } else {
                     String source = method.print(getCursor().getParentOrThrow());
-                    alignTo = source.indexOf(method.getParameters().get(0).print(getCursor())) - 1;
+                    alignTo = source.indexOf(method.getParameters().getFirst().print(getCursor())) - 1;
                 }
                 List<Statement> parameters = method.getParameters();
                 for (int i = 1; i < parameters.size(); i++) {
@@ -363,13 +363,13 @@ public class Autodetect extends NamedStyles {
         public J.Block visitBlock(J.Block block, IndentStatistics stats) {
             stats.incrementDepth();
             for (Statement s : block.getStatements()) {
-                if (s instanceof Expression) {
+                if (s instanceof Expression expression) {
                     // Some statement types, like method invocations, are also expressions
                     // If an expression appears in a context where statements are expected, its indent is not a continuation
                     Set<Expression> statementExpressions = getCursor()
                             .getMessage("STATEMENT_EXPRESSION", Collections.newSetFromMap(
                                     new IdentityHashMap<>(block.getStatements().size())));
-                    statementExpressions.add((Expression) s);
+                    statementExpressions.add(expression);
                     getCursor().putMessage("STATEMENT_EXPRESSION", statementExpressions);
                 }
                 visit(s, stats);
@@ -879,9 +879,9 @@ public class Autodetect extends NamedStyles {
                 Set<ImportLayoutStatistics.Block> blocks = new LinkedHashSet<>();
 
                 importLayoutStatistics.staticAtBotCount += (imports.size() > 0 &&
-                                                            imports.get(imports.size() - 1).isStatic()) ? 1 : 0;
+                                                            imports.getLast().isStatic()) ? 1 : 0;
                 importLayoutStatistics.staticAtTopCount += (imports.size() > 0 &&
-                                                            imports.get(0).isStatic()) ? 1 : 0;
+                                                            imports.getFirst().isStatic()) ? 1 : 0;
 
                 boolean staticBlock = false;
                 int blockStart = 0;
@@ -974,8 +974,7 @@ public class Autodetect extends NamedStyles {
                     } else {
                         Set<String> fqns = new HashSet<>();
                         for (JavaType type : cu.getTypesInUse().getTypesInUse()) {
-                            if (type instanceof JavaType.FullyQualified) {
-                                JavaType.FullyQualified fq = (JavaType.FullyQualified) type;
+                            if (type instanceof JavaType.FullyQualified fq) {
                                 if (anImport.getPackageName().equals(fq.getPackageName())) {
                                     // don't count directly, as JavaType.Parameterized can
                                     // CONTAIN a FullyQualified that matches a raw FullyQualified
@@ -1162,7 +1161,7 @@ public class Autodetect extends NamedStyles {
             List<Expression> arguments = method.getArguments();
             if (arguments.size() > 1) {
                 List<JRightPadded<Expression>> paddedArguments = method.getPadding().getArguments().getPadding().getElements();
-                stats.withinMethodCallParentheses += hasSpace(paddedArguments.get(0).getElement().getPrefix());
+                stats.withinMethodCallParentheses += hasSpace(paddedArguments.getFirst().getElement().getPrefix());
                 stats.withinMethodCallParentheses += hasSpace(paddedArguments.get(method.getArguments().size() - 1).getAfter());
                 for (int i = 0; i < paddedArguments.size() - 1; i++) {
                     JRightPadded<Expression> elem = paddedArguments.get(i);
@@ -1198,7 +1197,7 @@ public class Autodetect extends NamedStyles {
             List<Expression> arguments = newClass.getArguments();
             if (arguments.size() > 1) {
                 List<JRightPadded<Expression>> paddedArguments = newClass.getPadding().getArguments().getPadding().getElements();
-                stats.withinMethodCallParentheses += hasSpace(paddedArguments.get(0).getElement().getPrefix());
+                stats.withinMethodCallParentheses += hasSpace(paddedArguments.getFirst().getElement().getPrefix());
                 stats.withinMethodCallParentheses += hasSpace(paddedArguments.get(newClass.getArguments().size() - 1).getAfter());
                 for (int i = 0; i < paddedArguments.size() - 1; i++) {
                     JRightPadded<Expression> elem = paddedArguments.get(i);

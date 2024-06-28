@@ -134,8 +134,8 @@ public class Autodetect extends NamedStyles {
     private static class FindLineFormatJavaVisitor extends XmlVisitor<GeneralFormatStatistics> {
         @Override
         public @Nullable Xml visit(@Nullable Tree tree, GeneralFormatStatistics stats) {
-            if (tree instanceof Xml) {
-                String prefix = ((Xml) tree).getPrefix();
+            if (tree instanceof Xml xml) {
+                String prefix = xml.getPrefix();
                 char[] chars = prefix.toCharArray();
 
                 for (int i = 0; i < chars.length; i++) {

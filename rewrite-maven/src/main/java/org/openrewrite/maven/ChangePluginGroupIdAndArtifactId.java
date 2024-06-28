@@ -65,7 +65,7 @@ public class ChangePluginGroupIdAndArtifactId extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s:%s`", newGroupId, newArtifact);
+        return "`%s:%s`".formatted(newGroupId, newArtifact);
     }
 
     @Override

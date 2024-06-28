@@ -78,8 +78,7 @@ public class YamlParser implements org.openrewrite.Parser {
                     }
                 })
                 .map(sourceFile -> {
-                    if (sourceFile instanceof Yaml.Documents) {
-                        Yaml.Documents docs = (Yaml.Documents) sourceFile;
+                    if (sourceFile instanceof Yaml.Documents docs) {
                         // ensure there is always at least one Document, even in an empty yaml file
                         if (docs.getDocuments().isEmpty()) {
                             return docs.withDocuments(singletonList(new Yaml.Document(randomId(), "", Markers.EMPTY,
@@ -256,10 +255,7 @@ public class YamlParser implements org.openrewrite.Parser {
                         }
                         Yaml.Scalar finalScalar = new Yaml.Scalar(randomId(), fmt, Markers.EMPTY, style, anchor, scalarValue);
                         BlockBuilder builder = blockStack.isEmpty() ? null : blockStack.peek();
-                        if (builder instanceof SequenceBuilder) {
-                            // Inline sequences like [1, 2] need to keep track of any whitespace between the element
-                            // and its trailing comma.
-                            SequenceBuilder sequenceBuilder = (SequenceBuilder) builder;
+                        if (builder instanceof SequenceBuilder sequenceBuilder) {
                             String betweenEvents = reader.readStringFromBuffer(event.getEndMark().getIndex(), parser.peekEvent().getStartMark().getIndex() - 1);
                             int commaIndex = commentAwareIndexOf(',', betweenEvents);
                             String commaPrefix = null;
@@ -283,8 +279,7 @@ public class YamlParser implements org.openrewrite.Parser {
                     case SequenceEnd:
                     case MappingEnd: {
                         Yaml.Block mappingOrSequence = blockStack.pop().build();
-                        if (mappingOrSequence instanceof Yaml.Sequence) {
-                            Yaml.Sequence seq = (Yaml.Sequence) mappingOrSequence;
+                        if (mappingOrSequence instanceof Yaml.Sequence seq) {
                             if (seq.getOpeningBracketPrefix() != null) {
                                 String s = reader.readStringFromBuffer(lastEnd, event.getStartMark().getIndex());
                                 int closingBracketIndex = commentAwareIndexOf(']', s);
@@ -292,8 +287,7 @@ public class YamlParser implements org.openrewrite.Parser {
                                 mappingOrSequence = seq.withClosingBracketPrefix(s.substring(0, closingBracketIndex));
                             }
                         }
-                        if (mappingOrSequence instanceof Yaml.Mapping) {
-                            Yaml.Mapping map = (Yaml.Mapping) mappingOrSequence;
+                        if (mappingOrSequence instanceof Yaml.Mapping map) {
                             if (map.getOpeningBracePrefix() != null) {
                                 String s = reader.readStringFromBuffer(lastEnd, event.getStartMark().getIndex());
                                 int closingBraceIndex = commentAwareIndexOf('}', s);
@@ -469,10 +463,10 @@ public class YamlParser implements org.openrewrite.Parser {
 
         @Override
         public void push(Yaml.Block block) {
-            if (key == null && block instanceof Yaml.Scalar) {
-                key = (Yaml.Scalar) block;
-            } else if (key == null && block instanceof Yaml.Alias) {
-                key = (Yaml.Alias) block;
+            if (key == null && block instanceof Yaml.Scalar scalar) {
+                key = scalar;
+            } else if (key == null && block instanceof Yaml.Alias alias) {
+                key = alias;
             } else {
                 String keySuffix = block.getPrefix();
                 block = block.withPrefix(keySuffix.substring(commentAwareIndexOf(':', keySuffix) + 1));
@@ -598,8 +592,7 @@ public class YamlParser implements org.openrewrite.Parser {
         return (Yaml.Documents) new YamlIsoVisitor<Integer>() {
             @Override
             public Yaml.Sequence visitSequence(Yaml.Sequence sequence, Integer p) {
-                if (sequence instanceof SequenceWithPrefix) {
-                    SequenceWithPrefix sequenceWithPrefix = (SequenceWithPrefix) sequence;
+                if (sequence instanceof SequenceWithPrefix sequenceWithPrefix) {
                     return super.visitSequence(
                             new Yaml.Sequence(
                                     sequenceWithPrefix.getId(),
@@ -615,8 +608,7 @@ public class YamlParser implements org.openrewrite.Parser {
 
             @Override
             public Yaml.Mapping visitMapping(Yaml.Mapping mapping, Integer p) {
-                if (mapping instanceof MappingWithPrefix) {
-                    MappingWithPrefix mappingWithPrefix = (MappingWithPrefix) mapping;
+                if (mapping instanceof MappingWithPrefix mappingWithPrefix) {
                     return super.visitMapping(new Yaml.Mapping(mappingWithPrefix.getId(),
                             mappingWithPrefix.getMarkers(), mappingWithPrefix.getOpeningBracePrefix(), mappingWithPrefix.getEntries(), null, mappingWithPrefix.getAnchor()), p);
                 }

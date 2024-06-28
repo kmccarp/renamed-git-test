@@ -47,7 +47,7 @@ public class RenamePropertyKey extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s` to `%s`", oldKey, newKey);
+        return "`%s` to `%s`".formatted(oldKey, newKey);
     }
 
     @Override

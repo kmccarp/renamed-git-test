@@ -53,8 +53,8 @@ public class Assertions {
     }
 
     public static SourceFile validateTypes(SourceFile source, TypeValidation typeValidation) {
-        if (source instanceof JavaSourceFile) {
-            assertValidTypes(typeValidation, (JavaSourceFile) source);
+        if (source instanceof JavaSourceFile file) {
+            assertValidTypes(typeValidation, file);
         }
         return source;
     }
@@ -203,7 +203,7 @@ public class Assertions {
             for (int i = 0; i < sourceFiles.size(); i++) {
                 SourceFile sourceFile = sourceFiles.get(i);
                 Optional<JavaSourceSet> maybeCurrentSourceSet = sourceFile.getMarkers().findFirst(JavaSourceSet.class);
-                if (!maybeCurrentSourceSet.isPresent() || !maybeCurrentSourceSet.get().getName().equals(sourceSetName)) {
+                if (maybeCurrentSourceSet.isEmpty() || !maybeCurrentSourceSet.get().getName().equals(sourceSetName)) {
                     continue;
                 }
 

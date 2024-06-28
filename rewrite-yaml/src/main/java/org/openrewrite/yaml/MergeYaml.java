@@ -68,7 +68,7 @@ public class MergeYaml extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("at `%s`", key);
+        return "at `%s`".formatted(key);
     }
 
     @Override

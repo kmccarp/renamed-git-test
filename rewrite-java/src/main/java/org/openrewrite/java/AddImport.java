@@ -99,8 +99,7 @@ public class AddImport<P> extends JavaIsoVisitor<P> {
     public @Nullable J preVisit(J tree, P p) {
         stopAfterPreVisit();
         J j = tree;
-        if (tree instanceof JavaSourceFile) {
-            JavaSourceFile cu = (JavaSourceFile) tree;
+        if (tree instanceof JavaSourceFile cu) {
             if (packageName == null || JavaType.Primitive.fromKeyword(fullyQualifiedName) != null) {
                 return cu;
             }
@@ -142,7 +141,7 @@ public class AddImport<P> extends JavaIsoVisitor<P> {
                 if (cu.getPackageDeclaration() == null) {
                     // leave javadocs on the class and move other comments up to the import
                     // (which could include license headers and the like)
-                    Space firstClassPrefix = cu.getClasses().get(0).getPrefix();
+                    Space firstClassPrefix = cu.getClasses().getFirst().getPrefix();
                     importToAdd = importToAdd.withPrefix(firstClassPrefix
                             .withComments(ListUtils.map(firstClassPrefix.getComments(), comment -> comment instanceof Javadoc ? null : comment))
                             .withWhitespace(""));
@@ -192,8 +191,8 @@ public class AddImport<P> extends JavaIsoVisitor<P> {
 
     private boolean isTypeReference(NameTree t) {
         boolean isTypRef = true;
-        if (t instanceof J.FieldAccess) {
-            isTypRef = isOfClassType(((J.FieldAccess) t).getTarget().getType(), fullyQualifiedName);
+        if (t instanceof J.FieldAccess access) {
+            isTypRef = isOfClassType(access.getTarget().getType(), fullyQualifiedName);
         }
         return isTypRef;
     }
@@ -223,8 +222,7 @@ public class AddImport<P> extends JavaIsoVisitor<P> {
 
         // For static method imports, we are either looking for a specific method or a wildcard.
         for (J invocation : FindMethods.find(compilationUnit, fullyQualifiedName + " *(..)")) {
-            if (invocation instanceof J.MethodInvocation) {
-                J.MethodInvocation mi = (J.MethodInvocation) invocation;
+            if (invocation instanceof J.MethodInvocation mi) {
                 if (mi.getSelect() == null &&
                     ("*".equals(member) || mi.getName().getSimpleName().equals(member))) {
                     return true;

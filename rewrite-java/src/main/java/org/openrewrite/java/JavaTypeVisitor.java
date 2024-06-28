@@ -69,24 +69,24 @@ public class JavaTypeVisitor<P> {
             cursor = new Cursor(cursor, javaType);
             javaType = preVisit(javaType, p);
 
-            if (javaType instanceof JavaType.Array) {
-                javaType = visitArray((JavaType.Array) javaType, p);
-            } else if (javaType instanceof JavaType.Class) {
-                javaType = visitClass((JavaType.Class) javaType, p);
-            } else if (javaType instanceof JavaType.GenericTypeVariable) {
-                javaType = visitGenericTypeVariable((JavaType.GenericTypeVariable) javaType, p);
-            } else if (javaType instanceof JavaType.Intersection) {
-                javaType = visitIntersection((JavaType.Intersection) javaType, p);
-            } else if (javaType instanceof JavaType.MultiCatch) {
-                javaType = visitMultiCatch((JavaType.MultiCatch) javaType, p);
-            } else if (javaType instanceof JavaType.Parameterized) {
-                javaType = visitParameterized((JavaType.Parameterized) javaType, p);
-            } else if (javaType instanceof JavaType.Primitive) {
-                javaType = visitPrimitive((JavaType.Primitive) javaType, p);
-            } else if (javaType instanceof JavaType.Method) {
-                javaType = visitMethod((JavaType.Method) javaType, p);
-            } else if (javaType instanceof JavaType.Variable) {
-                javaType = visitVariable((JavaType.Variable) javaType, p);
+            if (javaType instanceof JavaType.Array array) {
+                javaType = visitArray(array, p);
+            } else if (javaType instanceof JavaType.Class class1) {
+                javaType = visitClass(class1, p);
+            } else if (javaType instanceof JavaType.GenericTypeVariable variable) {
+                javaType = visitGenericTypeVariable(variable, p);
+            } else if (javaType instanceof JavaType.Intersection intersection) {
+                javaType = visitIntersection(intersection, p);
+            } else if (javaType instanceof JavaType.MultiCatch catch1) {
+                javaType = visitMultiCatch(catch1, p);
+            } else if (javaType instanceof JavaType.Parameterized parameterized) {
+                javaType = visitParameterized(parameterized, p);
+            } else if (javaType instanceof JavaType.Primitive primitive) {
+                javaType = visitPrimitive(primitive, p);
+            } else if (javaType instanceof JavaType.Method method) {
+                javaType = visitMethod(method, p);
+            } else if (javaType instanceof JavaType.Variable variable) {
+                javaType = visitVariable(variable, p);
             }
 
             if (javaType != null) {

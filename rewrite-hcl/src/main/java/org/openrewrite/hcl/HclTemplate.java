@@ -126,7 +126,7 @@ public class HclTemplate implements SourceTemplate<Hcl, HclCoordinates> {
                                 b = b.withBody(
                                         ListUtils.insertInOrder(
                                                 b.getBody(),
-                                                autoFormat(gen.get(0), p, getCursor()),
+                                                autoFormat(gen.getFirst(), p, getCursor()),
                                                 coordinates.getComparator()
                                         )
                                 );
@@ -148,7 +148,7 @@ public class HclTemplate implements SourceTemplate<Hcl, HclCoordinates> {
                     }
                 } else if (loc.equals(Location.BLOCK)) {
                     if (b.isScope(insertionPoint)) {
-                        b = (Hcl.Block) autoFormat(templateParser.parseBodyContent(substitutedTemplate).get(0), p,
+                        b = (Hcl.Block) autoFormat(templateParser.parseBodyContent(substitutedTemplate).getFirst(), p,
                                 getCursor().getParentOrThrow());
                     }
                 }

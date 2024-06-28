@@ -33,8 +33,7 @@ public class UsesField<P> extends JavaIsoVisitor<P> {
 
     @Override
     public J visit(@Nullable Tree tree, P p) {
-        if (tree instanceof JavaSourceFile) {
-            JavaSourceFile cu = (JavaSourceFile) tree;
+        if (tree instanceof JavaSourceFile cu) {
             boolean isGlob = field.contains("*") || field.contains("?");
             TypeMatcher typeMatcher = null;
             for (JavaType.Variable variable : cu.getTypesInUse().getVariables()) {

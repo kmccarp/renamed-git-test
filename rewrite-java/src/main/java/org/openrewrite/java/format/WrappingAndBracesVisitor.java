@@ -184,7 +184,7 @@ public class WrappingAndBracesVisitor<P> extends JavaIsoVisitor<P> {
     }
 
     private List<J.Modifier> withNewline(List<J.Modifier> modifiers) {
-        J.Modifier firstModifier = modifiers.iterator().next();
+        J.Modifier firstModifier = modifiers.getFirst();
         if (!firstModifier.getPrefix().getWhitespace().contains("\n")) {
             return ListUtils.mapFirst(modifiers,
                     mod -> mod.withPrefix(

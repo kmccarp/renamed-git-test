@@ -66,7 +66,7 @@ public class RemoveDependency extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s:%s`", groupId, artifactId);
+        return "`%s:%s`".formatted(groupId, artifactId);
     }
 
     @Override
@@ -88,7 +88,7 @@ public class RemoveDependency extends Recipe {
                 }
 
                 Optional<GradleProject> maybeGp = g.getMarkers().findFirst(GradleProject.class);
-                if (!maybeGp.isPresent()) {
+                if (maybeGp.isEmpty()) {
                     return cu;
                 }
 
@@ -136,14 +136,14 @@ public class RemoveDependency extends Recipe {
                 J.MethodInvocation m = (J.MethodInvocation) super.visitMethodInvocation(method, ctx);
 
                 if (dependencyDsl.matches(m) && (StringUtils.isEmpty(configuration) || configuration.equals(m.getSimpleName()))) {
-                    Expression firstArgument = m.getArguments().get(0);
+                    Expression firstArgument = m.getArguments().getFirst();
                     if (firstArgument instanceof J.Literal || firstArgument instanceof G.GString || firstArgument instanceof G.MapEntry) {
                         //noinspection DataFlowIssue
                         return maybeRemoveDependency(m);
-                    } else if (firstArgument instanceof J.MethodInvocation &&
-                            (((J.MethodInvocation) firstArgument).getSimpleName().equals("platform")
-                                    || ((J.MethodInvocation) firstArgument).getSimpleName().equals("enforcedPlatform"))) {
-                        J after = maybeRemoveDependency((J.MethodInvocation) firstArgument);
+                    } else if (firstArgument instanceof J.MethodInvocation invocation &&
+                            (invocation.getSimpleName().equals("platform")
+                                    || invocation.getSimpleName().equals("enforcedPlatform"))) {
+                        J after = maybeRemoveDependency(invocation);
                         if (after == null) {
                             //noinspection DataFlowIssue
                             return null;
@@ -155,13 +155,13 @@ public class RemoveDependency extends Recipe {
             }
 
             private @Nullable J maybeRemoveDependency(J.MethodInvocation m) {
-                if (m.getArguments().get(0) instanceof G.GString) {
-                    G.GString gString = (G.GString) m.getArguments().get(0);
+                if (m.getArguments().getFirst() instanceof G.GString) {
+                    G.GString gString = (G.GString) m.getArguments().getFirst();
                     List<J> strings = gString.getStrings();
-                    if (strings.size() != 2 || !(strings.get(0) instanceof J.Literal) || !(strings.get(1) instanceof G.GString.Value)) {
+                    if (strings.size() != 2 || !(strings.getFirst() instanceof J.Literal) || !(strings.get(1) instanceof G.GString.Value)) {
                         return m;
                     }
-                    J.Literal groupArtifact = (J.Literal) strings.get(0);
+                    J.Literal groupArtifact = (J.Literal) strings.getFirst();
                     if (!(groupArtifact.getValue() instanceof String)) {
                         return m;
                     }
@@ -169,8 +169,8 @@ public class RemoveDependency extends Recipe {
                     if (dependency != null && dependencyMatcher.matches(dependency.getGroupId(), dependency.getArtifactId())) {
                         return null;
                     }
-                } else if (m.getArguments().get(0) instanceof J.Literal) {
-                    Object value = ((J.Literal) m.getArguments().get(0)).getValue();
+                } else if (m.getArguments().getFirst() instanceof J.Literal) {
+                    Object value = ((J.Literal) m.getArguments().getFirst()).getValue();
                     if(!(value instanceof String)) {
                         return null;
                     }
@@ -178,7 +178,7 @@ public class RemoveDependency extends Recipe {
                     if (dependency != null && dependencyMatcher.matches(dependency.getGroupId(), dependency.getArtifactId())) {
                         return null;
                     }
-                } else if (m.getArguments().get(0) instanceof G.MapEntry) {
+                } else if (m.getArguments().getFirst() instanceof G.MapEntry) {
                     String groupId = null;
                     String artifactId = null;
 

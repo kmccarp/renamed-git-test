@@ -37,14 +37,18 @@ public class AddPluginDependency extends Recipe {
     private static final XPathMatcher PLUGINS_MATCHER = new XPathMatcher("/project/build/plugins");
 
     @Option(displayName = "Plugin group",
-            description = "Group ID of the plugin to which the dependency will be added. " +
-                    "A group ID is the first part of a dependency coordinate `org.openrewrite.maven:rewrite-maven-plugin:VERSION`.",
+            description = """
+                    Group ID of the plugin to which the dependency will be added. \
+                    A group ID is the first part of a dependency coordinate `org.openrewrite.maven:rewrite-maven-plugin:VERSION`.\
+                    """,
             example = "org.openrewrite.maven")
     String pluginGroupId;
 
     @Option(displayName = "Plugin artifact",
-            description = "Artifact ID of the plugin to which the dependency will be added." +
-                    "The second part of a dependency coordinate `org.openrewrite.maven:rewrite-maven-plugin:VERSION`.",
+            description = """
+                    Artifact ID of the plugin to which the dependency will be added.\
+                    The second part of a dependency coordinate `org.openrewrite.maven:rewrite-maven-plugin:VERSION`.\
+                    """,
             example = "rewrite-maven-plugin")
     String pluginArtifactId;
 
@@ -90,7 +94,7 @@ public class AddPluginDependency extends Recipe {
                                         pluginArtifactId.equals(plugin.getChildValue("artifactId").orElse(null))
                         )
                         .findAny();
-                if (!maybePlugin.isPresent()) {
+                if (maybePlugin.isEmpty()) {
                     return plugins;
                 }
                 Xml.Tag plugin = maybePlugin.get();

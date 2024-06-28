@@ -206,7 +206,7 @@ public class XmlParserVisitor extends XMLParserBaseVisitor<Xml> {
                     List<Xml.CharData> piTexts = c.PI_TEXT().stream()
                             .map(piText -> convert(piText, (cdata, p) -> charData(cdata.getText(), false, p)))
                             .collect(toList());
-                    Xml.CharData piText = piTexts.get(0);
+                    Xml.CharData piText = piTexts.getFirst();
                     if (piTexts.size() > 1) {
                         StringBuilder sb = new StringBuilder();
                         piTexts.forEach(it -> sb.append(it.getText()));

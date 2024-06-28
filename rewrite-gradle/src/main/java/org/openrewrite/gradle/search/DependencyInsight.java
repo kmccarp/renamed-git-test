@@ -64,9 +64,11 @@ public class DependencyInsight extends Recipe {
     String artifactIdPattern;
 
     @Option(displayName = "Version",
-            description = "Match only dependencies with the specified version. " +
-                          "Node-style [version selectors](https://docs.openrewrite.org/reference/dependency-version-selectors) may be used." +
-                          "All versions are searched by default.",
+            description = """
+                          Match only dependencies with the specified version. \
+                          Node-style [version selectors](https://docs.openrewrite.org/reference/dependency-version-selectors) may be used.\
+                          All versions are searched by default.\
+                          """,
             example = "1.x",
             required = false)
     @Nullable
@@ -86,8 +88,10 @@ public class DependencyInsight extends Recipe {
 
     @Override
     public String getDescription() {
-        return "Find direct and transitive dependencies matching a group, artifact, and optionally a configuration name. " +
-               "Results include dependencies that either directly match or transitively include a matching dependency.";
+        return """
+               Find direct and transitive dependencies matching a group, artifact, and optionally a configuration name. \
+               Results include dependencies that either directly match or transitively include a matching dependency.\
+               """;
     }
 
     @Override
@@ -106,7 +110,7 @@ public class DependencyInsight extends Recipe {
             public Tree visit(@Nullable Tree tree, ExecutionContext ctx) {
                 SourceFile sourceFile = (SourceFile) requireNonNull(tree);
                 Optional<GradleProject> maybeGradleProject = sourceFile.getMarkers().findFirst(GradleProject.class);
-                if (!maybeGradleProject.isPresent()) {
+                if (maybeGradleProject.isEmpty()) {
                     return sourceFile;
                 }
                 GradleProject gp = maybeGradleProject.get();
@@ -244,9 +248,9 @@ public class DependencyInsight extends Recipe {
                 return m;
             }
 
-            Expression arg = m.getArguments().get(0);
-            if (arg instanceof J.Literal && ((J.Literal) arg).getValue() instanceof String) {
-                String[] gav = ((String) ((J.Literal) arg).getValue()).split(":");
+            Expression arg = m.getArguments().getFirst();
+            if (arg instanceof J.Literal literal && literal.getValue() instanceof String) {
+                String[] gav = ((String) literal.getValue()).split(":");
                 if (gav.length < 2) {
                     return m;
                 }
@@ -256,7 +260,7 @@ public class DependencyInsight extends Recipe {
                 Optional<GroupArtifactVersion> maybeMatch = configurationToDirectDependency.get(m.getSimpleName()).stream()
                         .filter(dep -> Objects.equals(dep.getGroupId(), groupId) && Objects.equals(dep.getArtifactId(), artifactId))
                         .findAny();
-                if (!maybeMatch.isPresent()) {
+                if (maybeMatch.isEmpty()) {
                     return m;
                 }
                 GroupArtifactVersion direct = maybeMatch.get();
@@ -298,7 +302,7 @@ public class DependencyInsight extends Recipe {
                 Optional<GroupArtifactVersion> maybeMatch = configurationToDirectDependency.get(m.getSimpleName()).stream()
                         .filter(dep -> Objects.equals(dep.getGroupId(), finalGroupId) && Objects.equals(dep.getArtifactId(), finalArtifactId))
                         .findAny();
-                if (!maybeMatch.isPresent()) {
+                if (maybeMatch.isEmpty()) {
                     return m;
                 }
                 GroupArtifactVersion direct = maybeMatch.get();

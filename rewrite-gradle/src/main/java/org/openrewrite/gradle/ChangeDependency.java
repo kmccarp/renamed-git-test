@@ -72,27 +72,33 @@ public class ChangeDependency extends Recipe {
     String newArtifactId;
 
     @Option(displayName = "New version",
-            description = "An exact version number or node-style semver selector used to select the version number. " +
-                          "You can also use `latest.release` for the latest available version and `latest.patch` if " +
-                          "the current version is a valid semantic version. For more details, you can look at the documentation " +
-                          "page of [version selectors](https://docs.openrewrite.org/reference/dependency-version-selectors).",
+            description = """
+                          An exact version number or node-style semver selector used to select the version number. \
+                          You can also use `latest.release` for the latest available version and `latest.patch` if \
+                          the current version is a valid semantic version. For more details, you can look at the documentation \
+                          page of [version selectors](https://docs.openrewrite.org/reference/dependency-version-selectors).\
+                          """,
             example = "29.X",
             required = false)
     @Nullable
     String newVersion;
 
     @Option(displayName = "Version pattern",
-            description = "Allows version selection to be extended beyond the original Node Semver semantics. So for example," +
-                          "Setting 'version' to \"25-29\" can be paired with a metadata pattern of \"-jre\" to select Guava 29.0-jre",
+            description = """
+                          Allows version selection to be extended beyond the original Node Semver semantics. So for example,\
+                          Setting 'version' to "25-29" can be paired with a metadata pattern of "-jre" to select Guava 29.0-jre\
+                          """,
             example = "-jre",
             required = false)
     @Nullable
     String versionPattern;
 
     @Option(displayName = "Override managed version",
-            description = "If the old dependency has a managed version, this flag can be used to explicitly set the version on the new dependency. " +
-                          "WARNING: No check is done on the NEW dependency to verify if it is managed, it relies on whether the OLD dependency had a managed version. " +
-                          "The default for this flag is `false`.",
+            description = """
+                          If the old dependency has a managed version, this flag can be used to explicitly set the version on the new dependency. \
+                          WARNING: No check is done on the NEW dependency to verify if it is managed, it relies on whether the OLD dependency had a managed version. \
+                          The default for this flag is `false`.\
+                          """,
             required = false)
     @Nullable
     Boolean overrideManagedVersion;
@@ -125,7 +131,7 @@ public class ChangeDependency extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s:%s`", oldGroupId, oldArtifactId);
+        return "`%s:%s`".formatted(oldGroupId, oldArtifactId);
     }
 
     @Override
@@ -164,7 +170,7 @@ public class ChangeDependency extends Recipe {
             @Override
             public G.CompilationUnit visitCompilationUnit(G.CompilationUnit cu, ExecutionContext ctx) {
                 Optional<GradleProject> maybeGp = cu.getMarkers().findFirst(GradleProject.class);
-                if (!maybeGp.isPresent()) {
+                if (maybeGp.isEmpty()) {
                     return cu;
                 }
 
@@ -185,11 +191,11 @@ public class ChangeDependency extends Recipe {
                 }
 
                 List<Expression> depArgs = m.getArguments();
-                if (depArgs.get(0) instanceof J.Literal || depArgs.get(0) instanceof G.GString || depArgs.get(0) instanceof G.MapEntry) {
+                if (depArgs.getFirst() instanceof J.Literal || depArgs.getFirst() instanceof G.GString || depArgs.getFirst() instanceof G.MapEntry) {
                     m = updateDependency(m, ctx);
-                } else if (depArgs.get(0) instanceof J.MethodInvocation &&
-                           (((J.MethodInvocation) depArgs.get(0)).getSimpleName().equals("platform") ||
-                            ((J.MethodInvocation) depArgs.get(0)).getSimpleName().equals("enforcedPlatform"))) {
+                } else if (depArgs.getFirst() instanceof J.MethodInvocation &&
+                           (((J.MethodInvocation) depArgs.getFirst()).getSimpleName().equals("platform") ||
+                            ((J.MethodInvocation) depArgs.getFirst()).getSimpleName().equals("enforcedPlatform"))) {
                     m = m.withArguments(ListUtils.mapFirst(depArgs, platform -> updateDependency((J.MethodInvocation) platform, ctx)));
                 }
 
@@ -198,8 +204,8 @@ public class ChangeDependency extends Recipe {
 
             private J.MethodInvocation updateDependency(J.MethodInvocation m, ExecutionContext ctx) {
                 List<Expression> depArgs = m.getArguments();
-                if (depArgs.get(0) instanceof J.Literal) {
-                    String gav = (String) ((J.Literal) depArgs.get(0)).getValue();
+                if (depArgs.getFirst() instanceof J.Literal) {
+                    String gav = (String) ((J.Literal) depArgs.getFirst()).getValue();
                     if (gav != null) {
                         Dependency original = DependencyStringNotationConverter.parse(gav);
                         if (original != null && depMatcher.matches(original.getGroupId(), original.getArtifactId())) {
@@ -228,13 +234,13 @@ public class ChangeDependency extends Recipe {
                             }
                         }
                     }
-                } else if (m.getArguments().get(0) instanceof G.GString) {
-                    G.GString gstring = (G.GString) depArgs.get(0);
+                } else if (m.getArguments().getFirst() instanceof G.GString) {
+                    G.GString gstring = (G.GString) depArgs.getFirst();
                     List<J> strings = gstring.getStrings();
-                    if (strings.size() >= 2 && strings.get(0) instanceof J.Literal &&
-                        ((J.Literal) strings.get(0)).getValue() != null) {
+                    if (strings.size() >= 2 && strings.getFirst() instanceof J.Literal &&
+                        ((J.Literal) strings.getFirst()).getValue() != null) {
 
-                        J.Literal literal = (J.Literal) strings.get(0);
+                        J.Literal literal = (J.Literal) strings.getFirst();
                         Dependency original = DependencyStringNotationConverter.parse((String) requireNonNull(literal.getValue()));
                         if (original != null && depMatcher.matches(original.getGroupId(), original.getArtifactId())) {
                             Dependency updated = original;
@@ -264,7 +270,7 @@ public class ChangeDependency extends Recipe {
                             }
                         }
                     }
-                } else if (m.getArguments().get(0) instanceof G.MapEntry) {
+                } else if (m.getArguments().getFirst() instanceof G.MapEntry) {
                     G.MapEntry groupEntry = null;
                     G.MapEntry artifactEntry = null;
                     G.MapEntry versionEntry = null;

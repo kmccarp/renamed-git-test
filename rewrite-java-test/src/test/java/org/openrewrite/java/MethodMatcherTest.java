@@ -392,20 +392,20 @@ class MethodMatcherTest implements RewriteTest {
 
     static J.MethodInvocation asMethodInvocation(String code) {
         var cu = JavaParser.fromJavaVersion().build().parse(
-            String.format("""
+                  """
               class MyTest {
                   void test() {
                       %s
                   }
               }
-              """, code)
+              """.formatted(code)
           )
           .findFirst()
           .map(J.CompilationUnit.class::cast)
           .orElseThrow(() -> new IllegalArgumentException("Could not parse as Java"));
-        var classDecl = cu.getClasses().get(0);
-        J.MethodDeclaration testMethod = (J.MethodDeclaration) classDecl.getBody().getStatements().get(0);
-        return (J.MethodInvocation) testMethod.getBody().getStatements().get(0);
+        var classDecl = cu.getClasses().getFirst();
+        J.MethodDeclaration testMethod = (J.MethodDeclaration) classDecl.getBody().getStatements().getFirst();
+        return (J.MethodInvocation) testMethod.getBody().getStatements().getFirst();
     }
 
     @Test

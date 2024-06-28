@@ -44,10 +44,12 @@ public class CreateXmlFile extends ScanningRecipe<AtomicBoolean> {
     @Language("xml")
     @Option(displayName = "File contents",
             description = "Multiline text content for the file.",
-            example = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                      "<root>\n" +
-                      "    <child>1</child>" +
-                      "</root>",
+            example = """
+                      <?xml version="1.0" encoding="UTF-8"?>
+                      <root>
+                          <child>1</child>\
+                      </root>\
+                      """,
             required = false)
     @Nullable
     String fileContents;
@@ -103,8 +105,7 @@ public class CreateXmlFile extends ScanningRecipe<AtomicBoolean> {
                             .findFirst();
                     if (sourceFiles.isPresent()) {
                         SourceFile sourceFile = sourceFiles.get();
-                        if (sourceFile instanceof Xml.Document) {
-                            Xml.Document newXmlDocument = (Xml.Document) sourceFile;
+                        if (sourceFile instanceof Xml.Document newXmlDocument) {
                             return document
                                     .withProlog(newXmlDocument.getProlog())
                                     .withRoot(newXmlDocument.getRoot());

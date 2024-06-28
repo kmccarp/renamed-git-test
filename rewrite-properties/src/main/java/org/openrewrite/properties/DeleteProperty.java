@@ -50,8 +50,10 @@ public class DeleteProperty extends Recipe {
     String propertyKey;
 
     @Option(displayName = "Use relaxed binding",
-            description = "Whether to match the `propertyKey` using [relaxed binding](https://docs.spring.io/spring-boot/docs/2.5.6/reference/html/features.html#features.external-config.typesafe-configuration-properties.relaxed-binding) " +
-                    "rules. Default is `true`. Set to `false`  to use exact matching.",
+            description = """
+                    Whether to match the `propertyKey` using [relaxed binding](https://docs.spring.io/spring-boot/docs/2.5.6/reference/html/features.html#features.external-config.typesafe-configuration-properties.relaxed-binding) \
+                    rules. Default is `true`. Set to `false`  to use exact matching.\
+                    """,
             required = false)
     @Nullable
     Boolean relaxedBinding;
@@ -68,9 +70,9 @@ public class DeleteProperty extends Recipe {
                 List<Properties.Content> newContents = new ArrayList<>();
                 for (int i = 0; i < contents.size(); i++) {
                     Properties.Content content = contents.get(i);
-                    if (content instanceof Properties.Entry && isMatch(((Properties.Entry) content).getKey())) {
+                    if (content instanceof Properties.Entry entry && isMatch(entry.getKey())) {
                         if (i == 0) {
-                            prefix = ((Properties.Entry) content).getPrefix();
+                            prefix = entry.getPrefix();
                         }
                     } else {
                         if (prefix != null) {

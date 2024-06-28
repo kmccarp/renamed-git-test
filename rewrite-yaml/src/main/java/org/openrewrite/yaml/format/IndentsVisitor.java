@@ -68,7 +68,7 @@ public class IndentsVisitor<P> extends YamlIsoVisitor<P> {
         Yaml y = tree;
         int indent = getCursor().getNearestMessage("lastIndent", 0);
         if (y.getPrefix().contains("\n") && !isUnindentedTopLevel()) {
-            if (y instanceof Yaml.Sequence.Entry) {
+            if (y instanceof Yaml.Sequence.Entry entry) {
                 indent = getCursor().getParentOrThrow().getMessage("sequenceEntryIndent", indent);
 
                 y = y.withPrefix(indentTo(y.getPrefix(), indent + style.getIndentSize()));
@@ -76,7 +76,7 @@ public class IndentsVisitor<P> extends YamlIsoVisitor<P> {
                 getCursor().getParentOrThrow().putMessage("sequenceEntryIndent", indent);
                 // the +1 is for the '-' character
                 getCursor().getParentOrThrow().putMessage("lastIndent", indent +
-                        firstIndent(((Yaml.Sequence.Entry) y).getBlock()).length() + 1);
+                        firstIndent(entry.getBlock()).length() + 1);
             } else if (y instanceof Yaml.Mapping.Entry) {
                 y = y.withPrefix(indentTo(y.getPrefix(), indent + style.getIndentSize()));
                 getCursor().putMessage("lastIndent", indent + style.getIndentSize());

@@ -40,8 +40,10 @@ public class FindClassHierarchy extends Recipe {
 
     @Override
     public String getDescription() {
-        return "Discovers all class declarations within a project, recording which files they appear in, their superclasses, and interfaces. " +
-               "That information is then recorded in a data table.";
+        return """
+               Discovers all class declarations within a project, recording which files they appear in, their superclasses, and interfaces. \
+               That information is then recorded in a data table.\
+               """;
     }
 
 

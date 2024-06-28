@@ -39,8 +39,10 @@ public class AddOrUpdateAnnotationAttribute extends Recipe {
 
     @Override
     public String getDescription() {
-        return "Some annotations accept arguments. This recipe sets an existing argument to the specified value, " +
-               "or adds the argument if it is not already set.";
+        return """
+               Some annotations accept arguments. This recipe sets an existing argument to the specified value, \
+               or adds the argument if it is not already set.\
+               """;
     }
 
     @Option(displayName = "Annotation Type",
@@ -98,8 +100,7 @@ public class AddOrUpdateAnnotationAttribute extends Recipe {
                     AtomicBoolean foundAttributeWithDesiredValue = new AtomicBoolean(false);
                     final J.Annotation finalA = a;
                     List<Expression> newArgs = ListUtils.map(currentArgs, it -> {
-                        if (it instanceof J.Assignment) {
-                            J.Assignment as = (J.Assignment) it;
+                        if (it instanceof J.Assignment as) {
                             J.Identifier var = (J.Identifier) as.getVariable();
                             if (attributeName == null || !attributeName.equals(var.getSimpleName())) {
                                 return it;
@@ -113,25 +114,24 @@ public class AddOrUpdateAnnotationAttribute extends Recipe {
                                 return it;
                             }
                             return as.withAssignment(value.withValue(newAttributeValue).withValueSource(newAttributeValue));
-                        } else if (it instanceof J.Literal) {
+                        } else if (it instanceof J.Literal value) {
                             // The only way anything except an assignment can appear is if there's an implicit assignment to "value"
                             if (attributeName == null || "value".equals(attributeName)) {
                                 if (newAttributeValue == null) {
                                     return null;
                                 }
-                                J.Literal value = (J.Literal) it;
                                 if (newAttributeValue.equals(value.getValueSource()) || Boolean.TRUE.equals(addOnly)) {
                                     foundAttributeWithDesiredValue.set(true);
                                     return it;
                                 }
-                                return ((J.Literal) it).withValue(newAttributeValue).withValueSource(newAttributeValue);
+                                return value.withValue(newAttributeValue).withValueSource(newAttributeValue);
                             } else {
                                 //noinspection ConstantConditions
                                 return ((J.Annotation) JavaTemplate.builder("value = #{}")
                                         .contextSensitive()
                                         .build()
                                         .apply(getCursor(), finalA.getCoordinates().replaceArguments(), it)
-                                ).getArguments().get(0);
+                                ).getArguments().getFirst();
                             }
                         }
                         return it;
@@ -146,7 +146,7 @@ public class AddOrUpdateAnnotationAttribute extends Recipe {
                             .contextSensitive()
                             .build()
                             .apply(getCursor(), a.getCoordinates().replaceArguments(), effectiveName, newAttributeValue)
-                    ).getArguments().get(0);
+                    ).getArguments().getFirst();
                     List<Expression> newArguments = ListUtils.concat(as, a.getArguments());
                     a = a.withArguments(newArguments);
                     a = autoFormat(a, ctx);

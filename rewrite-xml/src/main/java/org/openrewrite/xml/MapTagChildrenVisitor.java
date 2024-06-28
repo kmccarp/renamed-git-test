@@ -74,8 +74,8 @@ public class MapTagChildrenVisitor<T> extends XmlVisitor<T> {
 
     public static Xml.Tag mapTagChildren(Xml.Tag parentScope, Xml.Tag parent, UnaryOperator<Xml.Tag> map) {
         return mapChildren(parentScope, parent, content -> {
-            if(content instanceof Xml.Tag) {
-                return map.apply((Xml.Tag) content);
+            if(content instanceof Xml.Tag tag) {
+                return map.apply(tag);
             }
             return content;
         });

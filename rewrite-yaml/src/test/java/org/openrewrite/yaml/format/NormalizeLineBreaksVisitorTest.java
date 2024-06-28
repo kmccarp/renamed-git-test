@@ -26,44 +26,50 @@ import static org.openrewrite.yaml.Assertions.yaml;
 class NormalizeLineBreaksVisitorTest implements RewriteTest {
 
     @Language("yml")
-    final String windows = "" +
-                           "root:\r\n" +
-                           "  - a: 0\r\n" +
-                           "    b: 0";
+    final String windows = """
+                           root:
+                             - a: 0
+                               b: 0\
+                           """;
 
     @Language("yml")
-    final String linux = "" +
-                         "root:\n" +
-                         "  - a: 0\n" +
-                         "    b: 0";
+    final String linux = """
+                         root:
+                           - a: 0
+                             b: 0\
+                         """;
 
     @Language("yml")
-    final String mixedLinux = "" +
-                              "root:\n" +
-                              "  - a: 0\n" +
-                              "  - b: 0\r\n" +
-                              "  - c: 0";
+    final String mixedLinux = """
+                              root:
+                                - a: 0
+                                - b: 0
+                                - c: 0\
+                              """;
 
     @Language("yml")
-    final String formattedLinux = "" +
-                                  "root:\n" +
-                                  "  - a: 0\n" +
-                                  "  - b: 0\n" +
-                                  "  - c: 0";
+    final String formattedLinux = """
+                                  root:
+                                    - a: 0
+                                    - b: 0
+                                    - c: 0\
+                                  """;
 
     @Language("yml")
-    final String mixedWindows = "" +
-                                "root:\r\n" +
-                                "  - a: 0\n" +
-                                "  - b: 0\r\n" +
-                                "  - c: 0";
+    final String mixedWindows = """
+                                root:
+                                  - a: 0
+                                  - b: 0
+                                  - c: 0\
+                                """;
 
     @Language("yml")
-    final String formattedWindows = "" +
-                                    "root:\r\n" +
-                                    "  - a: 0\r\n" +
-                                    "  - b: 0\r\n" +
-                                    "  - c: 0";
+    final String formattedWindows = """
+                                    root:
+                                      - a: 0
+                                      - b: 0
+                                      - c: 0\
+                                    """;
 
     @Test
     void windowsToLinux() {

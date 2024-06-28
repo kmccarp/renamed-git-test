@@ -51,11 +51,11 @@ class ArrayTypeTest implements RewriteTest {
     void arrayType(String input) {
         rewriteRun(
           java(
-            String.format("""
+                  """
               class Test {
                 %s
               }
-              """, input), spec -> spec.afterRecipe(cu -> {
+              """.formatted(input), spec -> spec.afterRecipe(cu -> {
                 AtomicBoolean firstDimension = new AtomicBoolean(false);
                 AtomicBoolean secondDimension = new AtomicBoolean(false);
                 new JavaIsoVisitor<>() {
@@ -86,15 +86,15 @@ class ArrayTypeTest implements RewriteTest {
               @Override
               public TypeTree visitArrayType(J.ArrayType arrayType, ExecutionContext ctx) {
                   //noinspection SimplifyOptionalCallChains
-                  if (!arrayType.getMarkers().findFirst(SearchResult.class).isPresent()) {
+                  if (arrayType.getMarkers().findFirst(SearchResult.class).isEmpty()) {
                       // Construct a new J.ArrayType from an old LST model.
                       List<JRightPadded<Space>> dimensions = new ArrayList<>();
                       assert arrayType.getDimension() != null;
-                      dimensions.add(0, JRightPadded.build(arrayType.getDimension().getBefore()).withAfter(arrayType.getDimension().getElement()));
+                      dimensions.addFirst(JRightPadded.build(arrayType.getDimension().getBefore()).withAfter(arrayType.getDimension().getElement()));
                       TypeTree elementType = arrayType.getElementType();
                       while (elementType instanceof J.ArrayType elementArrayType) {
                           assert elementArrayType.getDimension() != null;
-                          dimensions.add(0, JRightPadded.build(elementArrayType.getDimension().getBefore()).withAfter(elementArrayType.getDimension().getElement()));
+                          dimensions.addFirst(JRightPadded.build(elementArrayType.getDimension().getBefore()).withAfter(elementArrayType.getDimension().getElement()));
                           elementType = elementArrayType.getElementType();
                       }
                       //noinspection deprecation

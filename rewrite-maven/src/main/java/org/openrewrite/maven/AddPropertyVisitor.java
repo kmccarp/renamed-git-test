@@ -39,10 +39,10 @@ public class AddPropertyVisitor extends MavenIsoVisitor<ExecutionContext> {
         Xml.Document d = super.visitDocument(document, ctx);
         Xml.Tag root = d.getRoot();
         Optional<Xml.Tag> properties = root.getChild("properties");
-        if (!properties.isPresent()) {
+        if (properties.isEmpty()) {
             Xml.Tag propertiesTag = Xml.Tag.build("<properties>\n<" + key + ">" + value + "</" + key + ">\n</properties>");
             d = (Xml.Document) new AddToTagVisitor<ExecutionContext>(root, propertiesTag, new MavenTagInsertionComparator(root.getChildren())).visitNonNull(d, ctx);
-        } else if (!properties.get().getChildValue(key).isPresent()) {
+        } else if (properties.get().getChildValue(key).isEmpty()) {
             Xml.Tag propertyTag = Xml.Tag.build("<" + key + ">" + value + "</" + key + ">");
             d = (Xml.Document) new AddToTagVisitor<>(properties.get(), propertyTag, new TagNameComparator()).visitNonNull(d, ctx);
         }

@@ -310,8 +310,8 @@ class ReloadableJava8Parser implements JavaParser {
 
         @Override
         public String inferBinaryName(Location location, JavaFileObject file) {
-            if (file instanceof PackageAwareJavaFileObject) {
-                return ((PackageAwareJavaFileObject) file).getClassName();
+            if (file instanceof PackageAwareJavaFileObject object) {
+                return object.getClassName();
             }
             return super.inferBinaryName(location, file);
         }

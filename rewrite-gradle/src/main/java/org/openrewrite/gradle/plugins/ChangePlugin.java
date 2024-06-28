@@ -64,10 +64,12 @@ public class ChangePlugin extends Recipe {
     String newPluginId;
 
     @Option(displayName = "New Plugin Version",
-            description = "An exact version number or node-style semver selector used to select the version number. " +
-                          "You can also use `latest.release` for the latest available version and `latest.patch` if " +
-                          "the current version is a valid semantic version. For more details, you can look at the documentation " +
-                          "page of [version selectors](https://docs.openrewrite.org/reference/dependency-version-selectors).",
+            description = """
+                          An exact version number or node-style semver selector used to select the version number. \
+                          You can also use `latest.release` for the latest available version and `latest.patch` if \
+                          the current version is a valid semantic version. For more details, you can look at the documentation \
+                          page of [version selectors](https://docs.openrewrite.org/reference/dependency-version-selectors).\
+                          """,
             example = "7.x",
             required = false)
     @Nullable
@@ -80,7 +82,7 @@ public class ChangePlugin extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s` to `%s`", pluginId, newPluginId);
+        return "`%s` to `%s`".formatted(pluginId, newPluginId);
     }
 
     @Override
@@ -112,7 +114,7 @@ public class ChangePlugin extends Recipe {
                     public G.CompilationUnit visitCompilationUnit(G.CompilationUnit cu, ExecutionContext ctx) {
                         Optional<GradleProject> maybeGp = cu.getMarkers().findFirst(GradleProject.class);
                         Optional<GradleSettings> maybeGs = cu.getMarkers().findFirst(GradleSettings.class);
-                        if (!maybeGp.isPresent() && !maybeGs.isPresent()) {
+                        if (maybeGp.isEmpty() && maybeGs.isEmpty()) {
                             return cu;
                         }
 
@@ -159,16 +161,16 @@ public class ChangePlugin extends Recipe {
 
                     private J.MethodInvocation maybeUpdateVersion(J.MethodInvocation m, ExecutionContext ctx) {
                         J.MethodInvocation select = (J.MethodInvocation) m.getSelect();
-                        if (!pluginId.equals(((J.Literal) select.getArguments().get(0)).getValue())) {
+                        if (!pluginId.equals(((J.Literal) select.getArguments().getFirst()).getValue())) {
                             return m;
                         }
 
                         List<Expression> args = m.getArguments();
-                        if (!(args.get(0) instanceof J.Literal)) {
+                        if (!(args.getFirst() instanceof J.Literal)) {
                             return m;
                         }
 
-                        J.Literal versionLiteral = (J.Literal) args.get(0);
+                        J.Literal versionLiteral = (J.Literal) args.getFirst();
                         if (versionLiteral.getType() != JavaType.Primitive.String) {
                             return m;
                         }
@@ -193,11 +195,11 @@ public class ChangePlugin extends Recipe {
 
                     private J.MethodInvocation maybeUpdatePluginSyntax(J.MethodInvocation m) {
                         List<Expression> args = m.getArguments();
-                        if (!(args.get(0) instanceof J.Literal)) {
+                        if (!(args.getFirst() instanceof J.Literal)) {
                             return m;
                         }
 
-                        J.Literal pluginIdLiteral = (J.Literal) args.get(0);
+                        J.Literal pluginIdLiteral = (J.Literal) args.getFirst();
                         if (pluginIdLiteral.getType() != JavaType.Primitive.String) {
                             return m;
                         }
@@ -212,11 +214,11 @@ public class ChangePlugin extends Recipe {
 
                     private J.MethodInvocation maybeUpdateApplySyntax(J.MethodInvocation m) {
                         List<Expression> args = m.getArguments();
-                        if (!(args.get(0) instanceof G.MapEntry)) {
+                        if (!(args.getFirst() instanceof G.MapEntry)) {
                             return m;
                         }
 
-                        G.MapEntry entry = (G.MapEntry) args.get(0);
+                        G.MapEntry entry = (G.MapEntry) args.getFirst();
                         if (!(entry.getKey() instanceof J.Literal) && !(entry.getValue() instanceof J.Literal)) {
                             return m;
                         }

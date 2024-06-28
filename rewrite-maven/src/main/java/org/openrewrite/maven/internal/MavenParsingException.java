@@ -25,7 +25,7 @@ public class MavenParsingException extends RuntimeException {
     }
 
     public MavenParsingException(String message, Object... args) {
-        super(String.format(message, args));
+        super(message.formatted(args));
     }
 
     public MavenParsingException(Throwable throwable) {

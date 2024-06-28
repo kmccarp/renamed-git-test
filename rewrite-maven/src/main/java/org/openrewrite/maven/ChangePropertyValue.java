@@ -44,8 +44,10 @@ public class ChangePropertyValue extends Recipe {
     Boolean addIfMissing;
 
     @Option(displayName = "Trust parent POM",
-            description = "Even if the parent defines a property with the same key, trust it even if the value isn't the same. " +
-                          "Useful when you want to wait for the parent to have its value changed first. The parent is not trusted by default.",
+            description = """
+                          Even if the parent defines a property with the same key, trust it even if the value isn't the same. \
+                          Useful when you want to wait for the parent to have its value changed first. The parent is not trusted by default.\
+                          """,
             required = false)
     @Nullable
     Boolean trustParent;
@@ -57,7 +59,7 @@ public class ChangePropertyValue extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s=%s`", key, newValue);
+        return "`%s=%s`".formatted(key, newValue);
     }
 
     @Override

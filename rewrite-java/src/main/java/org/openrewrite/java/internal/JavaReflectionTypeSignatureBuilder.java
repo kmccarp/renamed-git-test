@@ -32,8 +32,7 @@ public class JavaReflectionTypeSignatureBuilder implements JavaTypeSignatureBuil
             return "{undefined}";
         }
 
-        if (t instanceof Class) {
-            Class<?> clazz = (Class<?>) t;
+        if (t instanceof Class<?> clazz) {
             if (clazz.isArray()) {
                 return arraySignature(clazz);
             } else if (clazz.isPrimitive()) {
@@ -66,10 +65,9 @@ public class JavaReflectionTypeSignatureBuilder implements JavaTypeSignatureBuil
 
     @Override
     public String arraySignature(Object type) {
-        if (type instanceof GenericArrayType) {
-            return signature(((GenericArrayType) type).getGenericComponentType()) + "[]";
-        } else if (type instanceof Class) {
-            Class<?> array = (Class<?>) type;
+        if (type instanceof GenericArrayType arrayType) {
+            return signature(arrayType.getGenericComponentType()) + "[]";
+        } else if (type instanceof Class<?> array) {
             return signature(array.getComponentType()) + "[]";
         }
 
@@ -84,8 +82,7 @@ public class JavaReflectionTypeSignatureBuilder implements JavaTypeSignatureBuil
 
     @Override
     public String genericSignature(Object type) {
-        if (type instanceof TypeVariable) {
-            TypeVariable<?> typeVar = (TypeVariable<?>) type;
+        if (type instanceof TypeVariable<?> typeVar) {
             String name = typeVar.getName();
 
             if (typeVariableNameStack == null) {
@@ -107,8 +104,7 @@ public class JavaReflectionTypeSignatureBuilder implements JavaTypeSignatureBuil
             typeVariableNameStack.remove(name);
 
             return s.append('}').toString();
-        } else if (type instanceof WildcardType) {
-            WildcardType wildcard = (WildcardType) type;
+        } else if (type instanceof WildcardType wildcard) {
             StringBuilder s = new StringBuilder("Generic{?");
 
             if (wildcard.getLowerBounds().length > 0) {

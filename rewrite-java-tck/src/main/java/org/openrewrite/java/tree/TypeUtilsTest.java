@@ -33,7 +33,7 @@ class TypeUtilsTest implements RewriteTest {
 
     static Consumer<SourceSpec<J.CompilationUnit>> typeIsPresent() {
         return s -> s.afterRecipe(cu -> {
-            var fooMethodType = ((J.MethodDeclaration) cu.getClasses().get(0).getBody().getStatements().get(0)).getMethodType();
+            var fooMethodType = ((J.MethodDeclaration) cu.getClasses().getFirst().getBody().getStatements().getFirst()).getMethodType();
             assertThat(TypeUtils.findOverriddenMethod(fooMethodType)).isPresent();
         });
     }
@@ -100,7 +100,7 @@ class TypeUtilsTest implements RewriteTest {
               }
               """,
             s -> s.afterRecipe(cu -> {
-                var fooMethodType = ((J.MethodDeclaration) cu.getClasses().get(0).getBody().getStatements().get(0)).getMethodType();
+                var fooMethodType = ((J.MethodDeclaration) cu.getClasses().getFirst().getBody().getStatements().getFirst()).getMethodType();
                 assertThat(TypeUtils.findOverriddenMethod(fooMethodType)).isEmpty();
             })
           )
@@ -168,8 +168,8 @@ class TypeUtilsTest implements RewriteTest {
               }
               """,
             s -> s.afterRecipe(cu -> {
-                var methods = cu.getClasses().get(0).getBody().getStatements();
-                assertThat(TypeUtils.findOverriddenMethod(((J.MethodDeclaration) methods.get(0)).getMethodType())).isEmpty();
+                var methods = cu.getClasses().getFirst().getBody().getStatements();
+                assertThat(TypeUtils.findOverriddenMethod(((J.MethodDeclaration) methods.getFirst()).getMethodType())).isEmpty();
                 assertThat(TypeUtils.findOverriddenMethod(((J.MethodDeclaration) methods.get(1)).getMethodType())).isPresent();
             })
           )
@@ -318,9 +318,9 @@ class TypeUtilsTest implements RewriteTest {
             spec -> spec.afterRecipe(cu -> new JavaIsoVisitor<>() {
                 @Override
                 public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, Object o) {
-                    JavaType paramType = method.getMethodType().getParameterTypes().get(0);
+                    JavaType paramType = method.getMethodType().getParameterTypes().getFirst();
                     assertThat(paramType).isInstanceOf(JavaType.Parameterized.class);
-                    JavaType argType = method.getArguments().get(0).getType();
+                    JavaType argType = method.getArguments().getFirst().getType();
                     assertThat(argType).isInstanceOf(JavaType.Parameterized.class);
                     assertThat(TypeUtils.isAssignableTo(paramType, argType)).isTrue();
                     return method;

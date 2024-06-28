@@ -83,7 +83,7 @@ public class AddDependencyVisitor extends GroovyIsoVisitor<ExecutionContext> {
     @Override
     public G.CompilationUnit visitCompilationUnit(G.CompilationUnit cu, ExecutionContext ctx) {
         Optional<GradleProject> maybeGp = cu.getMarkers().findFirst(GradleProject.class);
-        if (!maybeGp.isPresent()) {
+        if (maybeGp.isEmpty()) {
             return cu;
         }
 
@@ -96,7 +96,7 @@ public class AddDependencyVisitor extends GroovyIsoVisitor<ExecutionContext> {
         G.CompilationUnit g = cu;
         boolean dependenciesBlockMissing = true;
         for (Statement statement : g.getStatements()) {
-            if (statement instanceof J.MethodInvocation && DEPENDENCIES_DSL_MATCHER.matches((J.MethodInvocation) statement)) {
+            if (statement instanceof J.MethodInvocation invocation && DEPENDENCIES_DSL_MATCHER.matches(invocation)) {
                 dependenciesBlockMissing = false;
             }
         }
@@ -106,7 +106,7 @@ public class AddDependencyVisitor extends GroovyIsoVisitor<ExecutionContext> {
                     .findFirst()
                     .map(G.CompilationUnit.class::cast)
                     .orElseThrow(() -> new IllegalArgumentException("Could not parse as Gradle"))
-                    .getStatements().get(0);
+                    .getStatements().getFirst();
             dependenciesInvocation = autoFormat(dependenciesInvocation, ctx, new Cursor(getCursor(), cu));
             g = g.withStatements(ListUtils.concat(g.getStatements(),
                     g.getStatements().isEmpty() ?
@@ -228,7 +228,7 @@ public class AddDependencyVisitor extends GroovyIsoVisitor<ExecutionContext> {
                 return m;
             }
 
-            J.Lambda dependenciesBlock = (J.Lambda) m.getArguments().get(0);
+            J.Lambda dependenciesBlock = (J.Lambda) m.getArguments().getFirst();
             if (!(dependenciesBlock.getBody() instanceof J.Block)) {
                 return m;
             }
@@ -266,12 +266,12 @@ public class AddDependencyVisitor extends GroovyIsoVisitor<ExecutionContext> {
                     .findFirst()
                     .orElseThrow(() -> new IllegalArgumentException("Could not parse as Gradle"));
 
-            if (parsed instanceof ParseError) {
-                throw ((ParseError) parsed).toException();
+            if (parsed instanceof ParseError error) {
+                throw error.toException();
             }
 
             J.MethodInvocation addDependencyInvocation = requireNonNull((J.MethodInvocation) ((J.Return) (((J.Block) ((J.Lambda) ((J.MethodInvocation)
-                    ((G.CompilationUnit) parsed).getStatements().get(0)).getArguments().get(0)).getBody()).getStatements().get(0))).getExpression());
+                    ((G.CompilationUnit) parsed).getStatements().getFirst()).getArguments().getFirst()).getBody()).getStatements().getFirst())).getExpression());
             addDependencyInvocation = autoFormat(addDependencyInvocation, ctx, new Cursor(getCursor(), body));
             InsertDependencyComparator dependencyComparator = new InsertDependencyComparator(body.getStatements(), addDependencyInvocation);
 
@@ -290,8 +290,7 @@ public class AddDependencyVisitor extends GroovyIsoVisitor<ExecutionContext> {
                             }
                         } else {
                             Space originalPrefix = addDependencyInvocation.getPrefix();
-                            if (currentStatement instanceof J.VariableDeclarations) {
-                                J.VariableDeclarations variableDeclarations = (J.VariableDeclarations) currentStatement;
+                            if (currentStatement instanceof J.VariableDeclarations variableDeclarations) {
                                 if (variableDeclarations.getTypeExpression() != null) {
                                     addDependencyInvocation = addDependencyInvocation.withPrefix(variableDeclarations.getTypeExpression().getPrefix());
                                 }
@@ -300,8 +299,7 @@ public class AddDependencyVisitor extends GroovyIsoVisitor<ExecutionContext> {
                             }
 
                             if (addDependencyInvocation.getSimpleName().equals(beforeDependency.getSimpleName())) {
-                                if (currentStatement instanceof J.VariableDeclarations) {
-                                    J.VariableDeclarations variableDeclarations = (J.VariableDeclarations) currentStatement;
+                                if (currentStatement instanceof J.VariableDeclarations variableDeclarations) {
                                     if (variableDeclarations.getTypeExpression() != null && !variableDeclarations.getTypeExpression().getPrefix().equals(originalPrefix)) {
                                         statements.set(i, variableDeclarations.withTypeExpression(variableDeclarations.getTypeExpression().withPrefix(originalPrefix)));
                                     }
@@ -326,7 +324,7 @@ public class AddDependencyVisitor extends GroovyIsoVisitor<ExecutionContext> {
                     } else {
                         lastStatement = statements.get(i - 1);
                     }
-                    if (lastStatement instanceof J.MethodInvocation && !((J.MethodInvocation) lastStatement).getSimpleName().equals(addDependencyInvocation.getSimpleName())) {
+                    if (lastStatement instanceof J.MethodInvocation invocation && !invocation.getSimpleName().equals(addDependencyInvocation.getSimpleName())) {
                         addDependencyInvocation = addDependencyInvocation.withPrefix(Space.format("\n\n" + addDependencyInvocation.getPrefix().getIndent()));
                     }
                 }
@@ -353,18 +351,17 @@ public class AddDependencyVisitor extends GroovyIsoVisitor<ExecutionContext> {
         int string = 0;
         int map = 0;
         for (Statement statement : statements) {
-            if (statement instanceof J.Return && ((J.Return) statement).getExpression() instanceof J.MethodInvocation) {
-                J.MethodInvocation invocation = (J.MethodInvocation) ((J.Return) statement).getExpression();
-                if (invocation.getArguments().get(0) instanceof J.Literal || invocation.getArguments().get(0) instanceof G.GString) {
+            if (statement instanceof J.Return return1 && return1.getExpression() instanceof J.MethodInvocation) {
+                J.MethodInvocation invocation = (J.MethodInvocation) return1.getExpression();
+                if (invocation.getArguments().getFirst() instanceof J.Literal || invocation.getArguments().getFirst() instanceof G.GString) {
                     string++;
-                } else if (invocation.getArguments().get(0) instanceof G.MapEntry) {
+                } else if (invocation.getArguments().getFirst() instanceof G.MapEntry) {
                     map++;
                 }
-            } else if (statement instanceof J.MethodInvocation) {
-                J.MethodInvocation invocation = (J.MethodInvocation) statement;
-                if (invocation.getArguments().get(0) instanceof J.Literal || invocation.getArguments().get(0) instanceof G.GString) {
+            } else if (statement instanceof J.MethodInvocation invocation) {
+                if (invocation.getArguments().getFirst() instanceof J.Literal || invocation.getArguments().getFirst() instanceof G.GString) {
                     string++;
-                } else if (invocation.getArguments().get(0) instanceof G.MapEntry) {
+                } else if (invocation.getArguments().getFirst() instanceof G.MapEntry) {
                     map++;
                 }
             }

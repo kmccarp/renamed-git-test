@@ -72,8 +72,10 @@ public class GithubActionsBuildEnvironment implements BuildEnvironment {
             || StringUtils.isBlank(repository)
             || StringUtils.isBlank(sha)) {
             throw new IncompleteGitConfigException(
-                    String.format("Invalid GitHub environment with host: %s, branch: %s, " +
-                                  "repository: %s, sha: %s", host, ghRef, repository, sha));
+                    ("""
+                            Invalid GitHub environment with host: %s, branch: %s, \
+                            repository: %s, sha: %s\
+                            """).formatted(host, ghRef, repository, sha));
         }
 
         return new GitProvenance(UUID.randomUUID(), host + "/" + getRepository()

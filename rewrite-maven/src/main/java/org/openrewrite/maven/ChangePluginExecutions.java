@@ -61,7 +61,7 @@ public class ChangePluginExecutions extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("for `%s:%s`", groupId, artifactId);
+        return "for `%s:%s`".formatted(groupId, artifactId);
     }
 
     @Override
@@ -86,7 +86,7 @@ public class ChangePluginExecutions extends Recipe {
                     if (maybePlugin.isPresent()) {
                         Xml.Tag plugin = maybePlugin.get();
                         if (executions == null) {
-                            plugins = filterChildren(plugins, plugin, child -> !(child instanceof Xml.Tag && "executions".equals(((Xml.Tag) child).getName())));
+                            plugins = filterChildren(plugins, plugin, child -> !(child instanceof Xml.Tag t && "executions".equals(t.getName())));
                         } else {
                             plugins = addOrUpdateChild(plugins, plugin,
                                     Xml.Tag.build("<executions>\n" + executions + "\n</executions>"),

@@ -39,9 +39,11 @@ public class FindCollidingSourceFiles extends ScanningRecipe<FindCollidingSource
 
     @Override
     public String getDescription() {
-        return "Finds source files which share a path with another source file. " +
-               "There should always be exactly one source file per path within a repository. " +
-               "This is a diagnostic for finding problems in OpenRewrite parsers/build plugins.";
+        return """
+               Finds source files which share a path with another source file. \
+               There should always be exactly one source file per path within a repository. \
+               This is a diagnostic for finding problems in OpenRewrite parsers/build plugins.\
+               """;
     }
 
     @Override
@@ -75,8 +77,8 @@ public class FindCollidingSourceFiles extends ScanningRecipe<FindCollidingSource
         return new TreeVisitor<Tree, ExecutionContext>() {
             @Override
             public @Nullable Tree visit(@Nullable Tree tree, ExecutionContext ctx) {
-                if (tree instanceof SourceFile) {
-                    Path p = ((SourceFile) tree).getSourcePath();
+                if (tree instanceof SourceFile file) {
+                    Path p = file.getSourcePath();
                     if (acc.getDuplicates().contains(p)) {
                         collidingSourceFiles.insertRow(ctx, new CollidingSourceFiles.Row(
                                 p.toString(),

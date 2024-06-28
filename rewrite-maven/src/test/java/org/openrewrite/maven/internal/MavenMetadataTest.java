@@ -82,8 +82,8 @@ class MavenMetadataTest {
         assertThat(parsed.getVersioning().getSnapshot().getBuildNumber()).isEqualTo("223");
         assertThat(parsed.getVersioning().getVersions()).isNotNull();
         assertThat(parsed.getVersioning().getSnapshotVersions()).hasSize(2);
-        assertThat(parsed.getVersioning().getSnapshotVersions().get(0).getExtension()).isNotNull();
-        assertThat(parsed.getVersioning().getSnapshotVersions().get(0).getValue()).isNotNull();
-        assertThat(parsed.getVersioning().getSnapshotVersions().get(0).getUpdated()).isNotNull();
+        assertThat(parsed.getVersioning().getSnapshotVersions().getFirst().getExtension()).isNotNull();
+        assertThat(parsed.getVersioning().getSnapshotVersions().getFirst().getValue()).isNotNull();
+        assertThat(parsed.getVersioning().getSnapshotVersions().getFirst().getUpdated()).isNotNull();
     }
 }

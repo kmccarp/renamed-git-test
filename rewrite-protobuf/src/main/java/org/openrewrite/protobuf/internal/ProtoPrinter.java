@@ -372,7 +372,7 @@ public class ProtoPrinter<P> extends ProtoVisitor<PrintOutputCapture<P>> {
             s instanceof Proto.OptionDeclaration ||
             s instanceof Proto.Package ||
             s instanceof Proto.Reserved ||
-            (s instanceof Proto.Rpc && ((Proto.Rpc) s).getBody() == null) ||
+            (s instanceof Proto.Rpc rpc && rpc.getBody() == null) ||
             s instanceof Proto.Syntax) {
             p.append(';');
         }

@@ -43,14 +43,14 @@ class ReloadableJava8TypeSignatureBuilder implements JavaTypeSignatureBuilder {
             return "{undefined}";
         } else if (type instanceof Type.IntersectionClassType) {
             return intersectionSignature(type);
-        } else if (type instanceof Type.ClassType) {
+        } else if (type instanceof Type.ClassType classType) {
             try {
-                return ((Type.ClassType) type).typarams_field != null && ((Type.ClassType) type).typarams_field.length() > 0 ? parameterizedSignature(type) : classSignature(type);
+                return classType.typarams_field != null && classType.typarams_field.length() > 0 ? parameterizedSignature(type) : classSignature(type);
             } catch (Symbol.CompletionFailure ignored) {
-                return ((Type.ClassType) type).typarams_field != null && ((Type.ClassType) type).typarams_field.length() > 0 ? parameterizedSignature(type) : classSignature(type);
+                return classType.typarams_field != null && classType.typarams_field.length() > 0 ? parameterizedSignature(type) : classSignature(type);
             }
-        } else if (type instanceof Type.CapturedType) {  // CapturedType must be evaluated before TypeVar
-            return signature(((Type.CapturedType) type).wildcard);
+        } else if (type instanceof Type.CapturedType capturedType) {  // CapturedType must be evaluated before TypeVar
+            return signature(capturedType.wildcard);
         } else if (type instanceof Type.TypeVar) {
             return genericSignature(type);
         } else if (type instanceof Type.JCPrimitiveType) {
@@ -59,8 +59,7 @@ class ReloadableJava8TypeSignatureBuilder implements JavaTypeSignatureBuilder {
             return "void";
         } else if (type instanceof Type.ArrayType) {
             return arraySignature(type);
-        } else if (type instanceof Type.WildcardType) {
-            Type.WildcardType wildcard = (Type.WildcardType) type;
+        } else if (type instanceof Type.WildcardType wildcard) {
             StringBuilder s = new StringBuilder("Generic{" + wildcard.kind.toString());
             if (!type.isUnbound()) {
                 s.append(signature(wildcard.type));
@@ -97,13 +96,13 @@ class ReloadableJava8TypeSignatureBuilder implements JavaTypeSignatureBuilder {
         JCTree tree = annotatedType;
         StringBuilder dimensions = new StringBuilder();
         while (tree instanceof JCTree.JCAnnotatedType || tree instanceof JCTree.JCArrayTypeTree) {
-            if (tree instanceof JCTree.JCAnnotatedType) {
-                dimensions.append(mapAnnotations(((JCTree.JCAnnotatedType) tree).annotations));
-                tree = ((JCTree.JCAnnotatedType) tree).getUnderlyingType();
+            if (tree instanceof JCTree.JCAnnotatedType type) {
+                dimensions.append(mapAnnotations(type.annotations));
+                tree = type.getUnderlyingType();
             }
-            if (tree instanceof JCTree.JCArrayTypeTree) {
+            if (tree instanceof JCTree.JCArrayTypeTree typeTree) {
                 dimensions.append("[]");
-                tree = ((JCTree.JCArrayTypeTree) tree).getType();
+                tree = typeTree.getType();
             }
         }
         return signature(tree.type) + dimensions;
@@ -283,9 +282,8 @@ class ReloadableJava8TypeSignatureBuilder implements JavaTypeSignatureBuilder {
     }
 
     private String methodArgumentSignature(Type selectType) {
-        if (selectType instanceof Type.MethodType) {
+        if (selectType instanceof Type.MethodType mt) {
             StringJoiner resolvedArgumentTypes = new StringJoiner(",", "[", "]");
-            Type.MethodType mt = (Type.MethodType) selectType;
             if (!mt.argtypes.isEmpty()) {
                 for (Type argtype : mt.argtypes) {
                     if (argtype != null) {
@@ -294,8 +292,8 @@ class ReloadableJava8TypeSignatureBuilder implements JavaTypeSignatureBuilder {
                 }
             }
             return resolvedArgumentTypes.toString();
-        } else if (selectType instanceof Type.ForAll) {
-            return methodArgumentSignature(((Type.ForAll) selectType).qtype);
+        } else if (selectType instanceof Type.ForAll all) {
+            return methodArgumentSignature(all.qtype);
         } else if (selectType instanceof Type.JCNoType || selectType instanceof Type.UnknownType) {
             return "{undefined}";
         }
@@ -305,8 +303,8 @@ class ReloadableJava8TypeSignatureBuilder implements JavaTypeSignatureBuilder {
 
     public String variableSignature(Symbol symbol) {
         String owner;
-        if (symbol.owner instanceof Symbol.MethodSymbol) {
-            owner = methodSignature((Symbol.MethodSymbol) symbol.owner);
+        if (symbol.owner instanceof Symbol.MethodSymbol methodSymbol) {
+            owner = methodSignature(methodSymbol);
         } else {
             owner = signature(symbol.owner.type);
             if (owner.contains("<")) {

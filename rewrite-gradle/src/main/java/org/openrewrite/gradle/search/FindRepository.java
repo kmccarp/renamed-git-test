@@ -111,19 +111,19 @@ public class FindRepository extends Recipe {
         }
 
         private boolean urlMatches(J.MethodInvocation m, String url) {
-            if (!(m.getArguments().get(0) instanceof J.Lambda)) {
+            if (!(m.getArguments().getFirst() instanceof J.Lambda)) {
                 return false;
             }
 
-            J.Lambda lambda = (J.Lambda) m.getArguments().get(0);
+            J.Lambda lambda = (J.Lambda) m.getArguments().getFirst();
             if (!(lambda.getBody() instanceof J.Block)) {
                 return false;
             }
 
             J.Block block = (J.Block) lambda.getBody();
             for (Statement statement : block.getStatements()) {
-                if (statement instanceof J.Assignment || (statement instanceof J.Return && ((J.Return) statement).getExpression() instanceof J.Assignment)) {
-                    J.Assignment assignment = (J.Assignment) (statement instanceof J.Return ? ((J.Return) statement).getExpression() : statement);
+                if (statement instanceof J.Assignment || (statement instanceof J.Return return1 && return1.getExpression() instanceof J.Assignment)) {
+                    J.Assignment assignment = (J.Assignment) (statement instanceof J.Return r ? r.getExpression() : statement);
                     if (assignment.getVariable() instanceof J.Identifier
                         && "url".equals(((J.Identifier) assignment.getVariable()).getSimpleName())) {
                         if (assignment.getAssignment() instanceof J.Literal
@@ -131,8 +131,8 @@ public class FindRepository extends Recipe {
                             return true;
                         } else if (assignment.getAssignment() instanceof J.MethodInvocation
                                    && ((J.MethodInvocation) assignment.getAssignment()).getSimpleName().equals("uri")
-                                   && ((J.MethodInvocation) assignment.getAssignment()).getArguments().get(0) instanceof J.Literal
-                                   && url.equals(((J.Literal) ((J.MethodInvocation) assignment.getAssignment()).getArguments().get(0)).getValue())) {
+                                   && ((J.MethodInvocation) assignment.getAssignment()).getArguments().getFirst() instanceof J.Literal
+                                   && url.equals(((J.Literal) ((J.MethodInvocation) assignment.getAssignment()).getArguments().getFirst()).getValue())) {
                             return true;
                         } else if (assignment.getAssignment() instanceof G.GString) {
                             String valueSource = assignment.getAssignment().withPrefix(Space.EMPTY).printTrimmed(new GroovyPrinter<>());
@@ -140,19 +140,19 @@ public class FindRepository extends Recipe {
                             return testSource.equals(valueSource);
                         }
                     }
-                } else if (statement instanceof J.MethodInvocation || (statement instanceof J.Return && ((J.Return) statement).getExpression() instanceof J.MethodInvocation)) {
-                    J.MethodInvocation m1 = (J.MethodInvocation) (statement instanceof J.Return ? ((J.Return) statement).getExpression() : statement);
+                } else if (statement instanceof J.MethodInvocation || (statement instanceof J.Return return1 && return1.getExpression() instanceof J.MethodInvocation)) {
+                    J.MethodInvocation m1 = (J.MethodInvocation) (statement instanceof J.Return r ? r.getExpression() : statement);
                     if (m1.getSimpleName().equals("setUrl") || m1.getSimpleName().equals("url")) {
-                        if (m1.getArguments().get(0) instanceof J.Literal
-                            && url.equals(((J.Literal) m1.getArguments().get(0)).getValue())) {
+                        if (m1.getArguments().getFirst() instanceof J.Literal
+                            && url.equals(((J.Literal) m1.getArguments().getFirst()).getValue())) {
                             return true;
-                        } else if (m1.getArguments().get(0) instanceof J.MethodInvocation
-                                   && ((J.MethodInvocation) m1.getArguments().get(0)).getSimpleName().equals("uri")
-                                   && ((J.MethodInvocation) m1.getArguments().get(0)).getArguments().get(0) instanceof J.Literal
-                                   && url.equals(((J.Literal) ((J.MethodInvocation) m1.getArguments().get(0)).getArguments().get(0)).getValue())) {
+                        } else if (m1.getArguments().getFirst() instanceof J.MethodInvocation
+                                   && ((J.MethodInvocation) m1.getArguments().getFirst()).getSimpleName().equals("uri")
+                                   && ((J.MethodInvocation) m1.getArguments().getFirst()).getArguments().getFirst() instanceof J.Literal
+                                   && url.equals(((J.Literal) ((J.MethodInvocation) m1.getArguments().getFirst()).getArguments().getFirst()).getValue())) {
                             return true;
-                        } else if (m1.getArguments().get(0) instanceof G.GString) {
-                            G.GString value = (G.GString) m1.getArguments().get(0);
+                        } else if (m1.getArguments().getFirst() instanceof G.GString) {
+                            G.GString value = (G.GString) m1.getArguments().getFirst();
                             String valueSource = value.withPrefix(Space.EMPTY).printTrimmed(new GroovyPrinter<>());
                             String testSource = value.getDelimiter() + url + value.getDelimiter();
                             return testSource.equals(valueSource);

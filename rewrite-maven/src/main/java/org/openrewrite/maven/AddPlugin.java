@@ -73,10 +73,12 @@ public class AddPlugin extends Recipe {
     String executions;
 
     @Option(displayName = "File pattern",
-            description = "A glob expression that can be used to constrain which directories or source files should be searched. " +
-                    "Multiple patterns may be specified, separated by a semicolon `;`. " +
-                    "If multiple patterns are supplied any of the patterns matching will be interpreted as a match. " +
-                    "When not set, all source files are searched. ",
+            description = """
+                    A glob expression that can be used to constrain which directories or source files should be searched. \
+                    Multiple patterns may be specified, separated by a semicolon `;`. \
+                    If multiple patterns are supplied any of the patterns matching will be interpreted as a match. \
+                    When not set, all source files are searched. \
+                    """,
             required = false,
             example = "**/*-parent/grpc-*/pom.xml")
     @Nullable
@@ -89,7 +91,7 @@ public class AddPlugin extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s:%s:%s`", groupId, artifactId, version);
+        return "`%s:%s:%s`".formatted(groupId, artifactId, version);
     }
 
     @Override
@@ -115,7 +117,7 @@ public class AddPlugin extends Recipe {
         @Override
         public Xml.Document visitDocument(Xml.Document document, ExecutionContext ctx) {
             Xml.Tag root = document.getRoot();
-            if (!root.getChild("build").isPresent()) {
+            if (root.getChild("build").isEmpty()) {
                 document = (Xml.Document) new AddToTagVisitor<>(root, Xml.Tag.build("<build/>"))
                         .visitNonNull(document, ctx, getCursor().getParentOrThrow());
             }

@@ -54,23 +54,22 @@ public class JavaReflectionTypeMapping implements JavaTypeMapping<Type> {
             return existing;
         }
 
-        if (type instanceof Class) {
-            Class<?> clazz = (Class<?>) type;
+        if (type instanceof Class<?> clazz) {
             if (clazz.isArray()) {
                 return array(clazz, signature);
             } else if (clazz.isPrimitive()) {
                 //noinspection ConstantConditions
                 return JavaType.Primitive.fromKeyword(clazz.getName());
             }
-            return classType((Class<?>) type, signature);
-        } else if (type instanceof GenericArrayType) {
-            return array((GenericArrayType) type, signature);
-        } else if (type instanceof TypeVariable) {
-            return generic((TypeVariable<?>) type, signature);
-        } else if (type instanceof WildcardType) {
-            return generic((WildcardType) type, signature);
-        } else if (type instanceof ParameterizedType) {
-            return parameterized((ParameterizedType) type, signature);
+            return classType(clazz, signature);
+        } else if (type instanceof GenericArrayType arrayType) {
+            return array(arrayType, signature);
+        } else if (type instanceof TypeVariable<?> variable) {
+            return generic(variable, signature);
+        } else if (type instanceof WildcardType wildcardType) {
+            return generic(wildcardType, signature);
+        } else if (type instanceof ParameterizedType parameterizedType) {
+            return parameterized(parameterizedType, signature);
         }
 
         throw new UnsupportedOperationException("Unknown type " + type.getClass().getName());
@@ -309,8 +308,8 @@ public class JavaReflectionTypeMapping implements JavaTypeMapping<Type> {
 
     public JavaType.Method method(Method method) {
         JavaType.FullyQualified type = (JavaType.FullyQualified) type(method.getDeclaringClass());
-        if (type instanceof JavaType.Parameterized) {
-            type = ((JavaType.Parameterized) type).getType();
+        if (type instanceof JavaType.Parameterized parameterized) {
+            type = parameterized.getType();
         }
         return method(method, type);
     }

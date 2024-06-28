@@ -352,7 +352,7 @@ public interface Xml extends Tree {
                 if (enclosing != null) {
                     for (Map.Entry<String, String> ns : enclosing.getNamespaces().entrySet()) {
                         if (namespaces.containsValue(ns.getKey())) {
-                            throw new IllegalStateException(java.lang.String.format("Cannot have two namespaces with the same prefix (%s): '%s' and '%s'", ns.getKey(), namespaces.get(ns.getKey()), ns.getValue()));
+                            throw new IllegalStateException("Cannot have two namespaces with the same prefix (%s): '%s' and '%s'".formatted(ns.getKey(), namespaces.get(ns.getKey()), ns.getValue()));
                         }
                         namespaces.put(ns.getKey(), ns.getValue());
                     }
@@ -476,8 +476,8 @@ public interface Xml extends Tree {
 
         public Tag withValue(String value) {
             CharData charData;
-            if (content != null && content.get(0) instanceof CharData) {
-                charData = ((CharData) content.get(0)).withText(value);
+            if (content != null && content.getFirst() instanceof CharData) {
+                charData = ((CharData) content.getFirst()).withText(value);
             } else {
                 charData = new CharData(randomId(), "", Markers.EMPTY,
                         false, value, "");
@@ -542,8 +542,8 @@ public interface Xml extends Tree {
             if (content == null) {
                 return Optional.empty();
             }
-            if (content.size() == 1 && content.get(0) instanceof Xml.CharData) {
-                return Optional.ofNullable(((CharData) content.get(0)).getText());
+            if (content.size() == 1 && content.getFirst() instanceof Xml.CharData) {
+                return Optional.ofNullable(((CharData) content.getFirst()).getText());
             }
             if (content.stream().allMatch(c -> c instanceof Xml.CharData)) {
                 return Optional.of(content.stream()
@@ -585,9 +585,9 @@ public interface Xml extends Tree {
                     // TODO test this
                     String indentedClosingTagPrefix = prefixUnsafe.substring(Math.max(0, prefixUnsafe.lastIndexOf('\n')));
 
-                    if (content.get(0) instanceof CharData) {
+                    if (content.getFirst() instanceof CharData) {
                         return tag.withClosing(new Closing(randomId(),
-                                content.get(0).getPrefix().contains("\n") ?
+                                content.getFirst().getPrefix().contains("\n") ?
                                         indentedClosingTagPrefix : "",
                                 Markers.EMPTY,
                                 name, ""));

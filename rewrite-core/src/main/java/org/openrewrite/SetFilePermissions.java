@@ -58,8 +58,7 @@ public class SetFilePermissions extends Recipe {
             @Nullable
             @Override
             public Tree visit(@Nullable Tree tree, ExecutionContext ctx) {
-                if (tree instanceof SourceFile) {
-                    SourceFile sourceFile = (SourceFile) tree;
+                if (tree instanceof SourceFile sourceFile) {
                     Path sourcePath = sourceFile.getSourcePath();
                     PathMatcher pathMatcher = sourcePath.getFileSystem().getPathMatcher("glob:" + fileMatcher);
                     if(pathMatcher.matches(sourcePath)) {

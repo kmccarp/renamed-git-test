@@ -41,10 +41,10 @@ public class AutodetectGeneralFormatStyle extends JavaIsoVisitor<LineEndingsCoun
     public Space visitSpace(Space space, Space.Location loc, LineEndingsCount count) {
         processString(space.getWhitespace(), count);
         for (Comment comment : space.getComments()) {
-            if (comment instanceof TextComment) {
-                processString(((TextComment) comment).getText(), count);
-            } else if (comment instanceof Javadoc) {
-                javadocVisitor.visit((Javadoc) comment, count);
+            if (comment instanceof TextComment textComment) {
+                processString(textComment.getText(), count);
+            } else if (comment instanceof Javadoc javadoc) {
+                javadocVisitor.visit(javadoc, count);
             }
         }
         return space;

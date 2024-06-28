@@ -85,7 +85,7 @@ public class ReplaceConstant extends Recipe {
                 if (!(maybeVariable.getValue() instanceof J.VariableDeclarations)) {
                     return false;
                 }
-                JavaType.Variable variableType = ((J.VariableDeclarations) maybeVariable.getValue()).getVariables().get(0).getVariableType();
+                JavaType.Variable variableType = ((J.VariableDeclarations) maybeVariable.getValue()).getVariables().getFirst().getVariableType();
                 if (variableType == null) {
                     return true;
                 }
@@ -95,7 +95,7 @@ public class ReplaceConstant extends Recipe {
                     return true;
                 }
 
-                return constantName.equals(((J.VariableDeclarations) maybeVariable.getValue()).getVariables().get(0).getSimpleName()) &&
+                return constantName.equals(((J.VariableDeclarations) maybeVariable.getValue()).getVariables().getFirst().getSimpleName()) &&
                         owningType.equals(ownerFqn.getFullyQualifiedName());
             }
 
@@ -107,7 +107,7 @@ public class ReplaceConstant extends Recipe {
                             .map(J.CompilationUnit.class::cast)
                             .orElseThrow(() -> new IllegalStateException("Expected to have one parsed compilation unit."));
 
-                    J j = ((J.VariableDeclarations) result.getClasses().get(0).getBody().getStatements().get(0)).getVariables().get(0).getInitializer();
+                    J j = ((J.VariableDeclarations) result.getClasses().getFirst().getBody().getStatements().get(0)).getVariables().getFirst().getInitializer();
                     if (!(j instanceof J.Literal)) {
                         throw new IllegalArgumentException("Unknown literal type for literal value: " + literalValue);
                     }

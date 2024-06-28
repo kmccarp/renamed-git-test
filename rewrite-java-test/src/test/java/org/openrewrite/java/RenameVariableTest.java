@@ -809,9 +809,9 @@ class RenameVariableTest implements RewriteTest {
               @Override
               public J visitVariableDeclarations(J.VariableDeclarations multiVariable, ExecutionContext ctx) {
                   if (getCursor().getParentTreeCursor().getValue() instanceof J.MethodDeclaration) {
-                      doAfterVisit(new RenameVariable<>(multiVariable.getVariables().get(0), "n2"));
+                      doAfterVisit(new RenameVariable<>(multiVariable.getVariables().getFirst(), "n2"));
                   } else if (!(getCursor().getParentTreeCursor().getParentTreeCursor().getValue() instanceof J.ClassDeclaration)) {
-                      doAfterVisit(new RenameVariable<>(multiVariable.getVariables().get(0), "n1"));
+                      doAfterVisit(new RenameVariable<>(multiVariable.getVariables().getFirst(), "n1"));
                   }
                   return super.visitVariableDeclarations(multiVariable, ctx);
               }

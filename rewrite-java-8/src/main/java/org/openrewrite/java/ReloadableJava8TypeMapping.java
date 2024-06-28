@@ -59,20 +59,20 @@ class ReloadableJava8TypeMapping implements JavaTypeMapping<Tree> {
             return existing;
         }
 
-        if (type instanceof Type.IntersectionClassType) {
-            return intersectionType((Type.IntersectionClassType) type, signature);
-        } else if (type instanceof Type.ClassType) {
-            return classType((Type.ClassType) type, signature);
-        } else if (type instanceof Type.TypeVar) {
-            return generic((Type.TypeVar) type, signature);
+        if (type instanceof Type.IntersectionClassType classType) {
+            return intersectionType(classType, signature);
+        } else if (type instanceof Type.ClassType classType) {
+            return classType(classType, signature);
+        } else if (type instanceof Type.TypeVar var) {
+            return generic(var, signature);
         } else if (type instanceof Type.JCPrimitiveType) {
             return primitive(type.getTag());
         } else if (type instanceof Type.JCVoidType) {
             return JavaType.Primitive.Void;
         } else if (type instanceof Type.ArrayType) {
             return array(type, signature);
-        } else if (type instanceof Type.WildcardType) {
-            return generic((Type.WildcardType) type, signature);
+        } else if (type instanceof Type.WildcardType wildcardType) {
+            return generic(wildcardType, signature);
         } else if (type instanceof Type.AnnotatedType) {
             return type(type.unannotatedType());
         } else if (type instanceof Type.JCNoType) {
@@ -123,15 +123,15 @@ class ReloadableJava8TypeMapping implements JavaTypeMapping<Tree> {
         Tree tree = annotatedType;
         List<Tree> trees = new ArrayList<>();
         while (tree instanceof JCTree.JCAnnotatedType || tree instanceof JCTree.JCArrayTypeTree) {
-            if (tree instanceof JCTree.JCAnnotatedType) {
-                if (((JCTree.JCAnnotatedType) tree).getUnderlyingType() instanceof JCTree.JCArrayTypeTree) {
-                    trees.add(0, tree);
-                    tree = ((JCTree.JCArrayTypeTree) ((JCTree.JCAnnotatedType) tree).getUnderlyingType()).getType();
+            if (tree instanceof JCTree.JCAnnotatedType type) {
+                if (type.getUnderlyingType() instanceof JCTree.JCArrayTypeTree) {
+                    trees.addFirst(tree);
+                    tree = ((JCTree.JCArrayTypeTree) type.getUnderlyingType()).getType();
                 } else {
-                    tree = ((JCTree.JCAnnotatedType) tree).getUnderlyingType();
+                    tree = type.getUnderlyingType();
                 }
             } else {
-                trees.add(0, tree);
+                trees.addFirst(tree);
                 tree = ((JCTree.JCArrayTypeTree) tree).getType();
             }
         }
@@ -147,7 +147,7 @@ class ReloadableJava8TypeMapping implements JavaTypeMapping<Tree> {
                 new JavaType.Array(
                         null,
                         elementType,
-                        trees.get(0) instanceof JCTree.JCAnnotatedType ? mapAnnotations(((JCTree.JCAnnotatedType) trees.get(0)).annotations) : null
+                        trees.getFirst() instanceof JCTree.JCAnnotatedType ? mapAnnotations(((JCTree.JCAnnotatedType) trees.getFirst()).annotations) : null
                 ),
                 trees.subList(1, count)
         );
@@ -187,7 +187,7 @@ class ReloadableJava8TypeMapping implements JavaTypeMapping<Tree> {
                 break;
         }
 
-        if (bounds != null && bounds.get(0) instanceof JavaType.FullyQualified && "java.lang.Object".equals(((JavaType.FullyQualified) bounds.get(0))
+        if (bounds != null && bounds.getFirst() instanceof JavaType.FullyQualified && "java.lang.Object".equals(((JavaType.FullyQualified) bounds.getFirst())
                 .getFullyQualifiedName())) {
             bounds = null;
         }
@@ -230,7 +230,7 @@ class ReloadableJava8TypeMapping implements JavaTypeMapping<Tree> {
         Type.ClassType symType = (Type.ClassType) sym.type;
 
         JavaType.FullyQualified fq = typeCache.get(sym.flatName().toString());
-        JavaType.Class clazz = (JavaType.Class) (fq instanceof JavaType.Parameterized ? ((JavaType.Parameterized) fq).getType() : fq);
+        JavaType.Class clazz = (JavaType.Class) (fq instanceof JavaType.Parameterized p ? p.getType() : fq);
         if (clazz == null) {
             completeClassSymbol(sym);
             clazz = new JavaType.Class(
@@ -280,12 +280,11 @@ class ReloadableJava8TypeMapping implements JavaTypeMapping<Tree> {
                             fields = new ArrayList<>();
                         }
                         fields.add(variableType(elem, clazz));
-                    } else if (elem instanceof Symbol.MethodSymbol &&
+                    } else if (elem instanceof Symbol.MethodSymbol methodSymbol &&
                             (elem.flags_field & (Flags.SYNTHETIC | Flags.BRIDGE | Flags.HYPOTHETICAL | Flags.ANONCONSTR)) == 0) {
                         if (methods == null) {
                             methods = new ArrayList<>();
                         }
-                        Symbol.MethodSymbol methodSymbol = (Symbol.MethodSymbol) elem;
                         if (!methodSymbol.isStaticOrInstanceInit()) {
                             methods.add(methodDeclarationType(methodSymbol, clazz));
                         }
@@ -345,14 +344,14 @@ class ReloadableJava8TypeMapping implements JavaTypeMapping<Tree> {
         }
 
         Symbol symbol = null;
-        if (tree instanceof JCTree.JCIdent) {
-            symbol = ((JCTree.JCIdent) tree).sym;
-        } else if (tree instanceof JCTree.JCMethodDecl) {
-            symbol = ((JCTree.JCMethodDecl) tree).sym;
-        } else if (tree instanceof JCTree.JCVariableDecl) {
-            return variableType(((JCTree.JCVariableDecl) tree).sym);
-        } else if (tree instanceof JCTree.JCAnnotatedType && ((JCTree.JCAnnotatedType) tree).getUnderlyingType() instanceof JCTree.JCArrayTypeTree) {
-            return annotatedArray((JCTree.JCAnnotatedType) tree);
+        if (tree instanceof JCTree.JCIdent ident) {
+            symbol = ident.sym;
+        } else if (tree instanceof JCTree.JCMethodDecl decl) {
+            symbol = decl.sym;
+        } else if (tree instanceof JCTree.JCVariableDecl decl) {
+            return variableType(decl.sym);
+        } else if (tree instanceof JCTree.JCAnnotatedType type && type.getUnderlyingType() instanceof JCTree.JCArrayTypeTree) {
+            return annotatedArray(type);
         }
 
         return type(((JCTree) tree).type, symbol);
@@ -458,8 +457,7 @@ class ReloadableJava8TypeMapping implements JavaTypeMapping<Tree> {
 
         Symbol.MethodSymbol methodSymbol = (Symbol.MethodSymbol) symbol;
 
-        if (selectType instanceof Type.ForAll) {
-            Type.ForAll fa = (Type.ForAll) selectType;
+        if (selectType instanceof Type.ForAll fa) {
             return methodInvocationType(fa.qtype, methodSymbol);
         }
 
@@ -493,8 +491,7 @@ class ReloadableJava8TypeMapping implements JavaTypeMapping<Tree> {
         List<JavaType> parameterTypes = null;
         List<JavaType.FullyQualified> exceptionTypes = null;
 
-        if (selectType instanceof Type.MethodType) {
-            Type.MethodType methodType = (Type.MethodType) selectType;
+        if (selectType instanceof Type.MethodType methodType) {
 
             if (!methodType.argtypes.isEmpty()) {
                 parameterTypes = new ArrayList<>(methodType.argtypes.size());
@@ -554,7 +551,7 @@ class ReloadableJava8TypeMapping implements JavaTypeMapping<Tree> {
     @Nullable
     public JavaType.Method methodDeclarationType(@Nullable Symbol symbol, @Nullable JavaType.FullyQualified declaringType) {
         // if the symbol is not a method symbol, there is a parser error in play
-        Symbol.MethodSymbol methodSymbol = symbol instanceof Symbol.MethodSymbol ? (Symbol.MethodSymbol) symbol : null;
+        Symbol.MethodSymbol methodSymbol = symbol instanceof Symbol.MethodSymbol ms ? ms : null;
 
         if (methodSymbol != null) {
 
@@ -594,19 +591,18 @@ class ReloadableJava8TypeMapping implements JavaTypeMapping<Tree> {
             );
             typeCache.put(signature, method);
 
-            Type signatureType = methodSymbol.type instanceof Type.ForAll ?
-                    ((Type.ForAll) methodSymbol.type).qtype :
+            Type signatureType = methodSymbol.type instanceof Type.ForAll fa ?
+                    fa.qtype :
                     methodSymbol.type;
 
             List<JavaType.FullyQualified> exceptionTypes = null;
 
             Type selectType = methodSymbol.type;
-            if (selectType instanceof Type.ForAll) {
-                selectType = ((Type.ForAll) selectType).qtype;
+            if (selectType instanceof Type.ForAll all) {
+                selectType = all.qtype;
             }
 
-            if (selectType instanceof Type.MethodType) {
-                Type.MethodType methodType = (Type.MethodType) selectType;
+            if (selectType instanceof Type.MethodType methodType) {
                 if (!methodType.thrown.isEmpty()) {
                     exceptionTypes = new ArrayList<>(methodType.thrown.size());
                     for (Type exceptionType : methodType.thrown) {
@@ -642,11 +638,10 @@ class ReloadableJava8TypeMapping implements JavaTypeMapping<Tree> {
             JavaType returnType;
             List<JavaType> parameterTypes = null;
 
-            if (signatureType instanceof Type.ForAll) {
-                signatureType = ((Type.ForAll) signatureType).qtype;
+            if (signatureType instanceof Type.ForAll all) {
+                signatureType = all.qtype;
             }
-            if (signatureType instanceof Type.MethodType) {
-                Type.MethodType mt = (Type.MethodType) signatureType;
+            if (signatureType instanceof Type.MethodType mt) {
 
                 if (!mt.argtypes.isEmpty()) {
                     parameterTypes = new ArrayList<>(mt.argtypes.size());

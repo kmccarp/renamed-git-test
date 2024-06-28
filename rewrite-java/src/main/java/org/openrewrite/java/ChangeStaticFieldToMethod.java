@@ -61,7 +61,7 @@ public class ChangeStaticFieldToMethod extends Recipe {
     @Override
     public String getInstanceNameSuffix() {
         String shortType = oldClassName.substring(oldClassName.lastIndexOf('.') + 1);
-        return String.format("`%s#%s` to `%s`",
+        return "`%s#%s` to `%s`".formatted(
                 shortType, oldFieldName, newMethodName);
     }
 
@@ -117,7 +117,7 @@ public class ChangeStaticFieldToMethod extends Recipe {
                 Cursor statementCursor = getCursor().dropParentUntil(Statement.class::isInstance);
                 Statement statement = statementCursor.getValue();
                 J.Block block = makeNewMethod(newClass).apply(statementCursor, statement.getCoordinates().replace());
-                J.MethodInvocation method = block.getStatements().get(0).withPrefix(tree.getPrefix());
+                J.MethodInvocation method = block.getStatements().getFirst().withPrefix(tree.getPrefix());
 
                 if (method.getMethodType() == null) {
                     throw new IllegalArgumentException("Error while changing a static field to a method. The generated template using a the new class ["

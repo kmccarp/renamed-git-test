@@ -73,8 +73,7 @@ public class FindCommitters extends ScanningRecipe<AtomicReference<GitProvenance
         return Preconditions.check(acc.get() == null, new TreeVisitor<Tree, ExecutionContext>() {
             @Override
             public @Nullable Tree visit(@Nullable Tree tree, ExecutionContext ctx) {
-                if (tree instanceof SourceFile) {
-                    SourceFile sourceFile = (SourceFile) tree;
+                if (tree instanceof SourceFile sourceFile) {
                     sourceFile.getMarkers().findFirst(GitProvenance.class).ifPresent(provenance -> {
                         if (provenance.getCommitters() != null) {
                             acc.set(provenance);

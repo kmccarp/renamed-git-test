@@ -38,8 +38,10 @@ public class ChangeMethodTargetToStatic extends Recipe {
      * See {@link  MethodMatcher} for details on the expression's syntax.
      */
     @Option(displayName = "Method pattern",
-            description = "A method pattern that is used to find matching method invocations. " +
-                          "The original method call may or may not be a static method invocation.",
+            description = """
+                          A method pattern that is used to find matching method invocations. \
+                          The original method call may or may not be a static method invocation.\
+                          """,
             example = "com.google.common.collect.ImmutableSet of(..)")
     String methodPattern;
 
@@ -62,9 +64,11 @@ public class ChangeMethodTargetToStatic extends Recipe {
     Boolean matchOverrides;
 
     @Option(displayName = "Match unknown types",
-            description = "When enabled, include method invocations which appear to match if full type information is missing. " +
-                          "Using matchUnknownTypes can improve recipe resiliency for an AST with missing type information, but " +
-                          "also increases the risk of false-positive matches on unrelated method invocations.",
+            description = """
+                          When enabled, include method invocations which appear to match if full type information is missing. \
+                          Using matchUnknownTypes can improve recipe resiliency for an AST with missing type information, but \
+                          also increases the risk of false-positive matches on unrelated method invocations.\
+                          """,
             required = false)
     @Nullable
     Boolean matchUnknownTypes;
@@ -116,7 +120,7 @@ public class ChangeMethodTargetToStatic extends Recipe {
             Expression select = method.getSelect();
             boolean isStatic = method.getMethodType() != null && method.getMethodType().hasFlags(Flag.Static);
             boolean isSameReceiverType = select != null && TypeUtils.isOfClassType(select.getType(), fullyQualifiedTargetTypeName);
-            boolean calledOnTargetType = select instanceof J.Identifier && ((J.Identifier) select).getFieldType() == null;
+            boolean calledOnTargetType = select instanceof J.Identifier i && i.getFieldType() == null;
             if ((!isStatic || !isSameReceiverType || !calledOnTargetType) &&
                 methodMatcher.matches(method, matchUnknownTypes)) {
                 JavaType.Method transformedType = null;

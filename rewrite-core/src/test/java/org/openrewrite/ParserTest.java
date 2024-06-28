@@ -82,7 +82,7 @@ class ParserTest implements RewriteTest {
 
         Parser.Input input1 = new Parser.Input(path, () -> new ByteArrayInputStream(before.getBytes()));
         Parser.Input input2 = new Parser.Input(path, () -> new ByteArrayInputStream(after.getBytes()));
-        SourceFile s1 = parser.parse(input1.getSource(ctx).readFully()).toList().get(0);
+        SourceFile s1 = parser.parse(input1.getSource(ctx).readFully()).toList().getFirst();
         SourceFile out = parser.requirePrintEqualsInput(s1, input2, null, ctx);
         assertThat(out).isInstanceOf(ParseError.class);
         ParseExceptionResult parseExceptionResult = out.getMarkers().findFirst(ParseExceptionResult.class).get();

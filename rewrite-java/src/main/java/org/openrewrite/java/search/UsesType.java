@@ -124,27 +124,27 @@ public class UsesType<P> extends JavaIsoVisitor<P> {
 
     private static Predicate<JavaType> genericPattern(Pattern pattern) {
         return type -> {
-            if (type instanceof JavaType.FullyQualified) {
-                return pattern.matcher(((JavaType.FullyQualified) type).getFullyQualifiedName()).matches();
-            } else if (type instanceof JavaType.Primitive) {
-                return pattern.matcher(((JavaType.Primitive) type).getKeyword()).matches();
+            if (type instanceof JavaType.FullyQualified qualified) {
+                return pattern.matcher(qualified.getFullyQualifiedName()).matches();
+            } else if (type instanceof JavaType.Primitive primitive) {
+                return pattern.matcher(primitive.getKeyword()).matches();
             }
             return false;
         };
     }
 
     private static Predicate<JavaType> packagePattern(String name) {
-        return type -> type instanceof JavaType.FullyQualified &&
+        return type -> type instanceof JavaType.FullyQualified fq &&
                        // optimization to avoid unnecessary memory allocations
-                       ((JavaType.FullyQualified) type).getFullyQualifiedName().startsWith(name) &&
-                       ((JavaType.FullyQualified) type).getPackageName().equals(name);
+                       fq.getFullyQualifiedName().startsWith(name) &&
+                       fq.getPackageName().equals(name);
     }
 
     private static Predicate<JavaType> packagePrefixPattern(String prefix) {
         String subPackagePrefix = prefix + ".";
         return type -> {
-            if (type instanceof JavaType.FullyQualified) {
-                String packageName = ((JavaType.FullyQualified) type).getPackageName();
+            if (type instanceof JavaType.FullyQualified qualified) {
+                String packageName = qualified.getPackageName();
                 return packageName.equals(prefix) || packageName.startsWith(subPackagePrefix);
             }
             return false;

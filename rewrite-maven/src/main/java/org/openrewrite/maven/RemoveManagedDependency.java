@@ -39,8 +39,10 @@ public class RemoveManagedDependency extends Recipe {
     String artifactId;
 
     @Option(displayName = "Scope",
-            description = "Only remove managed dependencies if they are in this scope. If `runtime`, this will" +
-                          "also remove managed dependencies in the 'compile' scope because `compile` dependencies are part of the runtime dependency set.",
+            description = """
+                          Only remove managed dependencies if they are in this scope. If `runtime`, this will\
+                          also remove managed dependencies in the 'compile' scope because `compile` dependencies are part of the runtime dependency set.\
+                          """,
             valid = {"compile", "test", "runtime", "provided"},
             example = "compile",
             required = false)
@@ -54,7 +56,7 @@ public class RemoveManagedDependency extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s:%s`", groupId, artifactId);
+        return "`%s:%s`".formatted(groupId, artifactId);
     }
 
     @Override

@@ -279,7 +279,7 @@ public class HclParserVisitor extends HCLParserBaseVisitor<Hcl> {
                     (Hcl.ForIntro) visit(ctx.forIntro()),
                     new HclLeftPadded<>(
                             sourceBefore(":"),
-                            (Expression) visit(ctx.expression().get(0)),
+                            (Expression) visit(ctx.expression().getFirst()),
                             Markers.EMPTY
                     ),
                     new HclLeftPadded<>(
@@ -545,16 +545,16 @@ public class HclParserVisitor extends HCLParserBaseVisitor<Hcl> {
 
     public Expression visitSplatAttr(Expression acc, List<ParseTree> attrs) {
         for (ParseTree attr : attrs) {
-            if (attr instanceof HCLParser.GetAttrContext) {
+            if (attr instanceof HCLParser.GetAttrContext context) {
                 acc = new Hcl.AttributeAccess(
                         randomId(),
                         acc.getPrefix(),
                         Markers.EMPTY,
                         acc.withPrefix(Space.EMPTY),
                         new HclLeftPadded<>(sourceBefore("."),
-                                visitIdentifier(((HCLParser.GetAttrContext) attr).Identifier()), Markers.EMPTY)
+                                visitIdentifier(context.Identifier()), Markers.EMPTY)
                 );
-            } else if (attr instanceof HCLParser.IndexContext) {
+            } else if (attr instanceof HCLParser.IndexContext context) {
                 acc = new Hcl.Index(
                         randomId(),
                         acc.getPrefix(),
@@ -564,7 +564,7 @@ public class HclParserVisitor extends HCLParserBaseVisitor<Hcl> {
                                 randomId(),
                                 sourceBefore("["),
                                 Markers.EMPTY,
-                                HclRightPadded.build((Expression) visit(((HCLParser.IndexContext) attr).expression()))
+                                HclRightPadded.build((Expression) visit(context.expression()))
                                         .withAfter(sourceBefore("]"))
                         )
                 );

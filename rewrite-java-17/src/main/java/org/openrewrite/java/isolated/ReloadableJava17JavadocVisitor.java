@@ -449,8 +449,7 @@ public class ReloadableJava17JavadocVisitor extends DocTreeScanner<Tree, List<Ja
         List<Javadoc> description = convertMultiline(node.getDescription());
         List<Javadoc> paddedDescription = ListUtils.flatMap(description, (i, desc) -> {
             if (i == description.size() - 1) {
-                if (desc instanceof Javadoc.Text) {
-                    Javadoc.Text text = (Javadoc.Text) desc;
+                if (desc instanceof Javadoc.Text text) {
                     return text.withText(text.getText());
                 } else {
                     return ListUtils.concat(desc, endBrace());
@@ -683,8 +682,7 @@ public class ReloadableJava17JavadocVisitor extends DocTreeScanner<Tree, List<Ja
 
     @Nullable
     private JavaType.Method methodReferenceType(DCTree.DCReference ref, @Nullable JavaType type) {
-        if (type instanceof JavaType.Class) {
-            JavaType.Class classType = (JavaType.Class) type;
+        if (type instanceof JavaType.Class classType) {
 
             nextMethod:
             for (JavaType.Method method : classType.getMethods()) {
@@ -693,8 +691,8 @@ public class ReloadableJava17JavadocVisitor extends DocTreeScanner<Tree, List<Ja
                         for (JCTree param : ref.paramTypes) {
                             for (JavaType testParamType : method.getParameterTypes()) {
                                 Type paramType = attr.attribType(param, symbol);
-                                if (testParamType instanceof JavaType.GenericTypeVariable) {
-                                    List<JavaType> bounds = ((JavaType.GenericTypeVariable) testParamType).getBounds();
+                                if (testParamType instanceof JavaType.GenericTypeVariable variable) {
+                                    List<JavaType> bounds = variable.getBounds();
                                     if (bounds.isEmpty() && paramType.tsym != null && "java.lang.Object".equals(paramType.tsym.getQualifiedName().toString())) {
                                         return method;
                                     }
@@ -716,8 +714,7 @@ public class ReloadableJava17JavadocVisitor extends DocTreeScanner<Tree, List<Ja
                     return method;
                 }
             }
-        } else if (type instanceof JavaType.GenericTypeVariable) {
-            JavaType.GenericTypeVariable generic = (JavaType.GenericTypeVariable) type;
+        } else if (type instanceof JavaType.GenericTypeVariable generic) {
             for (JavaType bound : generic.getBounds()) {
                 JavaType.Method method = methodReferenceType(ref, bound);
                 if (method != null) {
@@ -778,8 +775,8 @@ public class ReloadableJava17JavadocVisitor extends DocTreeScanner<Tree, List<Ja
         J ref;
         List<Javadoc> spaceBeforeTree = whitespaceBefore();
         List<Javadoc> docs;
-        if (node.getReference().get(0) instanceof DCTree.DCReference) {
-            ref = visitReference((ReferenceTree) node.getReference().get(0), body);
+        if (node.getReference().getFirst() instanceof DCTree.DCReference) {
+            ref = visitReference((ReferenceTree) node.getReference().getFirst(), body);
             //noinspection ConstantConditions
             if (ref != null) {
                 reference = new Javadoc.Reference(randomId(), Markers.EMPTY, ref, lineBreaksInMultilineJReference());
@@ -844,8 +841,7 @@ public class ReloadableJava17JavadocVisitor extends DocTreeScanner<Tree, List<Ja
 
         List<Javadoc> paddedSummary = ListUtils.flatMap(summary, (i, sum) -> {
             if (i == summary.size() - 1) {
-                if (sum instanceof Javadoc.Text) {
-                    Javadoc.Text text = (Javadoc.Text) sum;
+                if (sum instanceof Javadoc.Text text) {
                     return ListUtils.concat(text.withText(text.getText()), endBrace());
                 } else {
                     return ListUtils.concat(sum, endBrace());
@@ -870,8 +866,10 @@ public class ReloadableJava17JavadocVisitor extends DocTreeScanner<Tree, List<Ja
 
     @Override
     public Tree visitText(TextTree node, List<Javadoc> body) {
-        throw new UnsupportedOperationException("Anywhere text can occur, we need to call the visitText override that " +
-                "returns a list of Javadoc elements.");
+        throw new UnsupportedOperationException("""
+                Anywhere text can occur, we need to call the visitText override that \
+                returns a list of Javadoc elements.\
+                """);
     }
 
     public List<Javadoc> visitText(String node) {

@@ -51,10 +51,10 @@ public class Substitutions {
             } else {
                 throw new IllegalArgumentException("'" + parameter.getClass().getSimpleName() + "' cannot be a parameter to a template.");
             }
-        } else if (parameter instanceof HclRightPadded) {
-            return substituteSingle(((HclRightPadded<?>) parameter).getElement(), index);
-        } else if (parameter instanceof HclLeftPadded) {
-            return substituteSingle(((HclLeftPadded<?>) parameter).getElement(), index);
+        } else if (parameter instanceof HclRightPadded<?> padded) {
+            return substituteSingle(padded.getElement(), index);
+        } else if (parameter instanceof HclLeftPadded<?> padded) {
+            return substituteSingle(padded.getElement(), index);
         }
         return parameter.toString();
     }

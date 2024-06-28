@@ -41,7 +41,7 @@ class ClassDeclarationTest implements RewriteTest {
                   permits Square, Rectangle {
               }
               """,
-            spec -> spec.afterRecipe(cu -> assertThat(cu.getClasses().get(0).getPermits()).hasSize(2))
+            spec -> spec.afterRecipe(cu -> assertThat(cu.getClasses().getFirst().getPermits()).hasSize(2))
           ),
           java(
             """
@@ -69,7 +69,7 @@ class ClassDeclarationTest implements RewriteTest {
             """
               public sealed interface Shape { }
               """,
-            spec -> spec.afterRecipe(cu -> assertThat(cu.getClasses().get(0).getPermits()).isNull())
+            spec -> spec.afterRecipe(cu -> assertThat(cu.getClasses().getFirst().getPermits()).isNull())
           ),
           java(
             """
@@ -77,7 +77,7 @@ class ClassDeclarationTest implements RewriteTest {
                   permits Square, Rectangle {
               }
               """,
-            spec -> spec.afterRecipe(cu -> assertThat(cu.getClasses().get(0).getPermits()).hasSize(2))
+            spec -> spec.afterRecipe(cu -> assertThat(cu.getClasses().getFirst().getPermits()).hasSize(2))
           ),
           java(
             """

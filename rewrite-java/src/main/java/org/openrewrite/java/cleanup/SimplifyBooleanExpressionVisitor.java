@@ -117,8 +117,7 @@ public class SimplifyBooleanExpressionVisitor extends JavaVisitor<ExecutionConte
     @Override
     public J visitUnary(J.Unary unary, ExecutionContext ctx) {
         J j = super.visitUnary(unary, ctx);
-        if (j instanceof J.Unary) {
-            J.Unary asUnary = (J.Unary) j;
+        if (j instanceof J.Unary asUnary) {
 
             if (asUnary.getOperator() == J.Unary.Type.Not) {
                 j = unpackExpression(asUnary.getExpression(), asUnary);
@@ -133,8 +132,7 @@ public class SimplifyBooleanExpressionVisitor extends JavaVisitor<ExecutionConte
     @Override
     public J visitTernary(J.Ternary ternary, ExecutionContext executionContext) {
         J j = super.visitTernary(ternary, executionContext);
-        if (j instanceof J.Ternary) {
-            J.Ternary asTernary = (J.Ternary) j;
+        if (j instanceof J.Ternary asTernary) {
             if (asTernary.getCondition() instanceof J.Unary) {
                 Expression negated = maybeNegate(asTernary.getCondition());
                 if (negated != asTernary.getCondition()) {
@@ -153,24 +151,21 @@ public class SimplifyBooleanExpressionVisitor extends JavaVisitor<ExecutionConte
             j = ((J.Literal) expr).withValue(false).withValueSource("false");
         } else if (isLiteralFalse(expr)) {
             j = ((J.Literal) expr).withValue(true).withValueSource("true");
-        } else if (expr instanceof J.Unary && ((J.Unary) expr).getOperator() == J.Unary.Type.Not) {
-            j = ((J.Unary) expr).getExpression();
-        } else if (expr instanceof J.Parentheses) {
-            J parenthesized = ((J.Parentheses<?>) expr).getTree();
-            if (parenthesized instanceof J.Binary) {
-                J.Binary binary = (J.Binary) parenthesized;
+        } else if (expr instanceof J.Unary unary && unary.getOperator() == J.Unary.Type.Not) {
+            j = unary.getExpression();
+        } else if (expr instanceof J.Parentheses<?> parentheses) {
+            J parenthesized = parentheses.getTree();
+            if (parenthesized instanceof J.Binary binary) {
                 J.Binary.Type negated = maybeNegate(binary.getOperator());
                 if (negated != binary.getOperator()) {
                     j = binary.withOperator(negated).withPrefix(j.getPrefix());
                 }
-            } else if (parenthesized instanceof J.Unary) {
-                J.Unary unary1 = (J.Unary) parenthesized;
+            } else if (parenthesized instanceof J.Unary unary1) {
                 J.Unary.Type operator = unary1.getOperator();
                 if (operator == J.Unary.Type.Not) {
                     j = unary1.getExpression().withPrefix(j.getPrefix());
                 }
-            } else if (parenthesized instanceof J.Ternary) {
-                J.Ternary ternary = (J.Ternary) parenthesized;
+            } else if (parenthesized instanceof J.Ternary ternary) {
                 Expression negatedCondition = maybeNegate(ternary.getCondition());
                 if (negatedCondition != ternary.getCondition()) {
                     j = ternary
@@ -182,23 +177,22 @@ public class SimplifyBooleanExpressionVisitor extends JavaVisitor<ExecutionConte
                             .withFalsePart(ternary.getTruePart())
                             .withPrefix(j.getPrefix());
                 }
-            } else if (parenthesized instanceof Expression) {
-                j = unpackExpression((Expression) parenthesized, j);
+            } else if (parenthesized instanceof Expression expression) {
+                j = unpackExpression(expression, j);
             }
         }
         return j;
     }
 
     private Expression maybeNegate(Expression expr) {
-        if (expr instanceof J.Binary) {
-            J.Binary.Type negated = maybeNegate(((J.Binary) expr).getOperator());
-            if (negated != ((J.Binary) expr).getOperator()) {
-                expr = ((J.Binary) expr).withOperator(negated).withPrefix(expr.getPrefix());
+        if (expr instanceof J.Binary binary) {
+            J.Binary.Type negated = maybeNegate(binary.getOperator());
+            if (negated != binary.getOperator()) {
+                expr = binary.withOperator(negated).withPrefix(expr.getPrefix());
             }
-        } else if (expr instanceof J.Unary && ((J.Unary) expr).getOperator() == J.Unary.Type.Not) {
-            expr = ((J.Unary) expr).getExpression().withPrefix(expr.getPrefix());
-        } else if (expr instanceof J.Ternary) {
-            J.Ternary ternary = (J.Ternary) expr;
+        } else if (expr instanceof J.Unary unary && unary.getOperator() == J.Unary.Type.Not) {
+            expr = unary.getExpression().withPrefix(expr.getPrefix());
+        } else if (expr instanceof J.Ternary ternary) {
             Expression negatedCondition = maybeNegate(ternary.getCondition());
             if (negatedCondition != ternary.getCondition()) {
                 expr = ternary
@@ -246,19 +240,19 @@ public class SimplifyBooleanExpressionVisitor extends JavaVisitor<ExecutionConte
     }
 
     private boolean isLiteralTrue(@Nullable Expression expression) {
-        return expression instanceof J.Literal && ((J.Literal) expression).getValue() == Boolean.valueOf(true);
+        return expression instanceof J.Literal l && l.getValue() == Boolean.valueOf(true);
     }
 
     private boolean isLiteralFalse(@Nullable Expression expression) {
-        return expression instanceof J.Literal && ((J.Literal) expression).getValue() == Boolean.valueOf(false);
+        return expression instanceof J.Literal l && l.getValue() == Boolean.valueOf(false);
     }
 
     private boolean isNullLiteral(Expression expression) {
-        return expression instanceof J.Literal && ((J.Literal) expression).getType() == JavaType.Primitive.Null;
+        return expression instanceof J.Literal l && l.getType() == JavaType.Primitive.Null;
     }
 
     private boolean isNonNullLiteral(Expression expression) {
-        return expression instanceof J.Literal && ((J.Literal) expression).getType() != JavaType.Primitive.Null;
+        return expression instanceof J.Literal l && l.getType() != JavaType.Primitive.Null;
     }
 
     private J maybeReplaceCompareWithNull(J.Binary asBinary, boolean valueIfEqual) {

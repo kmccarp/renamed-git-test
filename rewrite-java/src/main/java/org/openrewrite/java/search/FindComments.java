@@ -49,8 +49,10 @@ public class FindComments extends Recipe {
 
     @Override
     public String getDescription() {
-        return "Find regular expression matches within comments and literals. \"Literals\" includes string literals, " +
-               "character literals, and numeric literals.";
+        return """
+               Find regular expression matches within comments and literals. "Literals" includes string literals, \
+               character literals, and numeric literals.\
+               """;
     }
 
     @Override
@@ -81,9 +83,9 @@ public class FindComments extends Recipe {
             @Override
             public Space visitSpace(Space space, Space.Location loc, ExecutionContext ctx) {
                 return space.withComments(ListUtils.map(space.getComments(), comment -> {
-                    if(comment instanceof TextComment) {
+                    if(comment instanceof TextComment textComment) {
                         for (Pattern p : compiledPatterns) {
-                            if (p.matcher(((TextComment) comment).getText()).find()) {
+                            if (p.matcher(textComment.getText()).find()) {
                                 return comment.withMarkers(comment.getMarkers().
                                         computeByType(new SearchResult(randomId(), null), (s1, s2) -> s1 == null ? s2 : s1));
                             }

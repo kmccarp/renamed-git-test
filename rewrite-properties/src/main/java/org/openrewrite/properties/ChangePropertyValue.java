@@ -45,15 +45,19 @@ public class ChangePropertyValue extends Recipe {
     String oldValue;
 
     @Option(displayName = "Regex",
-            description = "Default `false`. If enabled, `oldValue` will be interpreted as a Regular Expression, " +
-                          "to replace only all parts that match the regex. Capturing group can be used in `newValue`.",
+            description = """
+                          Default `false`. If enabled, `oldValue` will be interpreted as a Regular Expression, \
+                          to replace only all parts that match the regex. Capturing group can be used in `newValue`.\
+                          """,
             required = false)
     @Nullable
     Boolean regex;
 
     @Option(displayName = "Use relaxed binding",
-            description = "Whether to match the `propertyKey` using [relaxed binding](https://docs.spring.io/spring-boot/docs/2.5.6/reference/html/features.html#features.external-config.typesafe-configuration-properties.relaxed-binding) " +
-                          "rules. Default is `true`. Set to `false`  to use exact matching.",
+            description = """
+                          Whether to match the `propertyKey` using [relaxed binding](https://docs.spring.io/spring-boot/docs/2.5.6/reference/html/features.html#features.external-config.typesafe-configuration-properties.relaxed-binding) \
+                          rules. Default is `true`. Set to `false`  to use exact matching.\
+                          """,
             required = false)
     @Nullable
     Boolean relaxedBinding;

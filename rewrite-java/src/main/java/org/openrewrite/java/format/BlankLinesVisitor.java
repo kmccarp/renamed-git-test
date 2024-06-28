@@ -114,7 +114,7 @@ public class BlankLinesVisitor<P> extends JavaIsoVisitor<P> {
 
         JavaSourceFile cu = getCursor().firstEnclosingOrThrow(JavaSourceFile.class);
         boolean hasImports = !cu.getImports().isEmpty();
-        boolean firstClass = j.equals(cu.getClasses().get(0));
+        boolean firstClass = j.equals(cu.getClasses().getFirst());
         Set<J.ClassDeclaration> classes = new HashSet<>(cu.getClasses());
 
         j = firstClass ?
@@ -150,7 +150,7 @@ public class BlankLinesVisitor<P> extends JavaIsoVisitor<P> {
     public J.Import visitImport(J.Import import_, P p) {
         J.Import i = super.visitImport(import_, p);
         JavaSourceFile cu = getCursor().firstEnclosingOrThrow(JavaSourceFile.class);
-        if (i.equals(cu.getImports().get(0)) && cu.getPackageDeclaration() == null && cu.getPrefix().equals(Space.EMPTY)) {
+        if (i.equals(cu.getImports().getFirst()) && cu.getPackageDeclaration() == null && cu.getPrefix().equals(Space.EMPTY)) {
             i = i.withPrefix(i.getPrefix().withWhitespace(""));
         }
         return i;
@@ -193,14 +193,12 @@ public class BlankLinesVisitor<P> extends JavaIsoVisitor<P> {
         Object parentTree = cursorPath.next();
         if (cursorPath.hasNext()) {
             Object grandparentTree = cursorPath.next();
-            if (grandparentTree instanceof J.ClassDeclaration && parentTree instanceof J.Block) {
-                J.Block block = (J.Block) parentTree;
-                J.ClassDeclaration classDecl = (J.ClassDeclaration) grandparentTree;
+            if (grandparentTree instanceof J.ClassDeclaration classDecl && parentTree instanceof J.Block block) {
 
                 int declMax = style.getKeepMaximum().getInDeclarations();
 
                 // don't adjust the first statement in a block
-                if (!block.getStatements().isEmpty() && !block.getStatements().iterator().next().isScope(j)) {
+                if (!block.getStatements().isEmpty() && !block.getStatements().getFirst().isScope(j)) {
                     if (j instanceof J.VariableDeclarations) {
                         if (classDecl.getKind() == J.ClassDeclaration.Kind.Type.Interface) {
                             declMax = Math.max(declMax, style.getMinimum().getAroundFieldInInterface());
@@ -227,12 +225,11 @@ public class BlankLinesVisitor<P> extends JavaIsoVisitor<P> {
                 }
 
                 j = keepMaximumLines(j, declMax);
-            } else if (grandparentTree instanceof J.NewClass && parentTree instanceof J.Block) {
-                J.Block block = (J.Block) parentTree;
+            } else if (grandparentTree instanceof J.NewClass && parentTree instanceof J.Block block) {
 
                 int declMax = style.getKeepMaximum().getInDeclarations();
 
-                if (!block.getStatements().isEmpty() && !block.getStatements().iterator().next().isScope(j)) {
+                if (!block.getStatements().isEmpty() && !block.getStatements().getFirst().isScope(j)) {
                     if (j instanceof J.MethodDeclaration) {
                         declMax = Math.max(declMax, style.getMinimum().getAroundMethod());
                         j = minimumLines(j, style.getMinimum().getAroundMethod());
@@ -289,8 +286,8 @@ public class BlankLinesVisitor<P> extends JavaIsoVisitor<P> {
         }
         if (prefix.getComments().isEmpty() ||
             prefix.getWhitespace().contains("\n") ||
-            prefix.getComments().get(0) instanceof Javadoc ||
-            (prefix.getComments().get(0).isMultiline() && prefix.getComments().get(0)
+            prefix.getComments().getFirst() instanceof Javadoc ||
+            (prefix.getComments().getFirst().isMultiline() && prefix.getComments().getFirst()
                     .printComment(getCursor()).contains("\n"))) {
             return prefix.withWhitespace(minimumLines(prefix.getWhitespace(), min));
         }

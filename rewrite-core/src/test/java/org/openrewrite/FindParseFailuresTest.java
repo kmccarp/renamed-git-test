@@ -41,7 +41,7 @@ class FindParseFailuresTest implements RewriteTest {
         rewriteRun(
           spec -> spec.dataTable(ParseFailures.Row.class, rows -> {
               assertThat(rows).hasSize(1);
-              ParseFailures.Row row = rows.get(0);
+              ParseFailures.Row row = rows.getFirst();
               assertThat(row.getParser()).isEqualTo("PlainTextParser");
               assertThat(row.getSourcePath()).isEqualTo("file.txt");
               assertThat(row.getExceptionType()).isEqualTo("RuntimeException");

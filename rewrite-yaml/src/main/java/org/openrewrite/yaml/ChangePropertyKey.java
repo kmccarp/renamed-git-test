@@ -57,8 +57,10 @@ public class ChangePropertyKey extends Recipe {
     String newPropertyKey;
 
     @Option(displayName = "Use relaxed binding",
-            description = "Whether to match the `oldPropertyKey` using [relaxed binding](https://docs.spring.io/spring-boot/docs/2.5.6/reference/html/features.html#features.external-config.typesafe-configuration-properties.relaxed-binding) " +
-                    "rules. Defaults to `true`. If you want to use exact matching in your search, set this to `false`.",
+            description = """
+                    Whether to match the `oldPropertyKey` using [relaxed binding](https://docs.spring.io/spring-boot/docs/2.5.6/reference/html/features.html#features.external-config.typesafe-configuration-properties.relaxed-binding) \
+                    rules. Defaults to `true`. If you want to use exact matching in your search, set this to `false`.\
+                    """,
             required = false)
     @Nullable
     Boolean relaxedBinding;
@@ -76,7 +78,7 @@ public class ChangePropertyKey extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s` to `%s`", oldPropertyKey, newPropertyKey);
+        return "`%s` to `%s`".formatted(oldPropertyKey, newPropertyKey);
     }
 
     @Override

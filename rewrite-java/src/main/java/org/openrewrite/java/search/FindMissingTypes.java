@@ -58,8 +58,8 @@ public class FindMissingTypes extends Recipe {
             new JavaIsoVisitor<List<MissingTypeResult>>() {
                 @Override
                 public <M extends Marker> M visitMarker(Marker marker, List<MissingTypeResult> missingTypeResults) {
-                    if (marker instanceof SearchResult) {
-                        String message = ((SearchResult) marker).getDescription();
+                    if (marker instanceof SearchResult result) {
+                        String message = result.getDescription();
                         String path = getCursor()
                                 .getPathAsStream(j -> j instanceof J || j instanceof Javadoc)
                                 .map(t -> t.getClass().getSimpleName())
@@ -265,24 +265,24 @@ public class FindMissingTypes extends Recipe {
 
         private boolean isFieldAccess(J.Identifier ident) {
             Tree value = getCursor().getParentTreeCursor().getValue();
-            return value instanceof J.FieldAccess
-                    && (ident == ((J.FieldAccess) value).getName() ||
-                        ident == ((J.FieldAccess) value).getTarget() && !((J.FieldAccess) value).getSimpleName().equals("class"));
+            return value instanceof J.FieldAccess fa
+                    && (ident == fa.getName() ||
+                        ident == fa.getTarget() && !fa.getSimpleName().equals("class"));
         }
 
         private boolean isBeingDeclared(J.Identifier ident) {
             Tree value = getCursor().getParentTreeCursor().getValue();
-            return value instanceof J.VariableDeclarations.NamedVariable && ident == ((J.VariableDeclarations.NamedVariable) value).getName();
+            return value instanceof J.VariableDeclarations.NamedVariable nv && ident == nv.getName();
         }
 
         private boolean isParameterizedType(J.Identifier ident) {
             Tree value = getCursor().getParentTreeCursor().getValue();
-            return value instanceof J.ParameterizedType && ident == ((J.ParameterizedType) value).getClazz();
+            return value instanceof J.ParameterizedType pt && ident == pt.getClazz();
         }
 
         private boolean isNewClass(J.Identifier ident) {
             Tree value = getCursor().getParentTreeCursor().getValue();
-            return value instanceof J.NewClass && ident == ((J.NewClass) value).getClazz();
+            return value instanceof J.NewClass nc && ident == nc.getClazz();
         }
 
         private boolean isTypeParameter() {
@@ -292,14 +292,14 @@ public class FindMissingTypes extends Recipe {
 
         private boolean isMemberReference(J.Identifier ident) {
             Tree value = getCursor().getParentTreeCursor().getValue();
-            return value instanceof J.MemberReference &&
-                   ident == ((J.MemberReference) value).getReference();
+            return value instanceof J.MemberReference mr &&
+                   ident == mr.getReference();
         }
 
         private boolean isInJavaDoc(J.Identifier ident) {
             Tree value = getCursor().getParentTreeCursor().getValue();
-            return value instanceof Javadoc.Reference &&
-                    ident == ((Javadoc.Reference) value).getTree();
+            return value instanceof Javadoc.Reference r &&
+                    ident == r.getTree();
         }
 
         private boolean isCaseLabel() {

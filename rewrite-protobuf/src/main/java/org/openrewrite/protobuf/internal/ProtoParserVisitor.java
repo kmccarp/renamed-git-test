@@ -68,7 +68,7 @@ public class ProtoParserVisitor extends Protobuf2ParserBaseVisitor<Proto> {
                             s instanceof Proto.OptionDeclaration ||
                             s instanceof Proto.Package ||
                             s instanceof Proto.Reserved ||
-                            (s instanceof Proto.Rpc && ((Proto.Rpc) s).getBody() == null) ||
+                            (s instanceof Proto.Rpc r && r.getBody() == null) ||
                             s instanceof Proto.Syntax
                     ) ? sourceBefore(";") : Space.EMPTY
             ));

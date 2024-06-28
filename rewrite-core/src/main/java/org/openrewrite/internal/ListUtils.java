@@ -62,7 +62,7 @@ public final class ListUtils {
 
         List<T> newLs = new ArrayList<>(ls);
         if (comesAfter == null) {
-            newLs.add(0, insert);
+            newLs.addFirst(insert);
         } else {
             for (int i = 0; i < newLs.size(); i++) {
                 if (newLs.get(i) == comesAfter) {
@@ -101,7 +101,7 @@ public final class ListUtils {
             //noinspection ConstantConditions
             return ls;
         }
-        T last = ls.get(ls.size() - 1);
+        T last = ls.getLast();
         T newLast = mapLast.apply(last);
         if (last != newLast) {
             List<T> newLs = new ArrayList<>(ls);
@@ -120,12 +120,12 @@ public final class ListUtils {
             //noinspection ConstantConditions
             return ls;
         }
-        T first = ls.iterator().next();
+        T first = ls.getFirst();
         T newFirst = mapFirst.apply(first);
         if (first != newFirst) {
             List<T> newLs = new ArrayList<>(ls);
             if (newFirst == null) {
-                newLs.remove(0);
+                newLs.removeFirst();
             } else {
                 newLs.set(0, newFirst);
             }

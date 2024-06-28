@@ -38,8 +38,10 @@ public class MethodParamPad extends Recipe {
 
     @Override
     public String getDescription() {
-        return "Fixes whitespace padding between the identifier of a method definition or method invocation and the left parenthesis of the parameter list. " +
-               "For example, when configured to remove spacing, `someMethodInvocation (x);` becomes `someMethodInvocation(x)`.";
+        return """
+               Fixes whitespace padding between the identifier of a method definition or method invocation and the left parenthesis of the parameter list. \
+               For example, when configured to remove spacing, `someMethodInvocation (x);` becomes `someMethodInvocation(x)`.\
+               """;
     }
 
     @Override
@@ -85,7 +87,7 @@ public class MethodParamPad extends Recipe {
                 );
             }
             if (!md.getParameters().isEmpty()) {
-                md = (J.MethodDeclaration) new SpacesVisitor<>(spacesStyle, null, null, md.getParameters().get(0))
+                md = (J.MethodDeclaration) new SpacesVisitor<>(spacesStyle, null, null, md.getParameters().getFirst())
                         .visitNonNull(md, ctx, getCursor().getParentTreeCursor().fork());
             }
             return md;

@@ -50,8 +50,10 @@ public class FindManagedDependency extends Recipe {
     String version;
 
     @Option(displayName = "Version pattern",
-            description = "Allows version selection to be extended beyond the original Node Semver semantics. So for example," +
-                          "Setting 'version' to \"25-29\" can be paired with a metadata pattern of \"-jre\" to select Guava 29.0-jre",
+            description = """
+                          Allows version selection to be extended beyond the original Node Semver semantics. So for example,\
+                          Setting 'version' to "25-29" can be paired with a metadata pattern of "-jre" to select Guava 29.0-jre\
+                          """,
             example = "-jre",
             required = false)
     @Nullable
@@ -84,8 +86,8 @@ public class FindManagedDependency extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        String maybeVersionSuffix = version == null ? "" : String.format(":%s%s", version, versionPattern == null ? "" : versionPattern);
-        return String.format("`%s:%s%s`", groupId, artifactId, maybeVersionSuffix);
+        String maybeVersionSuffix = version == null ? "" : ":%s%s".formatted(version, versionPattern == null ? "" : versionPattern);
+        return "`%s:%s%s`".formatted(groupId, artifactId, maybeVersionSuffix);
     }
 
     @Override

@@ -155,7 +155,7 @@ public class TreeVisitorAdapter {
     private static Class<? extends TreeVisitor> adapterDelegateType(TreeVisitor<?, ?> delegate) {
         for (TypeVariable<? extends Class<? extends TreeVisitor>> tp : delegate.getClass().getTypeParameters()) {
             for (Type bound : tp.getBounds()) {
-                if (bound instanceof Class && Tree.class.isAssignableFrom((Class<?>) bound)) {
+                if (bound instanceof Class<?> class1 && Tree.class.isAssignableFrom(class1)) {
                     return delegate.getClass();
                 }
             }
@@ -164,9 +164,9 @@ public class TreeVisitorAdapter {
         Class<?> v2 = delegate.getClass();
         Type sup = v2.getGenericSuperclass();
         for (int i = 0; i < 20; i++) {
-            if (sup instanceof ParameterizedType) {
-                for (Type bound : ((ParameterizedType) sup).getActualTypeArguments()) {
-                    if (bound instanceof Class && Tree.class.isAssignableFrom((Class<?>) bound)) {
+            if (sup instanceof ParameterizedType type) {
+                for (Type bound : type.getActualTypeArguments()) {
+                    if (bound instanceof Class<?> class1 && Tree.class.isAssignableFrom(class1)) {
                         if (delegate.getLanguage() == null) {
                             //noinspection unchecked
                             return (Class<? extends TreeVisitor>) ((ParameterizedType) sup).getRawType();
@@ -175,14 +175,14 @@ public class TreeVisitorAdapter {
                         return (Class<? extends TreeVisitor>) v2;
                     }
                 }
-                sup = ((ParameterizedType) sup).getRawType();
-            } else if (sup instanceof Class) {
-                v2 = (Class<?>) sup;
+                sup = type.getRawType();
+            } else if (sup instanceof Class<?> class1) {
+                v2 = class1;
                 if (v2.getName().endsWith("IsoVisitor")) {
                     //noinspection unchecked
                     return (Class<? extends TreeVisitor>) v2;
                 }
-                sup = ((Class<?>) sup).getGenericSuperclass();
+                sup = class1.getGenericSuperclass();
             }
         }
         throw new IllegalArgumentException("Expected to find a tree type somewhere in the type parameters of the " +

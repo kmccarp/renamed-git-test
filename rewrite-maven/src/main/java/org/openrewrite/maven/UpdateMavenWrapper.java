@@ -72,12 +72,16 @@ public class UpdateMavenWrapper extends ScanningRecipe<UpdateMavenWrapper.MavenW
 
     @Getter
     @Option(displayName = "Wrapper Distribution type",
-            description = "The distribution of the Maven wrapper to use.\n\n" +
-                          "* \"bin\" uses a `maven-wrapper.jar` compiled binary.\n" +
-                          "* \"only-script\" uses a lite version of `mvnw`/`mvnw.cmd` using wget/curl or powershell. (required wrapper 3.2.0 or newer)\n" +
-                          "* \"script\" downloads `maven-wrapper.jar` or `MavenWrapperDownloader.java` to then download a full distribution.\n" +
-                          "* \"source\" uses `MavenWrapperDownloader.java` source file.\n\n" +
-                          "Defaults to \"bin\".",
+            description = """
+                          The distribution of the Maven wrapper to use.
+                          
+                          * "bin" uses a `maven-wrapper.jar` compiled binary.
+                          * "only-script" uses a lite version of `mvnw`/`mvnw.cmd` using wget/curl or powershell. (required wrapper 3.2.0 or newer)
+                          * "script" downloads `maven-wrapper.jar` or `MavenWrapperDownloader.java` to then download a full distribution.
+                          * "source" uses `MavenWrapperDownloader.java` source file.
+                          
+                          Defaults to "bin".\
+                          """,
             valid = {"bin", "only-script", "script", "source"},
             required = false)
     @Nullable
@@ -93,8 +97,10 @@ public class UpdateMavenWrapper extends ScanningRecipe<UpdateMavenWrapper.MavenW
 
     @Getter
     @Option(displayName = "Repository URL",
-            description = "The URL of the repository to download the Maven wrapper and distribution from. Supports repositories " +
-                          "with a Maven layout. Defaults to `https://repo.maven.apache.org/maven2`.",
+            description = """
+                          The URL of the repository to download the Maven wrapper and distribution from. Supports repositories \
+                          with a Maven layout. Defaults to `https://repo.maven.apache.org/maven2`.\
+                          """,
             example = "https://repo.maven.apache.org/maven2",
             required = false)
     @Nullable
@@ -109,8 +115,10 @@ public class UpdateMavenWrapper extends ScanningRecipe<UpdateMavenWrapper.MavenW
 
     @Getter
     @Option(displayName = "Enforce checksum verification for maven-wrapper.jar",
-            description = "Enforce checksum verification for the maven-wrapper.jar. Enabling this feature may sporadically " +
-                          "result in build failures, such as [MWRAPPER-103](https://issues.apache.org/jira/browse/MWRAPPER-103). Defaults to `false`.",
+            description = """
+                          Enforce checksum verification for the maven-wrapper.jar. Enabling this feature may sporadically \
+                          result in build failures, such as [MWRAPPER-103](https://issues.apache.org/jira/browse/MWRAPPER-103). Defaults to `false`.\
+                          """,
             required = false)
     @Nullable
     final Boolean enforceWrapperChecksumVerification;
@@ -182,7 +190,7 @@ public class UpdateMavenWrapper extends ScanningRecipe<UpdateMavenWrapper.MavenW
                         }
 
                         Optional<BuildTool> maybeBuildTool = sourceFile.getMarkers().findFirst(BuildTool.class);
-                        if (!maybeBuildTool.isPresent()) {
+                        if (maybeBuildTool.isEmpty()) {
                             return false;
                         }
                         BuildTool buildTool = maybeBuildTool.get();

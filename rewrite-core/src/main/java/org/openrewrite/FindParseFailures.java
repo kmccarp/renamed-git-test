@@ -28,8 +28,10 @@ import java.util.Objects;
 public class FindParseFailures extends Recipe {
 
     @Option(displayName = "Max snippet length",
-            description = "When the failure occurs on a granular tree element, its source code will be included " +
-                          "as a column in the data table up to this maximum snippet length.",
+            description = """
+                          When the failure occurs on a granular tree element, its source code will be included \
+                          as a column in the data table up to this maximum snippet length.\
+                          """,
             required = false)
     @Nullable
     Integer maxSnippetLength;
@@ -56,8 +58,10 @@ public class FindParseFailures extends Recipe {
 
     @Override
     public String getDescription() {
-        return "This recipe explores parse failures after an LST is produced for classifying the types of " +
-               "failures that can occur and prioritizing fixes according to the most common problems.";
+        return """
+               This recipe explores parse failures after an LST is produced for classifying the types of \
+               failures that can occur and prioritizing fixes according to the most common problems.\
+               """;
     }
 
     @Override
@@ -83,7 +87,7 @@ public class FindParseFailures extends Recipe {
 
                             failures.insertRow(ctx, new ParseFailures.Row(
                                     exceptionResult.getParserType(),
-                                    (tree instanceof SourceFile ? (SourceFile) tree : getCursor().firstEnclosingOrThrow(SourceFile.class))
+                                    (tree instanceof SourceFile sf ? sf : getCursor().firstEnclosingOrThrow(SourceFile.class))
                                             .getSourcePath().toString(),
                                     exceptionResult.getExceptionType(),
                                     exceptionResult.getTreeType(),

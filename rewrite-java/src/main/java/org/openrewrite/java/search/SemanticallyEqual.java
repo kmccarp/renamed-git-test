@@ -112,11 +112,11 @@ public class SemanticallyEqual {
 
         @Nullable
         private static J unwrap(@Nullable Tree tree) {
-            if (tree instanceof Expression) {
-                tree = ((Expression) tree).unwrap();
+            if (tree instanceof Expression expression) {
+                tree = expression.unwrap();
             }
-            if (tree instanceof J.ControlParentheses) {
-                tree = unwrap(((J.ControlParentheses<?>) tree).getTree());
+            if (tree instanceof J.ControlParentheses<?> parentheses) {
+                tree = unwrap(parentheses.getTree());
             }
             return (J) tree;
         }
@@ -911,10 +911,10 @@ public class SemanticallyEqual {
                 } else {
                     JavaType.FullyQualified methodDeclaringType = method.getMethodType().getDeclaringType();
                     JavaType.FullyQualified compareToDeclaringType = compareTo.getMethodType().getDeclaringType();
-                    if (!TypeUtils.isAssignableTo(methodDeclaringType instanceof JavaType.Parameterized ?
-                            ((JavaType.Parameterized) methodDeclaringType).getType() : methodDeclaringType,
-                            compareToDeclaringType instanceof JavaType.Parameterized ?
-                                    ((JavaType.Parameterized) compareToDeclaringType).getType() : compareToDeclaringType)) {
+                    if (!TypeUtils.isAssignableTo(methodDeclaringType instanceof JavaType.Parameterized p ?
+                            p.getType() : methodDeclaringType,
+                            compareToDeclaringType instanceof JavaType.Parameterized p ?
+                                    p.getType() : compareToDeclaringType)) {
                         isEqual.set(false);
                         return method;
                     }
@@ -1088,7 +1088,7 @@ public class SemanticallyEqual {
                     return type;
                 }
 
-                if (!(type.getTypeParameters().get(0) instanceof J.Empty || compareTo.getTypeParameters().get(0) instanceof J.Empty)) {
+                if (!(type.getTypeParameters().getFirst() instanceof J.Empty || compareTo.getTypeParameters().getFirst() instanceof J.Empty)) {
                     this.visitList(type.getTypeParameters(), compareTo.getTypeParameters());
                 }
             }
@@ -1098,8 +1098,8 @@ public class SemanticallyEqual {
         @Override
         public <T extends J> J.Parentheses<T> visitParentheses(J.Parentheses<T> parens, J j) {
             if (isEqual.get()) {
-                if (j instanceof Expression) {
-                    visit(parens.getTree(), ((Expression) j).unwrap());
+                if (j instanceof Expression expression) {
+                    visit(parens.getTree(), expression.unwrap());
                 } else {
                     isEqual.set(false);
                     return parens;
@@ -1275,8 +1275,8 @@ public class SemanticallyEqual {
                 if (!TypeUtils.isOfType(typeCast.getType(), compareTo.getType())) {
                     isEqual.set(false);
                 } else {
-                    if (compareTo instanceof J.TypeCast) {
-                        visit(typeCast.getExpression(), ((J.TypeCast) compareTo).getExpression());
+                    if (compareTo instanceof J.TypeCast cast) {
+                        visit(typeCast.getExpression(), cast.getExpression());
                     } else {
                         visit(typeCast.getExpression(), compareTo);
                     }

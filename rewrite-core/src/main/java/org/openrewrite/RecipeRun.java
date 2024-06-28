@@ -119,7 +119,7 @@ public class RecipeRun {
     private static String formatForCsv(@Nullable Object data) {
         if (data != null) {
             // Assume every column value is printable with toString
-            return String.format("\"%s\"", data.toString().replace("\"", "\"\""));
+            return "\"%s\"".formatted(data.toString().replace("\"", "\"\""));
         } else {
             return "\"\"";
         }

@@ -39,16 +39,18 @@ public class Repeat {
         return new TreeVisitor<Tree, ExecutionContext>() {
             @Override
             public @Nullable Tree visit(@Nullable Tree tree, ExecutionContext ctx) {
-                if (tree instanceof SourceFile && !v.isAcceptable((SourceFile) tree, ctx)) {
+                if (tree instanceof SourceFile file && !v.isAcceptable(file, ctx)) {
                     return tree;
                 }
 
                 if (tree != null && !(tree instanceof SourceFile) && getCursor().isRoot()) {
                     throw new IllegalArgumentException(
-                            String.format(
-                                    "Repeat visitor called on a non-source file tree without a cursor pointing to the root of the tree. " +
-                                    "Passed tree type: `%s`. " +
-                                    "This is likely a bug in the calling code. Use a `visit` method that accepts a cursor instead.",
+                            (
+                                    """
+                                    Repeat visitor called on a non-source file tree without a cursor pointing to the root of the tree. \
+                                    Passed tree type: `%s`. \
+                                    This is likely a bug in the calling code. Use a `visit` method that accepts a cursor instead.\
+                                    """).formatted(
                                     tree.getClass().getName()
                             ));
                 }
@@ -68,7 +70,7 @@ public class Repeat {
 
             @Override
             public @Nullable Tree visit(@Nullable Tree tree, ExecutionContext ctx, Cursor parent) {
-                if (tree instanceof SourceFile && !v.isAcceptable((SourceFile) tree, ctx)) {
+                if (tree instanceof SourceFile file && !v.isAcceptable(file, ctx)) {
                     return tree;
                 }
 

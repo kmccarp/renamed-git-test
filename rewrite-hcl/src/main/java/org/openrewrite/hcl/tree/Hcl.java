@@ -96,7 +96,7 @@ public interface Hcl extends Tree {
         }
 
         private String getSimpleName(Expression e) {
-            return e instanceof Parentheses ? getSimpleName(((Parentheses) e).getExpression()) : ((Identifier) e).getName();
+            return e instanceof Parentheses p ? getSimpleName(p.getExpression()) : ((Identifier) e).getName();
         }
 
         HclLeftPadded<Type> type;
@@ -366,8 +366,7 @@ public interface Hcl extends Tree {
         @Nullable
         public Attribute getAttribute(String attrName) {
             for (BodyContent t : body) {
-                if (t instanceof Attribute) {
-                    Attribute attribute = (Attribute) t;
+                if (t instanceof Attribute attribute) {
                     if (attribute.getSimpleName().equals(attrName)) {
                         return attribute;
                     }

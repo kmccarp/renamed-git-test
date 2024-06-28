@@ -73,12 +73,11 @@ public class UseHttpsForRepositories extends Recipe {
                 J.MethodInvocation m = (J.MethodInvocation) super.visitMethodInvocation(method, ctx);
                 if (REPO_URL.matches(method)) {
                     m = m.withArguments(ListUtils.mapFirst(m.getArguments(), arg -> {
-                        if (arg instanceof J.Literal) {
-                            return fixupLiteralIfNeeded((J.Literal) arg);
-                        } else if (arg instanceof G.GString) {
-                            G.GString garg = (G.GString) arg;
+                        if (arg instanceof J.Literal literal) {
+                            return fixupLiteralIfNeeded(literal);
+                        } else if (arg instanceof G.GString garg) {
                             return garg.withStrings(ListUtils.mapFirst(garg.getStrings(),
-                                    lit -> lit instanceof J.Literal ? fixupLiteralIfNeeded((J.Literal) lit) : lit));
+                                    lit -> lit instanceof J.Literal l ? fixupLiteralIfNeeded(l) : lit));
                         }
                         return arg;
                     }));

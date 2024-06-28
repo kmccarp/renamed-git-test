@@ -51,16 +51,20 @@ public class FindGradleWrapper extends Recipe {
     String version;
 
     @Option(displayName = "Version pattern",
-            description = "Allows version selection to be extended beyond the original Node Semver semantics. So for example," +
-                    "Setting 'version' to \"25-29\" can be paired with a metadata pattern of \"-jre\" to select Guava 29.0-jre",
+            description = """
+                    Allows version selection to be extended beyond the original Node Semver semantics. So for example,\
+                    Setting 'version' to "25-29" can be paired with a metadata pattern of "-jre" to select Guava 29.0-jre\
+                    """,
             example = "-jre",
             required = false)
     @Nullable
     String versionPattern;
 
     @Option(displayName = "Distribution type",
-            description = "The distribution of Gradle to find. \"bin\" includes Gradle binaries. " +
-                    "\"all\" includes Gradle binaries, source code, and documentation.",
+            description = """
+                    The distribution of Gradle to find. "bin" includes Gradle binaries. \
+                    "all" includes Gradle binaries, source code, and documentation.\
+                    """,
             valid = {"bin", "all"},
             required = false
     )

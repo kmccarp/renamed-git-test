@@ -88,8 +88,7 @@ public class MavenParser implements Parser {
                         .parseInputs(singletonList(source), relativeTo, ctx)
                         .iterator().next();
 
-                if (sourceFile instanceof Xml.Document) {
-                    Xml.Document xml = (Xml.Document) sourceFile;
+                if (sourceFile instanceof Xml.Document xml) {
 
                     projectPoms.put(xml, pom);
                     projectPomsByPath.put(pomPath, pom);
@@ -134,7 +133,7 @@ public class MavenParser implements Parser {
         for (int i = 0; i < parsed.size(); i++) {
             SourceFile maven = parsed.get(i);
             Optional<MavenResolutionResult> maybeResolutionResult = maven.getMarkers().findFirst(MavenResolutionResult.class);
-            if(!maybeResolutionResult.isPresent()) {
+            if(maybeResolutionResult.isEmpty()) {
                 continue;
             }
             MavenResolutionResult resolutionResult = maybeResolutionResult.get();
@@ -144,7 +143,7 @@ public class MavenParser implements Parser {
                     continue;
                 }
                 Optional<MavenResolutionResult> maybeModuleResolutionResult = possibleModule.getMarkers().findFirst(MavenResolutionResult.class);
-                if(!maybeModuleResolutionResult.isPresent()) {
+                if(maybeModuleResolutionResult.isEmpty()) {
                     continue;
                 }
                 MavenResolutionResult moduleResolutionResult = maybeModuleResolutionResult.get();

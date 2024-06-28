@@ -33,8 +33,10 @@ public class NoWhitespaceBefore extends Recipe {
 
     @Override
     public String getDescription() {
-        return "Removes unnecessary whitespace preceding a token. " +
-               "A linebreak before a token will be removed unless `allowLineBreaks` is set to `true`.";
+        return """
+               Removes unnecessary whitespace preceding a token. \
+               A linebreak before a token will be removed unless `allowLineBreaks` is set to `true`.\
+               """;
     }
 
     @Override

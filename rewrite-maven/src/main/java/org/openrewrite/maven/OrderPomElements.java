@@ -70,17 +70,17 @@ public class OrderPomElements extends Recipe {
                     for (Content content : root.getContent()) {
                         if (content instanceof Xml.Comment) {
                             groupedContent.add(content);
-                        } else if (content instanceof Xml.Tag) {
+                        } else if (content instanceof Xml.Tag tag) {
                             groupedContent.add(content);
-                            groupedContents.put(((Xml.Tag) content).getName(), groupedContent);
+                            groupedContents.put(tag.getName(), groupedContent);
 
-                            groupSizes.put(groupedContent.get(0).getId(), groupedContent.size());
+                            groupSizes.put(groupedContent.getFirst().getId(), groupedContent.size());
                             groupedContent = new ArrayList<>();
                         } else {
                             groupedContent.add((content));
                             otherContent.addAll(groupedContent);
 
-                            groupSizes.put(groupedContent.get(0).getId(), groupedContent.size());
+                            groupSizes.put(groupedContent.getFirst().getId(), groupedContent.size());
                             groupedContent = new ArrayList<>();
                         }
                     }
@@ -155,8 +155,7 @@ public class OrderPomElements extends Recipe {
                         Content content = gavParent.getContent().get(i);
                         if (content instanceof Xml.Comment) {
                             groupedContent.add(content);
-                        } else if (content instanceof Xml.Tag) {
-                            Xml.Tag tag = (Xml.Tag) content;
+                        } else if (content instanceof Xml.Tag tag) {
                             if ("groupId".equals(tag.getName())) {
                                 groupPos = i;
                             } else if ("artifactId".equals(tag.getName())) {

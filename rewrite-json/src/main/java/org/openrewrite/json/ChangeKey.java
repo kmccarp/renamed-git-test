@@ -40,7 +40,7 @@ public class ChangeKey extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s` to `%s`", oldKeyPath, newKey);
+        return "`%s` to `%s`".formatted(oldKeyPath, newKey);
     }
 
     @Override

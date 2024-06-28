@@ -62,7 +62,7 @@ public class Result {
         Duration timeSavings = null;
         for (List<Recipe> recipesStack : recipes) {
             if (recipesStack != null && !recipesStack.isEmpty()) {
-                Duration perOccurrence = recipesStack.get(recipesStack.size() - 1).getEstimatedEffortPerOccurrence();
+                Duration perOccurrence = recipesStack.getLast().getEstimatedEffortPerOccurrence();
                 if (perOccurrence != null) {
                     timeSavings = perOccurrence;
                     break;
@@ -77,9 +77,11 @@ public class Result {
         this(before, after, after.getMarkers()
                 .findFirst(RecipesThatMadeChanges.class)
                 .orElseThrow(() -> new IllegalStateException(
-                        String.format(
-                                "Source file changed but no recipe " +
-                                "reported making a change. %s",
+                        (
+                                """
+                                Source file changed but no recipe \
+                                reported making a change. %s\
+                                """).formatted(
                                 explainWhatChanged(before, after)
                         )
                 ))
@@ -88,7 +90,7 @@ public class Result {
 
     private static String explainWhatChanged(@Nullable SourceFile before, SourceFile after) {
         if (before == null) {
-            return String.format("A new file %s was generated but no recipe reported generating it. This is likely a bug in OpenRewrite itself.",
+            return "A new file %s was generated but no recipe reported generating it. This is likely a bug in OpenRewrite itself.".formatted(
                     after.getSourcePath());
         }
         Map<UUID, Tree> beforeTrees = new HashMap<>();
@@ -148,7 +150,7 @@ public class Result {
                 // The first recipe is typically an Environment.CompositeRecipe and should not be included in the list of RecipeDescriptors
                 root = currentStack.get(1);
             } else {
-                root = currentStack.get(0);
+                root = currentStack.getFirst();
             }
             RecipeDescriptor rootDescriptor = root.getDescriptor().withRecipeList(new ArrayList<>());
 
@@ -212,7 +214,7 @@ public class Result {
         Set<Recipe> recipeSet = new HashSet<>(recipes.size());
         for (List<Recipe> rs : recipes) {
             if (!rs.isEmpty()) {
-                recipeSet.add(rs.get(0));
+                recipeSet.add(rs.getFirst());
             }
         }
 

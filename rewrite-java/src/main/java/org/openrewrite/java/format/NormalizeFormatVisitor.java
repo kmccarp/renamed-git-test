@@ -153,13 +153,13 @@ public class NormalizeFormatVisitor<P> extends JavaIsoVisitor<P> {
                     if (comment instanceof TextComment) {
                         TextComment textComment = (TextComment) c;
                         c = textComment.withText(textComment.getText().replace("\n", "\n" + shift));
-                    } else if (c instanceof Javadoc) {
+                    } else if (c instanceof Javadoc javadoc) {
                         c = (Comment) new JavadocVisitor<Integer>(new JavaVisitor<>()) {
                             @Override
                             public Javadoc visitLineBreak(Javadoc.LineBreak lineBreak, Integer integer) {
                                 return lineBreak.withMargin(shift + lineBreak.getMargin());
                             }
-                        }.visitNonNull((Javadoc) c, 0);
+                        }.visitNonNull(javadoc, 0);
                     }
 
                     if(c.getSuffix().contains("\n")) {

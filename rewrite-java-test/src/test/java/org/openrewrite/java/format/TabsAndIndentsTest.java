@@ -930,16 +930,20 @@ class TabsAndIndentsTest implements RewriteTest {
     void blockCommentCRLF() {
         rewriteRun(
           java(
-            "public class A {\r\n" +
-            "/*a\r\n" +
-            "  b*/\r\n" +
-            "public void method() {}\r\n" +
-            "}",
-            "public class A {\r\n" +
-            "    /*a\r\n" +
-            "      b*/\r\n" +
-            "    public void method() {}\r\n" +
-            "}"
+            """
+            public class A {
+            /*a
+              b*/
+            public void method() {}
+            }\
+            """,
+            """
+            public class A {
+                /*a
+                  b*/
+                public void method() {}
+            }\
+            """
           )
         );
     }
@@ -2169,45 +2173,49 @@ class TabsAndIndentsTest implements RewriteTest {
     void alignJavaDocsWithCRLF() {
         rewriteRun(
           java(
-            "        /**\r\n" +
-            "         * Align JavaDoc left that starts on 2nd line.\r\n" +
-            "         */\r\n" +
-            "public class A {\r\n" +
-            "/** Align JavaDoc right that starts on 1st line.\r\n" +
-            "  * @param value test value.\r\n" +
-            "  * @return value + 1 */\r\n" +
-            "        public int methodOne(int value) {\r\n" +
-            "            return value + 1;\r\n" +
-            "        }\r\n" +
-            "\r\n" +
-            "                /** Edge case formatting test.\r\n" +
-            "   @param value test value.\r\n" +
-            "                 @return value + 1\r\n" +
-            "                 */\r\n" +
-            "        public int methodTwo(int value) {\r\n" +
-            "            return value + 1;\r\n" +
-            "        }\r\n" +
-            "}"
+            """
+                    /**
+                     * Align JavaDoc left that starts on 2nd line.
+                     */
+            public class A {
+            /** Align JavaDoc right that starts on 1st line.
+              * @param value test value.
+              * @return value + 1 */
+                    public int methodOne(int value) {
+                        return value + 1;
+                    }
+            
+                            /** Edge case formatting test.
+               @param value test value.
+                             @return value + 1
+                             */
+                    public int methodTwo(int value) {
+                        return value + 1;
+                    }
+            }\
+            """
             ,
-            "/**\r\n" +
-            " * Align JavaDoc left that starts on 2nd line.\r\n" +
-            " */\r\n" +
-            "public class A {\r\n" +
-            "    /** Align JavaDoc right that starts on 1st line.\r\n" +
-            "     * @param value test value.\r\n" +
-            "     * @return value + 1 */\r\n" +
-            "    public int methodOne(int value) {\r\n" +
-            "        return value + 1;\r\n" +
-            "    }\r\n" +
-            "\r\n" +
-            "    /** Edge case formatting test.\r\n" +
-            "     @param value test value.\r\n" +
-            "     @return value + 1\r\n" +
-            "     */\r\n" +
-            "    public int methodTwo(int value) {\r\n" +
-            "        return value + 1;\r\n" +
-            "    }\r\n" +
-            "}"
+            """
+            /**
+             * Align JavaDoc left that starts on 2nd line.
+             */
+            public class A {
+                /** Align JavaDoc right that starts on 1st line.
+                 * @param value test value.
+                 * @return value + 1 */
+                public int methodOne(int value) {
+                    return value + 1;
+                }
+            
+                /** Edge case formatting test.
+                 @param value test value.
+                 @return value + 1
+                 */
+                public int methodTwo(int value) {
+                    return value + 1;
+                }
+            }\
+            """
           )
         );
     }

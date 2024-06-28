@@ -65,8 +65,8 @@ public class RetainVersions {
                     } else {
                         ResolvedManagedDependency managedDependency = visitor.findManagedDependency(
                                 retainedGroupId, retainedArtifactId);
-                        retainedVersion = Objects.requireNonNull(managedDependency, String.format(
-                                "'%s' from 'retainVersions' did not have a version specified and was not in the project's dependency management",
+                        retainedVersion = Objects.requireNonNull(managedDependency, 
+                                "'%s' from 'retainVersions' did not have a version specified and was not in the project's dependency management".formatted(
                                 gav)).getVersion();
 
                     }

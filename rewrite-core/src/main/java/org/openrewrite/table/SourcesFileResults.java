@@ -39,8 +39,10 @@ public class SourcesFileResults extends DataTable<SourcesFileResults.Row> {
         String afterSourcePath;
 
         @Column(displayName = "Parent of the recipe that made changes",
-                description = "In a hierarchical recipe, the parent of the recipe that made a change. Empty if " +
-                              "this is the root of a hierarchy or if the recipe is not hierarchical at all.")
+                description = """
+                              In a hierarchical recipe, the parent of the recipe that made a change. Empty if \
+                              this is the root of a hierarchy or if the recipe is not hierarchical at all.\
+                              """)
         String parentRecipe;
 
         @Column(displayName = "Recipe that made changes",
@@ -48,8 +50,10 @@ public class SourcesFileResults extends DataTable<SourcesFileResults.Row> {
         String recipe;
 
         @Column(displayName = "Estimated time saving",
-                description = "An estimated effort that a developer to fix manually instead of using this recipe," +
-                              " in unit of seconds.")
+                description = """
+                              An estimated effort that a developer to fix manually instead of using this recipe,\
+                               in unit of seconds.\
+                              """)
         Long estimatedTimeSaving;
 
         @Column(displayName = "Cycle",

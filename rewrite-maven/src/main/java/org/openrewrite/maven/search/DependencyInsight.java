@@ -63,9 +63,11 @@ public class DependencyInsight extends Recipe {
     String scope;
 
     @Option(displayName = "Version",
-            description = "Match only dependencies with the specified version. " +
-                          "Node-style [version selectors](https://docs.openrewrite.org/reference/dependency-version-selectors) may be used." +
-                          "All versions are searched by default.",
+            description = """
+                          Match only dependencies with the specified version. \
+                          Node-style [version selectors](https://docs.openrewrite.org/reference/dependency-version-selectors) may be used.\
+                          All versions are searched by default.\
+                          """,
             example = "1.x",
             required = false)
     @Nullable
@@ -96,13 +98,15 @@ public class DependencyInsight extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s:%s`", groupIdPattern, artifactIdPattern);
+        return "`%s:%s`".formatted(groupIdPattern, artifactIdPattern);
     }
 
     @Override
     public String getDescription() {
-        return "Find direct and transitive dependencies matching a group, artifact, and scope. " +
-               "Results include dependencies that either directly match or transitively include a matching dependency.";
+        return """
+               Find direct and transitive dependencies matching a group, artifact, and scope. \
+               Results include dependencies that either directly match or transitively include a matching dependency.\
+               """;
     }
 
     @Override

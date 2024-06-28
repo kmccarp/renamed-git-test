@@ -229,8 +229,7 @@ public class VariableNameUtils {
         public J.ClassDeclaration visitClassDeclaration(J.ClassDeclaration classDecl, Set<String> namesInScope) {
             // Collect class fields first, because class fields are always visible regardless of what order the statements are declared.
             classDecl.getBody().getStatements().forEach(o -> {
-                if (o instanceof J.VariableDeclarations) {
-                    J.VariableDeclarations variableDeclarations = (J.VariableDeclarations) o;
+                if (o instanceof J.VariableDeclarations variableDeclarations) {
                     variableDeclarations.getVariables().forEach(v ->
                             nameScopes.computeIfAbsent(getCursor(), k -> new HashSet<>()).add(v.getSimpleName()));
                 }
@@ -280,7 +279,7 @@ public class VariableNameUtils {
 
         private boolean isValidImportName(@Nullable JavaType targetType, String name) {
             // Consider the id a valid field if the type is null since it is indistinguishable from a method name or class name.
-            return targetType == null || (targetType instanceof JavaType.FullyQualified && ((JavaType.FullyQualified) targetType).getMembers().stream().anyMatch(o -> o.getName().equals(name)));
+            return targetType == null || (targetType instanceof JavaType.FullyQualified fq && fq.getMembers().stream().anyMatch(o -> o.getName().equals(name)));
         }
     }
 

@@ -52,13 +52,13 @@ class PrintMavenAsCycloneDxBomTest implements RewriteTest {
                 </dependencies>
               </project>
               """
-          ).toList().get(0);
+          ).toList().getFirst();
 
         String bom = PrintMavenAsCycloneDxBom.print(pom)
           .replaceAll("<timestamp>.*</timestamp>", "<timestamp>TODAY</timestamp>");
 
-        assertThat(bom).isEqualTo(String.format(
-          """
+        assertThat(bom).isEqualTo(
+                """
             <?xml version="1.0" encoding="UTF-8"?>
             <bom xmlns="http://cyclonedx.org/schema/bom/1.2" serialNumber="urn:uuid:%s" version="1">
                 <metadata>
@@ -98,7 +98,7 @@ class PrintMavenAsCycloneDxBomTest implements RewriteTest {
                     </dependency>
                 </dependencies>
             </bom>
-            """, pom.getId().toString())
+            """.formatted(pom.getId().toString())
         );
 
     }
@@ -136,13 +136,13 @@ class PrintMavenAsCycloneDxBomTest implements RewriteTest {
                   </dependencies>
                 </project>
               """
-          ).toList().get(0);
+          ).toList().getFirst();
 
         String bom = PrintMavenAsCycloneDxBom.print(pom)
           .replaceAll("<timestamp>.*</timestamp>", "<timestamp>TODAY</timestamp>");
 
-        assertThat(bom).isEqualTo(String.format(
-          """
+        assertThat(bom).isEqualTo(
+                """
             <?xml version="1.0" encoding="UTF-8"?>
             <bom xmlns="http://cyclonedx.org/schema/bom/1.2" serialNumber="urn:uuid:%s" version="1">
                 <metadata>
@@ -163,7 +163,7 @@ class PrintMavenAsCycloneDxBomTest implements RewriteTest {
                     </component>
                 </metadata>
             </bom>
-            """, pom.getId().toString())
+            """.formatted(pom.getId().toString())
         );
 
     }

@@ -59,7 +59,7 @@ public class AppendToSequence extends Recipe {
 
     @Override
     public String getInstanceName() {
-        return String.format("Append %s to sequence `%s`",
+        return "Append %s to sequence `%s`".formatted(
                 value, sequencePath);
     }
 

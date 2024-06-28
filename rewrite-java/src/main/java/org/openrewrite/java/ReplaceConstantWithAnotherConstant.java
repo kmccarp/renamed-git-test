@@ -92,19 +92,17 @@ public class ReplaceConstantWithAnotherConstant extends Recipe {
                 owner = ((JavaType.FullyQualified) owner).getOwningClass();
             }
 
-            if (expression instanceof J.Identifier) {
+            if (expression instanceof J.Identifier identifier) {
                 maybeAddImport(newOwningType.getFullyQualifiedName(), newConstantName, false);
-                J.Identifier identifier = (J.Identifier) expression;
                 return identifier
                         .withSimpleName(newConstantName)
                         .withFieldType(fieldType.withOwner(newOwningType).withName(newConstantName));
-            } else if (expression instanceof J.FieldAccess) {
+            } else if (expression instanceof J.FieldAccess fieldAccess) {
                 maybeAddImport(newOwningType.getFullyQualifiedName(), false);
-                J.FieldAccess fieldAccess = (J.FieldAccess) expression;
                 Expression target = fieldAccess.getTarget();
                 J.Identifier name = fieldAccess.getName();
-                if (target instanceof J.Identifier) {
-                    target = ((J.Identifier) target).withType(newOwningType).withSimpleName(newOwningType.getClassName());
+                if (target instanceof J.Identifier identifier) {
+                    target = identifier.withType(newOwningType).withSimpleName(newOwningType.getClassName());
                     name = name
                             .withFieldType(fieldType.withOwner(newOwningType).withName(newConstantName))
                             .withSimpleName(newConstantName);
@@ -131,7 +129,7 @@ public class ReplaceConstantWithAnotherConstant extends Recipe {
             if (!(maybeVariable.getValue() instanceof J.VariableDeclarations)) {
                 return false;
             }
-            JavaType.Variable variableType = ((J.VariableDeclarations) maybeVariable.getValue()).getVariables().get(0).getVariableType();
+            JavaType.Variable variableType = ((J.VariableDeclarations) maybeVariable.getValue()).getVariables().getFirst().getVariableType();
             if (variableType == null) {
                 return true;
             }
@@ -141,7 +139,7 @@ public class ReplaceConstantWithAnotherConstant extends Recipe {
                 return true;
             }
 
-            return constantName.equals(((J.VariableDeclarations) maybeVariable.getValue()).getVariables().get(0).getSimpleName()) &&
+            return constantName.equals(((J.VariableDeclarations) maybeVariable.getValue()).getVariables().getFirst().getSimpleName()) &&
                     existingOwningType.equals(ownerFqn.getFullyQualifiedName());
         }
     }

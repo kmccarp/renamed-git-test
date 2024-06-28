@@ -121,9 +121,11 @@ public class DependencyVersionSelector {
                          @Nullable String versionPattern,
                          ExecutionContext ctx) throws MavenDownloadingException {
         if (gav.getVersion() == null) {
-            throw new IllegalArgumentException("Version must be specified. Call the select method " +
-                                               "that accepts a GroupArtifact instead if there is no " +
-                                               "current version.");
+            throw new IllegalArgumentException("""
+                                               Version must be specified. Call the select method \
+                                               that accepts a GroupArtifact instead if there is no \
+                                               current version.\
+                                               """);
         }
 
         VersionComparator versionComparator = StringUtils.isBlank(version) ?

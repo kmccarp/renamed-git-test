@@ -70,7 +70,7 @@ public class ChangePackaging extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("for `%s:%s` to `%s`", groupId, artifactId, packaging);
+        return "for `%s:%s` to `%s`".formatted(groupId, artifactId, packaging);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class ChangePackaging extends Recipe {
                 Xml.Tag t = super.visitTag(tag, ctx);
                 if (PROJECT_MATCHER.matches(getCursor())) {
                     Optional<Xml.Tag> maybePackaging = t.getChild("packaging");
-                    if (!maybePackaging.isPresent() || oldPackaging == null || oldPackaging.equals(maybePackaging.get().getValue().orElse(null))) {
+                    if (maybePackaging.isEmpty() || oldPackaging == null || oldPackaging.equals(maybePackaging.get().getValue().orElse(null))) {
                         if (packaging == null || "jar".equals(packaging)) {
                             t = filterTagChildren(t, it -> !"packaging".equals(it.getName()));
                         } else {

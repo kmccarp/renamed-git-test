@@ -60,15 +60,15 @@ public class AddPluginVisitor extends GroovyIsoVisitor<ExecutionContext> {
 
     private static @Nullable Comment getLicenseHeader(G.CompilationUnit cu) {
         if (!cu.getStatements().isEmpty()) {
-            Statement firstStatement = cu.getStatements().get(0);
+            Statement firstStatement = cu.getStatements().getFirst();
             if (!firstStatement.getComments().isEmpty()) {
-                Comment firstComment = firstStatement.getComments().get(0);
+                Comment firstComment = firstStatement.getComments().getFirst();
                 if (isLicenseHeader(firstComment)) {
                     return firstComment;
                 }
             }
         } else if (cu.getEof() != null && !cu.getEof().getComments().isEmpty()) {
-            Comment firstComment = cu.getEof().getComments().get(0);
+            Comment firstComment = cu.getEof().getComments().getFirst();
             if (isLicenseHeader(firstComment)) {
                 // Adding suffix so when we later use it, formats well.
                 return firstComment.withSuffix("\n\n");
@@ -78,8 +78,8 @@ public class AddPluginVisitor extends GroovyIsoVisitor<ExecutionContext> {
     }
 
     private static boolean isLicenseHeader(Comment comment) {
-        return comment instanceof TextComment && comment.isMultiline() &&
-               ((TextComment) comment).getText().contains("License");
+        return comment instanceof TextComment tc && comment.isMultiline() &&
+               tc.getText().contains("License");
     }
 
     private static G.CompilationUnit removeLicenseHeader(G.CompilationUnit cu) {
@@ -103,7 +103,7 @@ public class AddPluginVisitor extends GroovyIsoVisitor<ExecutionContext> {
             } else {
                 Optional<GradleProject> maybeGp = cu.getMarkers().findFirst(GradleProject.class);
                 Optional<GradleSettings> maybeGs = cu.getMarkers().findFirst(GradleSettings.class);
-                if (!maybeGp.isPresent() && !maybeGs.isPresent()) {
+                if (maybeGp.isEmpty() && maybeGs.isEmpty()) {
                     return cu;
                 }
 
@@ -123,8 +123,8 @@ public class AddPluginVisitor extends GroovyIsoVisitor<ExecutionContext> {
                 public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, Integer integer) {
                     J.MethodInvocation m = super.visitMethodInvocation(method, integer);
                     if (pluginIdMatcher.matches(m)) {
-                        if (m.getArguments().get(0) instanceof J.Literal) {
-                            J.Literal l = (J.Literal) m.getArguments().get(0);
+                        if (m.getArguments().getFirst() instanceof J.Literal) {
+                            J.Literal l = (J.Literal) m.getArguments().getFirst();
                             assert l.getValueSource() != null;
                             if (l.getValueSource().startsWith("'")) {
                                 singleQuote.incrementAndGet();
@@ -145,25 +145,25 @@ public class AddPluginVisitor extends GroovyIsoVisitor<ExecutionContext> {
                     .parseInputs(singletonList(Parser.Input.fromString(source)), null, ctx)
                     .findFirst()
                     .map(parsed -> {
-                        if (parsed instanceof ParseError) {
-                            throw ((ParseError) parsed).toException();
+                        if (parsed instanceof ParseError error) {
+                            throw error.toException();
                         }
                         return ((G.CompilationUnit) parsed);
                     })
-                    .map(parsed -> parsed.getStatements().get(0))
+                    .map(parsed -> parsed.getStatements().getFirst())
                     .orElseThrow(() -> new IllegalArgumentException("Could not parse as Gradle"));
 
             if (FindMethods.find(cu, "RewriteGradleProject plugins(..)").isEmpty() && FindMethods.find(cu, "RewriteSettings plugins(..)").isEmpty()) {
                 if (cu.getSourcePath().endsWith(Paths.get("settings.gradle"))
                     && !cu.getStatements().isEmpty()
-                    && cu.getStatements().get(0) instanceof J.MethodInvocation
-                    && ((J.MethodInvocation) cu.getStatements().get(0)).getSimpleName().equals("pluginManagement")) {
+                    && cu.getStatements().getFirst() instanceof J.MethodInvocation
+                    && ((J.MethodInvocation) cu.getStatements().getFirst()).getSimpleName().equals("pluginManagement")) {
                     return cu.withStatements(ListUtils.insert(cu.getStatements(), autoFormat(statement.withPrefix(Space.format("\n\n")), ctx, getCursor()), 1));
                 } else {
                     int insertAtIdx = 0;
                     for (int i = 0; i < cu.getStatements().size(); i++) {
                         Statement existingStatement = cu.getStatements().get(i);
-                        if (existingStatement instanceof J.MethodInvocation && ((J.MethodInvocation) existingStatement).getSimpleName().equals("buildscript")) {
+                        if (existingStatement instanceof J.MethodInvocation invocation && invocation.getSimpleName().equals("buildscript")) {
                             insertAtIdx = i + 1;
                             break;
                         }
@@ -186,18 +186,16 @@ public class AddPluginVisitor extends GroovyIsoVisitor<ExecutionContext> {
             } else {
                 MethodMatcher buildPluginsMatcher = new MethodMatcher("RewriteGradleProject plugins(groovy.lang.Closure)");
                 MethodMatcher settingsPluginsMatcher = new MethodMatcher("RewriteSettings plugins(groovy.lang.Closure)");
-                J.MethodInvocation pluginDef = (J.MethodInvocation) ((J.Return) ((J.Block) ((J.Lambda) ((J.MethodInvocation) autoFormat(statement, ctx, getCursor())).getArguments().get(0)).getBody()).getStatements().get(0)).getExpression();
+                J.MethodInvocation pluginDef = (J.MethodInvocation) ((J.Return) ((J.Block) ((J.Lambda) ((J.MethodInvocation) autoFormat(statement, ctx, getCursor())).getArguments().getFirst()).getBody()).getStatements().getFirst()).getExpression();
                 return cu.withStatements(ListUtils.map(cu.getStatements(), stat -> {
-                    if (stat instanceof J.MethodInvocation) {
-                        J.MethodInvocation m = (J.MethodInvocation) stat;
+                    if (stat instanceof J.MethodInvocation m) {
                         if (buildPluginsMatcher.matches(m) || settingsPluginsMatcher.matches(m)) {
                             m = m.withArguments(ListUtils.map(m.getArguments(), a -> {
-                                if (a instanceof J.Lambda) {
-                                    J.Lambda l = (J.Lambda) a;
+                                if (a instanceof J.Lambda l) {
                                     J.Block b = (J.Block) l.getBody();
                                     List<Statement> pluginStatements = b.getStatements();
-                                    if (!pluginStatements.isEmpty() && pluginStatements.get(pluginStatements.size() - 1) instanceof J.Return) {
-                                        Statement last = pluginStatements.remove(pluginStatements.size() - 1);
+                                    if (!pluginStatements.isEmpty() && pluginStatements.getLast() instanceof J.Return) {
+                                        Statement last = pluginStatements.removeLast();
                                         Expression lastExpr = requireNonNull(((J.Return) last).getExpression());
                                         pluginStatements.add(lastExpr.withPrefix(last.getPrefix()));
                                     }

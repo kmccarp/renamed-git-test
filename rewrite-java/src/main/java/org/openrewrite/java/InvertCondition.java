@@ -39,8 +39,7 @@ public class InvertCondition extends JavaVisitor<ExecutionContext> {
     @Override
     public J visit(@Nullable Tree tree, ExecutionContext ctx) {
         J t;
-        if (tree instanceof Expression && !(tree instanceof J.ControlParentheses) && !(tree instanceof J.Binary)) {
-            Expression expression = (Expression) tree;
+        if (tree instanceof Expression expression && !(tree instanceof J.ControlParentheses) && !(tree instanceof J.Binary)) {
             t = new J.Unary(randomId(), expression.getPrefix(), Markers.EMPTY,
                     JLeftPadded.build(J.Unary.Type.Not), expression.withPrefix(Space.EMPTY), expression.getType());
         } else {

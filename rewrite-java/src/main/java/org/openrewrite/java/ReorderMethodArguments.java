@@ -67,8 +67,10 @@ public class ReorderMethodArguments extends Recipe {
     String[] oldParameterNames;
 
     @Option(displayName = "Ignore type definition",
-            description = "When set to `true` the definition of the old type will be left untouched. " +
-                    "This is useful when you're replacing usage of a class but don't want to rename it.",
+            description = """
+                    When set to `true` the definition of the old type will be left untouched. \
+                    This is useful when you're replacing usage of a class but don't want to rename it.\
+                    """,
             required = false)
     @Nullable
     Boolean ignoreDefinition;
@@ -191,8 +193,8 @@ public class ReorderMethodArguments extends Recipe {
                             .withParameterTypes(reorderedTypes);
                     m = withPaddedArguments(m, reordered)
                             .withMethodType(mt);
-                    if (m instanceof J.MethodInvocation && ((J.MethodInvocation) m).getName().getType() != null) {
-                        m = ((J.MethodInvocation) m).withName(((J.MethodInvocation) m).getName().withType(mt));
+                    if (m instanceof J.MethodInvocation invocation && invocation.getName().getType() != null) {
+                        m = invocation.withName(invocation.getName().withType(mt));
                     }
                 }
             }
@@ -200,23 +202,21 @@ public class ReorderMethodArguments extends Recipe {
         }
 
         private List<JRightPadded<Expression>> getPaddedArguments(MethodCall m) {
-            if (m instanceof J.MethodInvocation) {
-                return ((J.MethodInvocation) m).getPadding().getArguments().getPadding().getElements();
-            } else if (m instanceof J.NewClass) {
-                return ((J.NewClass) m).getPadding().getArguments().getPadding().getElements();
+            if (m instanceof J.MethodInvocation invocation) {
+                return invocation.getPadding().getArguments().getPadding().getElements();
+            } else if (m instanceof J.NewClass class1) {
+                return class1.getPadding().getArguments().getPadding().getElements();
             } else {
                 throw new IllegalArgumentException("Unknown MethodCall type");
             }
         }
 
         private MethodCall withPaddedArguments(MethodCall m, List<JRightPadded<Expression>> reordered) {
-            if (m instanceof J.MethodInvocation) {
-                J.MethodInvocation mi = (J.MethodInvocation) m;
+            if (m instanceof J.MethodInvocation mi) {
                 return mi.getPadding().withArguments(
                         mi.getPadding().getArguments().getPadding().withElements(reordered)
                 );
-            } else if (m instanceof J.NewClass) {
-                J.NewClass nc = (J.NewClass) m;
+            } else if (m instanceof J.NewClass nc) {
                 return nc.getPadding().withArguments(
                         nc.getPadding().getArguments().getPadding().withElements(reordered)
                 );

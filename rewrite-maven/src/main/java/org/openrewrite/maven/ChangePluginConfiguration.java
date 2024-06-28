@@ -61,7 +61,7 @@ public class ChangePluginConfiguration extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("for `%s:%s`", groupId, artifactId);
+        return "for `%s:%s`".formatted(groupId, artifactId);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class ChangePluginConfiguration extends Recipe {
                         Xml.Tag plugin = maybePlugin.get();
                         if (configuration == null) {
                             plugins = filterChildren(plugins, plugin,
-                                    child -> !(child instanceof Xml.Tag && "configuration".equals(((Xml.Tag) child).getName())));
+                                    child -> !(child instanceof Xml.Tag t && "configuration".equals(t.getName())));
                         } else {
                             plugins = addOrUpdateChild(plugins, plugin,
                                     Xml.Tag.build("<configuration>\n" + configuration + "\n</configuration>"),

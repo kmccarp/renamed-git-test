@@ -110,9 +110,9 @@ public class Substitutions {
             }
 
             JavaType type = ((TypedTree) parameter).getType();
-            if (type == null && parameter instanceof J.Empty && ((J.Empty) parameter).getMarkers().findFirst(TemplateParameter.class).isPresent()) {
+            if (type == null && parameter instanceof J.Empty empty && empty.getMarkers().findFirst(TemplateParameter.class).isPresent()) {
                 // this is a hack, but since we currently represent template parameters as `J.Empty`, this is the only way to get the type now
-                type = ((J.Empty) parameter).getMarkers().findFirst(TemplateParameter.class).get().getType();
+                type = empty.getMarkers().findFirst(TemplateParameter.class).get().getType();
             }
             JavaType.Array arrayType = TypeUtils.asArray(type);
             if (arrayType == null) {
@@ -133,12 +133,12 @@ public class Substitutions {
             if (param != null) {
                 type = TypeParameter.toFullyQualifiedName(param);
             } else {
-                if (parameter instanceof J.NewClass && ((J.NewClass) parameter).getBody() != null
-                    && ((J.NewClass) parameter).getClazz() != null) {
+                if (parameter instanceof J.NewClass class1 && class1.getBody() != null
+                    && class1.getClazz() != null) {
                     // for anonymous classes get the type from the supertype
-                    type = ((J.NewClass) parameter).getClazz().getType();
-                } else if (parameter instanceof TypedTree) {
-                    type = ((TypedTree) parameter).getType();
+                    type = class1.getClazz().getType();
+                } else if (parameter instanceof TypedTree tree) {
+                    type = tree.getType();
                 } else {
                     type = null;
                 }
@@ -167,10 +167,10 @@ public class Substitutions {
 
     protected String newArrayParameter(JavaType elemType, int dimensions, int index) {
         StringBuilder builder = new StringBuilder("/*__p" + index + "__*/" + "new ");
-        if (elemType instanceof JavaType.Primitive) {
-            builder.append(((JavaType.Primitive) elemType).getKeyword());
-        } else if (elemType instanceof JavaType.FullyQualified) {
-            builder.append(((JavaType.FullyQualified) elemType).getFullyQualifiedName().replace("$", "."));
+        if (elemType instanceof JavaType.Primitive primitive) {
+            builder.append(primitive.getKeyword());
+        } else if (elemType instanceof JavaType.FullyQualified qualified) {
+            builder.append(qualified.getFullyQualifiedName().replace("$", "."));
         }
         for (int i = 0; i < dimensions; i++) {
             builder.append("[0]");
@@ -181,8 +181,7 @@ public class Substitutions {
     private String getTypeName(@Nullable JavaType type) {
         if (type == null) {
             return "java.lang.Object";
-        } else if (type instanceof JavaType.GenericTypeVariable) {
-            JavaType.GenericTypeVariable genericTypeVariable = (JavaType.GenericTypeVariable) type;
+        } else if (type instanceof JavaType.GenericTypeVariable genericTypeVariable) {
             if (genericTypeVariable.getName().equals("?")) {
                 // wildcards cannot be used as type parameters on method invocations
                 return "java.lang.Object";
@@ -205,26 +204,26 @@ public class Substitutions {
                 throw new IllegalArgumentException("Template parameter " + index + " cannot be used in an untyped template substitution. " +
                                                    "Instead of \"#{}\", indicate the template parameter's type with \"#{any(" + typeHintFor(parameter) + ")}\".");
             }
-        } else if (parameter instanceof JRightPadded) {
-            return substituteUntyped(((JRightPadded<?>) parameter).getElement(), index);
-        } else if (parameter instanceof JLeftPadded) {
-            return substituteUntyped(((JLeftPadded<?>) parameter).getElement(), index);
+        } else if (parameter instanceof JRightPadded<?> padded) {
+            return substituteUntyped(padded.getElement(), index);
+        } else if (parameter instanceof JLeftPadded<?> padded) {
+            return substituteUntyped(padded.getElement(), index);
         }
         return parameter.toString();
     }
 
     private static String typeHintFor(Object j) {
-        if (j instanceof TypedTree) {
-            return typeHintFor(((TypedTree) j).getType());
+        if (j instanceof TypedTree tree) {
+            return typeHintFor(tree.getType());
         }
         return "";
     }
 
     private static String typeHintFor(@Nullable JavaType t) {
-        if (t instanceof JavaType.Primitive) {
-            return ((JavaType.Primitive) t).getKeyword();
-        } else if (t instanceof JavaType.FullyQualified) {
-            return ((JavaType.FullyQualified) t).getFullyQualifiedName();
+        if (t instanceof JavaType.Primitive primitive) {
+            return primitive.getKeyword();
+        } else if (t instanceof JavaType.FullyQualified qualified) {
+            return qualified.getFullyQualifiedName();
         }
         return "";
     }
@@ -246,7 +245,7 @@ public class Substitutions {
             @Override
             public J visitAnnotation(J.Annotation annotation, Integer integer) {
                 if (TypeUtils.isOfClassType(annotation.getType(), "SubAnnotation")) {
-                    J.Literal index = (J.Literal) annotation.getArguments().get(0);
+                    J.Literal index = (J.Literal) annotation.getArguments().getFirst();
                     J a2 = (J) parameters[(Integer) index.getValue()];
                     return a2.withPrefix(a2.getPrefix().withWhitespace(annotation.getPrefix().getWhitespace()));
                 }
@@ -302,8 +301,8 @@ public class Substitutions {
             @Nullable
             private Integer parameterIndex(Space space) {
                 for (Comment comment : space.getComments()) {
-                    if (comment instanceof TextComment) {
-                        Matcher matcher = PATTERN_COMMENT.matcher(((TextComment) comment).getText());
+                    if (comment instanceof TextComment textComment) {
+                        Matcher matcher = PATTERN_COMMENT.matcher(textComment.getText());
                         if (matcher.matches()) {
                             return Integer.valueOf(matcher.group(1));
                         }
@@ -322,7 +321,7 @@ public class Substitutions {
         public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
                                 int line, int charPositionInLine, String msg, RecognitionException e) {
             throw new IllegalArgumentException(
-                    String.format("Syntax error at line %d:%d %s.", line, charPositionInLine, msg), e);
+                    "Syntax error at line %d:%d %s.".formatted(line, charPositionInLine, msg), e);
         }
     }
 }

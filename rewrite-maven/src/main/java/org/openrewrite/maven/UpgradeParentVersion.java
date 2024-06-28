@@ -43,8 +43,10 @@ public class UpgradeParentVersion extends Recipe {
     String newVersion;
 
     @Option(displayName = "Version pattern",
-            description = "Allows version selection to be extended beyond the original Node Semver semantics. So for example," +
-                          "Setting 'version' to \"25-29\" can be paired with a metadata pattern of \"-jre\" to select Guava 29.0-jre",
+            description = """
+                          Allows version selection to be extended beyond the original Node Semver semantics. So for example,\
+                          Setting 'version' to "25-29" can be paired with a metadata pattern of "-jre" to select Guava 29.0-jre\
+                          """,
             example = "-jre",
             required = false)
     @Nullable
@@ -57,13 +59,15 @@ public class UpgradeParentVersion extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("to `%s:%s:%s`", groupId, artifactId, newVersion);
+        return "to `%s:%s:%s`".formatted(groupId, artifactId, newVersion);
     }
 
     @Override
     public String getDescription() {
-        return "Set the parent pom version number according to a [version selector](https://docs.openrewrite.org/reference/dependency-version-selectors) " +
-               "or to a specific version number.";
+        return """
+               Set the parent pom version number according to a [version selector](https://docs.openrewrite.org/reference/dependency-version-selectors) \
+               or to a specific version number.\
+               """;
     }
 
     @Override

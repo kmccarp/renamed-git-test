@@ -51,9 +51,11 @@ public class UpdateJavaCompatibility extends Recipe {
     CompatibilityType compatibilityType;
 
     @Option(displayName = "Declaration style",
-            description = "The desired style to write the new version as when being written to the `sourceCompatibility` " +
-                    "or `targetCompatibility` variables. Default, match current source style. " +
-                    "(ex. Enum: `JavaVersion.VERSION_11`, Number: 11, or String: \"11\")",
+            description = """
+                    The desired style to write the new version as when being written to the `sourceCompatibility` \
+                    or `targetCompatibility` variables. Default, match current source style. \
+                    (ex. Enum: `JavaVersion.VERSION_11`, Number: 11, or String: "11")\
+                    """,
             valid = {"Enum", "Number", "String"},
             required = false)
     @Nullable
@@ -172,8 +174,8 @@ public class UpdateJavaCompatibility extends Recipe {
                 if (javaLanguageVersionMatcher.matches(m)) {
                     List<Expression> args = m.getArguments();
 
-                    if (args.size() == 1 && args.get(0) instanceof J.Literal) {
-                        J.Literal versionArg = (J.Literal) args.get(0);
+                    if (args.size() == 1 && args.getFirst() instanceof J.Literal) {
+                        J.Literal versionArg = (J.Literal) args.getFirst();
                         if (versionArg.getValue() instanceof Integer) {
                             Integer versionNumber = (Integer) versionArg.getValue();
                             if (shouldUpdateVersion(versionNumber)) {
@@ -197,9 +199,9 @@ public class UpdateJavaCompatibility extends Recipe {
                         return m;
                     }
 
-                    if (m.getArguments().size() == 1 && (m.getArguments().get(0) instanceof J.Literal || m.getArguments().get(0) instanceof J.FieldAccess)) {
-                        DeclarationStyle currentStyle = getCurrentStyle(m.getArguments().get(0));
-                        int currentMajor = getMajorVersion(m.getArguments().get(0));
+                    if (m.getArguments().size() == 1 && (m.getArguments().getFirst() instanceof J.Literal || m.getArguments().getFirst() instanceof J.FieldAccess)) {
+                        DeclarationStyle currentStyle = getCurrentStyle(m.getArguments().getFirst());
+                        int currentMajor = getMajorVersion(m.getArguments().getFirst());
                         if (shouldUpdateVersion(currentMajor) || shouldUpdateStyle(declarationStyle)) {
                             DeclarationStyle actualStyle = declarationStyle == null ? currentStyle : declarationStyle;
                             return m.withArguments(ListUtils.mapFirst(m.getArguments(), arg -> changeExpression(arg, actualStyle)));
@@ -227,8 +229,7 @@ public class UpdateJavaCompatibility extends Recipe {
             }
 
             private int getMajorVersion(Expression expression) {
-                if (expression instanceof J.Literal) {
-                    J.Literal argument = (J.Literal) expression;
+                if (expression instanceof J.Literal argument) {
                     JavaType.Primitive type = argument.getType();
                     if (type == JavaType.Primitive.String) {
                         return getMajorVersion((String) argument.getValue());
@@ -237,14 +238,12 @@ public class UpdateJavaCompatibility extends Recipe {
                     } else if (type == JavaType.Primitive.Double) {
                         return getMajorVersion(requireNonNull(argument.getValue()).toString());
                     }
-                } else if (expression instanceof J.FieldAccess) {
-                    J.FieldAccess field = (J.FieldAccess) expression;
+                } else if (expression instanceof J.FieldAccess field) {
                     J.Identifier identifier = field.getName();
                     return getMajorVersion(identifier.getSimpleName());
-                } else if (expression instanceof J.MethodInvocation && javaVersionToVersionMatcher.matches((J.MethodInvocation) expression)) {
-                    J.MethodInvocation method = (J.MethodInvocation) expression;
-                    if (method.getArguments().get(0) instanceof J.Literal) {
-                        return getMajorVersion(method.getArguments().get(0));
+                } else if (expression instanceof J.MethodInvocation method && javaVersionToVersionMatcher.matches(method)) {
+                    if (method.getArguments().getFirst() instanceof J.Literal) {
+                        return getMajorVersion(method.getArguments().getFirst());
                     }
                 }
 
@@ -252,8 +251,7 @@ public class UpdateJavaCompatibility extends Recipe {
             }
 
             private @Nullable DeclarationStyle getCurrentStyle(Expression expression) {
-                if (expression instanceof J.Literal) {
-                    J.Literal argument = (J.Literal) expression;
+                if (expression instanceof J.Literal argument) {
                     JavaType.Primitive type = argument.getType();
                     if (type == JavaType.Primitive.String) {
                         return DeclarationStyle.String;
@@ -291,8 +289,7 @@ public class UpdateJavaCompatibility extends Recipe {
             }
 
             private Expression changeExpression(Expression expression, @Nullable DeclarationStyle style) {
-                if (expression instanceof J.Literal) {
-                    J.Literal literal = (J.Literal) expression;
+                if (expression instanceof J.Literal literal) {
                     if (style == DeclarationStyle.String) {
                         String newVersion = version <= 8 ? "1." + version : String.valueOf(version);
                         if (literal.getType() == JavaType.Primitive.String) {
@@ -318,8 +315,7 @@ public class UpdateJavaCompatibility extends Recipe {
                             expression = literal.withType(JavaType.Primitive.Int).withValue(version).withValueSource(String.valueOf(version));
                         }
                     }
-                } else if (expression instanceof J.FieldAccess) {
-                    J.FieldAccess fieldAccess = (J.FieldAccess) expression;
+                } else if (expression instanceof J.FieldAccess fieldAccess) {
                     if (style == DeclarationStyle.String) {
                         String newVersion = version <= 8 ? "1." + version : String.valueOf(version);
                         expression = new J.Literal(randomId(), fieldAccess.getPrefix(), fieldAccess.getMarkers(), newVersion, "'" + newVersion + "'", emptyList(), JavaType.Primitive.String);
@@ -334,22 +330,21 @@ public class UpdateJavaCompatibility extends Recipe {
                             expression = new J.Literal(randomId(), fieldAccess.getPrefix(), fieldAccess.getMarkers(), version, String.valueOf(version), emptyList(), JavaType.Primitive.Int);
                         }
                     }
-                } else if (expression instanceof J.MethodInvocation && javaVersionToVersionMatcher.matches((J.MethodInvocation) expression)) {
-                    J.MethodInvocation m = (J.MethodInvocation) expression;
+                } else if (expression instanceof J.MethodInvocation m && javaVersionToVersionMatcher.matches(m)) {
                     if (style == null) {
                         expression = m.withArguments(ListUtils.mapFirst(m.getArguments(), arg -> {
-                            if (arg instanceof J.Literal) {
+                            if (arg instanceof J.Literal literal) {
                                 if (arg.getType() == JavaType.Primitive.String) {
                                     String newVersion = version <= 8 ? "1." + version : String.valueOf(version);
-                                    return ChangeStringLiteral.withStringValue((J.Literal) arg, newVersion);
+                                    return ChangeStringLiteral.withStringValue(literal, newVersion);
                                 } else if (arg.getType() == JavaType.Primitive.Int) {
-                                    return ((J.Literal) arg).withValue(version).withValueSource(String.valueOf(version));
+                                    return literal.withValue(version).withValueSource(String.valueOf(version));
                                 } else if (arg.getType() == JavaType.Primitive.Double) {
                                     if (version <= 8) {
                                         double doubleValue = Double.parseDouble("1." + version);
-                                        return ((J.Literal) arg).withValue(doubleValue).withValueSource(String.valueOf(doubleValue));
+                                        return literal.withValue(doubleValue).withValueSource(String.valueOf(doubleValue));
                                     } else {
-                                        return ((J.Literal) arg).withType(JavaType.Primitive.Int).withValue(version).withValueSource(String.valueOf(version));
+                                        return literal.withType(JavaType.Primitive.Int).withValue(version).withValueSource(String.valueOf(version));
                                     }
                                 }
                             }

@@ -31,12 +31,11 @@ class ParserTypeUtils {
 
     private static Class<SourceFile> parserType(Class<?> parser) {
         for (Type anInterface : parser.getGenericInterfaces()) {
-            if (anInterface instanceof Class) {
-                return parserType((Class<?>) anInterface);
+            if (anInterface instanceof Class<?> class1) {
+                return parserType(class1);
             }
 
-            if (anInterface instanceof ParameterizedType) {
-                ParameterizedType pt = (ParameterizedType) anInterface;
+            if (anInterface instanceof ParameterizedType pt) {
                 if (pt.getRawType().equals(Parser.class)) {
                     //noinspection unchecked
                     return (Class<SourceFile>) pt.getActualTypeArguments()[0];

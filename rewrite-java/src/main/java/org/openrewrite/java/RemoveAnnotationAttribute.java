@@ -46,7 +46,7 @@ public class RemoveAnnotationAttribute extends Recipe {
     @Override
     public String getInstanceNameSuffix() {
         String shortType = annotationType.substring(annotationType.lastIndexOf('.') + 1);
-        return String.format("`@%s(%s)`", shortType, attributeName);
+        return "`@%s(%s)`".formatted(shortType, attributeName);
     }
 
     @Override
@@ -70,8 +70,7 @@ public class RemoveAnnotationAttribute extends Recipe {
                 AtomicBoolean shouldTrimNextPrefix = new AtomicBoolean(false);
                 return a.withArguments(ListUtils.map(a.getArguments(), arg -> {
                     try {
-                        if (arg instanceof J.Assignment) {
-                            J.Assignment assignment = (J.Assignment) arg;
+                        if (arg instanceof J.Assignment assignment) {
                             J.Identifier variable = (J.Identifier) assignment.getVariable();
                             if (attributeName.equals(variable.getSimpleName())) {
                                 if (!didPassFirstAttribute.get()) {

@@ -56,9 +56,9 @@ public class UnnecessaryParenthesesVisitor<P> extends JavaVisitor<P> {
         }
 
         assert par != null;
-        if (par instanceof J.Parentheses) {
+        if (par instanceof J.Parentheses<?> parentheses) {
             if (getCursor().getParentTreeCursor().getValue() instanceof J.Parentheses) {
-                return ((J.Parentheses<?>) par).getTree().withPrefix(Space.EMPTY);
+                return parentheses.getTree().withPrefix(Space.EMPTY);
             }
         }
         return par;
@@ -162,8 +162,8 @@ public class UnnecessaryParenthesesVisitor<P> extends JavaVisitor<P> {
         J.If i = (J.If) super.visitIf(iff, ctx);
         // Unwrap when if condition is a single parenthesized expression
         Expression expression = i.getIfCondition().getTree();
-        if (expression instanceof J.Parentheses) {
-            i = (J.If) new UnwrapParentheses<>((J.Parentheses<?>) expression).visitNonNull(i, ctx,
+        if (expression instanceof J.Parentheses<?> parentheses) {
+            i = (J.If) new UnwrapParentheses<>(parentheses).visitNonNull(i, ctx,
                 getCursor().getParentOrThrow());
         }
         return i;
@@ -174,8 +174,8 @@ public class UnnecessaryParenthesesVisitor<P> extends JavaVisitor<P> {
         J.WhileLoop w = (J.WhileLoop) super.visitWhileLoop(whileLoop, ctx);
         // Unwrap when while condition is a single parenthesized expression
         Expression expression = w.getCondition().getTree();
-        if (expression instanceof J.Parentheses) {
-            w = (J.WhileLoop) new UnwrapParentheses<>((J.Parentheses<?>) expression).visitNonNull(w, ctx,
+        if (expression instanceof J.Parentheses<?> parentheses) {
+            w = (J.WhileLoop) new UnwrapParentheses<>(parentheses).visitNonNull(w, ctx,
                 getCursor().getParentOrThrow());
         }
         return w;
@@ -186,8 +186,8 @@ public class UnnecessaryParenthesesVisitor<P> extends JavaVisitor<P> {
         J.DoWhileLoop dw = (J.DoWhileLoop) super.visitDoWhileLoop(doWhileLoop, ctx);
         // Unwrap when while condition is a single parenthesized expression
         Expression expression = dw.getWhileCondition().getTree();
-        if (expression instanceof J.Parentheses) {
-            dw = (J.DoWhileLoop) new UnwrapParentheses<>((J.Parentheses<?>) expression).visitNonNull(dw, ctx,
+        if (expression instanceof J.Parentheses<?> parentheses) {
+            dw = (J.DoWhileLoop) new UnwrapParentheses<>(parentheses).visitNonNull(dw, ctx,
                 getCursor().getParentOrThrow());
         }
         return dw;
@@ -197,8 +197,8 @@ public class UnnecessaryParenthesesVisitor<P> extends JavaVisitor<P> {
     public J visitForControl(J.ForLoop.Control control, P ctx) {
         J.ForLoop.Control fc = (J.ForLoop.Control) super.visitForControl(control, ctx);
         Expression condition = fc.getCondition();
-        if (condition instanceof J.Parentheses) {
-            fc = (J.ForLoop.Control) new UnwrapParentheses<>((J.Parentheses<?>) condition).visitNonNull(fc, ctx,
+        if (condition instanceof J.Parentheses<?> parentheses) {
+            fc = (J.ForLoop.Control) new UnwrapParentheses<>(parentheses).visitNonNull(fc, ctx,
                 getCursor().getParentOrThrow());
         }
         return fc;

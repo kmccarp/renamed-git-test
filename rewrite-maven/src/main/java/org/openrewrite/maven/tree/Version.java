@@ -120,7 +120,7 @@ public class Version implements Comparable<Version> {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof Version && this.compareTo((Version) obj) == 0;
+        return obj instanceof Version v && this.compareTo(v) == 0;
     }
 
     @Override
@@ -200,7 +200,7 @@ public class Version implements Comparable<Version> {
 
         @Override
         public boolean equals(Object obj) {
-            return obj instanceof Version.Item && this.compareTo((Version.Item) obj) == 0;
+            return obj instanceof Version.Item i && this.compareTo(i) == 0;
         }
 
         @Override

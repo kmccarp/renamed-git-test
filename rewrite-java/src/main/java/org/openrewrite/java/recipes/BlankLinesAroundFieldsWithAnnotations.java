@@ -38,11 +38,13 @@ public class BlankLinesAroundFieldsWithAnnotations extends Recipe {
 
     @Override
     public String getDescription() {
-        return "Fields with annotations should have a blank line " +
-               "before them to clearly separate them from the field above. " +
-               "If another field follows, it should also have a blank line after " +
-               "so that the field with the annotation has space on either side of it, " +
-               "visually distinguishing it from its neighbors.";
+        return """
+               Fields with annotations should have a blank line \
+               before them to clearly separate them from the field above. \
+               If another field follows, it should also have a blank line after \
+               so that the field with the annotation has space on either side of it, \
+               visually distinguishing it from its neighbors.\
+               """;
     }
 
     @Override
@@ -61,8 +63,7 @@ public class BlankLinesAroundFieldsWithAnnotations extends Recipe {
                                 s = s.withPrefix(s.getPrefix().withWhitespace(BlankLinesVisitor.minimumLines(s.getPrefix().getWhitespace(), 1)));
                             }
                         }
-                        if (s instanceof J.VariableDeclarations) {
-                            J.VariableDeclarations mv = (J.VariableDeclarations) s;
+                        if (s instanceof J.VariableDeclarations mv) {
                             if (!mv.getLeadingAnnotations().isEmpty()) {
                                 if (i > 0 && statements.get(i - 1) instanceof J.VariableDeclarations) {
                                     mv = mv.withPrefix(mv.getPrefix().withWhitespace(BlankLinesVisitor.minimumLines(mv.getPrefix().getWhitespace(), 1)));

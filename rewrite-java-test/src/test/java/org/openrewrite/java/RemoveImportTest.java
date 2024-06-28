@@ -336,23 +336,27 @@ class RemoveImportTest implements RewriteTest {
         rewriteRun(
           spec -> spec.recipe(removeImport("java.util.List")),
           java(
-              "package com.example.foo;\r\n" +
-              "\r\n" +
-              "import java.util.Collection;\r\n" +
-              "import java.util.List;\r\n" +
-              "\r\n" +
-              "import java.util.ArrayList;\r\n" +
-              "\r\n" +
-              "public class A {\r\n" +
-              "}\r\n",
-              "package com.example.foo;\r\n" +
-              "\r\n" +
-              "import java.util.Collection;\r\n" +
-              "\r\n" +
-              "import java.util.ArrayList;\r\n" +
-              "\r\n" +
-              "public class A {\r\n" +
-              "}\r\n"
+              """
+              package com.example.foo;
+              
+              import java.util.Collection;
+              import java.util.List;
+              
+              import java.util.ArrayList;
+              
+              public class A {
+              }
+              """,
+              """
+              package com.example.foo;
+              
+              import java.util.Collection;
+              
+              import java.util.ArrayList;
+              
+              public class A {
+              }
+              """
           )
         );
     }
@@ -362,21 +366,25 @@ class RemoveImportTest implements RewriteTest {
         rewriteRun(
           spec -> spec.recipe(removeImport("java.util.List")),
           java(
-              "package com.example.foo;\n" +
-              "\n" +
-              "import java.util.Collection;\r\n" +
-              "import java.util.List;\n" +
-              "import java.util.ArrayList;\n" +
-              "\n" +
-              "public class A {\n" +
-              "}\n",
-              "package com.example.foo;\n" +
-              "\n" +
-              "import java.util.Collection;\n" +
-              "import java.util.ArrayList;\n" +
-              "\n" +
-              "public class A {\n" +
-              "}\n"
+              """
+              package com.example.foo;
+              
+              import java.util.Collection;
+              import java.util.List;
+              import java.util.ArrayList;
+              
+              public class A {
+              }
+              """,
+              """
+              package com.example.foo;
+              
+              import java.util.Collection;
+              import java.util.ArrayList;
+              
+              public class A {
+              }
+              """
           )
         );
     }
@@ -386,23 +394,27 @@ class RemoveImportTest implements RewriteTest {
         rewriteRun(
           spec -> spec.recipe(removeImport("java.util.List")),
           java(
-              "package com.example.foo;\n" +
-              "\n" +
-              "import java.util.Collection;\n" +
-              "\n" +
-              "import java.util.List;\r\n" +
-              "import java.util.ArrayList;\n" +
-              "\n" +
-              "public class A {\n" +
-              "}\n",
-              "package com.example.foo;\n" +
-              "\n" +
-              "import java.util.Collection;\n" +
-              "\n" +
-              "import java.util.ArrayList;\n" +
-              "\n" +
-              "public class A {\n" +
-              "}\n"
+              """
+              package com.example.foo;
+              
+              import java.util.Collection;
+              
+              import java.util.List;
+              import java.util.ArrayList;
+              
+              public class A {
+              }
+              """,
+              """
+              package com.example.foo;
+              
+              import java.util.Collection;
+              
+              import java.util.ArrayList;
+              
+              public class A {
+              }
+              """
           )
         );
     }
@@ -643,7 +655,7 @@ class RemoveImportTest implements RewriteTest {
                   Collection<Integer> l;
               }
               """,
-            spec -> spec.afterRecipe(cu -> assertThat(cu.getImports().get(0).getId()).isNotEqualTo(cu.getImports().get(1).getId())))
+            spec -> spec.afterRecipe(cu -> assertThat(cu.getImports().getFirst().getId()).isNotEqualTo(cu.getImports().get(1).getId())))
         );
     }
 

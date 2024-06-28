@@ -41,7 +41,7 @@ public class ExplicitPluginVersion extends Recipe {
             @Override
             public Xml visitTag(Xml.Tag tag, ExecutionContext ctx) {
                 Xml.Tag t = (Xml.Tag) super.visitTag(tag, ctx);
-                if (isPluginTag() && !t.getChild("version").isPresent()) {
+                if (isPluginTag() && t.getChild("version").isEmpty()) {
                     ResolvedPom resolvedPom = getResolutionResult().getPom();
                     String groupId = resolvedPom.getValue(tag.getChildValue("groupId").orElse("org.apache.maven.plugins"));
                     String artifactId = resolvedPom.getValue(tag.getChildValue("artifactId").orElse("*"));

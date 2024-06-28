@@ -74,7 +74,7 @@ public class AddNullMethodArgument extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("%d in methods `%s`", argumentIndex, methodPattern);
+        return "%d in methods `%s`".formatted(argumentIndex, methodPattern);
     }
 
     @Override
@@ -117,8 +117,8 @@ public class AddNullMethodArgument extends Recipe {
             if (methodMatcher.matches(m) && (long) originalArgs.size() >= argumentIndex) {
                 List<Expression> args = new ArrayList<>(originalArgs);
 
-                if (args.size() == 1 && args.get(0) instanceof J.Empty) {
-                    args.remove(0);
+                if (args.size() == 1 && args.getFirst() instanceof J.Empty) {
+                    args.removeFirst();
                 }
 
                 Expression nullLiteral = new J.Literal(randomId(), args.isEmpty() ? Space.EMPTY : Space.SINGLE_SPACE, Markers.EMPTY, "null", "null", null, JavaType.Primitive.Null);
@@ -137,8 +137,8 @@ public class AddNullMethodArgument extends Recipe {
                                     parameterName == null ? "arg" + argumentIndex : parameterName, argumentIndex))
                             .withParameterTypes(ListUtils.insert(methodType.getParameterTypes(),
                                     JavaType.buildType(parameterType), argumentIndex)));
-                    if (m instanceof J.MethodInvocation && ((J.MethodInvocation) m).getName().getType() != null) {
-                        m = ((J.MethodInvocation) m).withName(((J.MethodInvocation) m).getName().withType(m.getMethodType()));
+                    if (m instanceof J.MethodInvocation invocation && invocation.getName().getType() != null) {
+                        m = invocation.withName(invocation.getName().withType(m.getMethodType()));
                     }
                 }
             }

@@ -39,10 +39,10 @@ public class ParseWarningCollector extends ErrorCollector {
     public void addErrorAndContinue(Message message) throws CompilationFailedException {
         super.addErrorAndContinue(message);
 
-        if (message instanceof SyntaxErrorMessage) {
-            warningMarkers.add(ParseWarning.build(parser, ((SyntaxErrorMessage) message).getCause()));
-        } else if (message instanceof ExceptionMessage) {
-            warningMarkers.add(ParseWarning.build(parser, ((ExceptionMessage) message).getCause()));
+        if (message instanceof SyntaxErrorMessage errorMessage) {
+            warningMarkers.add(ParseWarning.build(parser, errorMessage.getCause()));
+        } else if (message instanceof ExceptionMessage exceptionMessage) {
+            warningMarkers.add(ParseWarning.build(parser, exceptionMessage.getCause()));
         }
     }
 

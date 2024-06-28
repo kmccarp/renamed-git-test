@@ -74,19 +74,23 @@ public class UpgradeDependencyVersion extends ScanningRecipe<UpgradeDependencyVe
     String artifactId;
 
     @Option(displayName = "New version",
-            description = "An exact version number or node-style semver selector used to select the version number. " +
-                          "You can also use `latest.release` for the latest available version and `latest.patch` if " +
-                          "the current version is a valid semantic version. For more details, you can look at the documentation " +
-                          "page of [version selectors](https://docs.openrewrite.org/reference/dependency-version-selectors). " +
-                          "Defaults to `latest.release`.",
+            description = """
+                          An exact version number or node-style semver selector used to select the version number. \
+                          You can also use `latest.release` for the latest available version and `latest.patch` if \
+                          the current version is a valid semantic version. For more details, you can look at the documentation \
+                          page of [version selectors](https://docs.openrewrite.org/reference/dependency-version-selectors). \
+                          Defaults to `latest.release`.\
+                          """,
             example = "29.X",
             required = false)
     @Nullable
     String newVersion;
 
     @Option(displayName = "Version pattern",
-            description = "Allows version selection to be extended beyond the original Node Semver semantics. So for example," +
-                          "Setting 'newVersion' to \"25-29\" can be paired with a metadata pattern of \"-jre\" to select Guava 29.0-jre",
+            description = """
+                          Allows version selection to be extended beyond the original Node Semver semantics. So for example,\
+                          Setting 'newVersion' to "25-29" can be paired with a metadata pattern of "-jre" to select Guava 29.0-jre\
+                          """,
             example = "-jre",
             required = false)
     @Nullable
@@ -99,17 +103,19 @@ public class UpgradeDependencyVersion extends ScanningRecipe<UpgradeDependencyVe
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s:%s`", groupId, artifactId);
+        return "`%s:%s`".formatted(groupId, artifactId);
     }
 
     @Override
     public String getDescription() {
         //language=markdown
-        return "Upgrade the version of a dependency in a build.gradle file. " +
-               "Supports updating dependency declarations of various forms:\n" +
-               "* `String` notation: `\"group:artifact:version\"` \n" +
-               "* `Map` notation: `group: 'group', name: 'artifact', version: 'version'`\n" +
-               "Can update version numbers which are defined earlier in the same file in variable declarations.";
+        return """
+               Upgrade the version of a dependency in a build.gradle file. \
+               Supports updating dependency declarations of various forms:
+               * `String` notation: `"group:artifact:version"`\s
+               * `Map` notation: `group: 'group', name: 'artifact', version: 'version'`
+               Can update version numbers which are defined earlier in the same file in variable declarations.\
+               """;
     }
 
     @Override
@@ -191,7 +197,7 @@ public class UpgradeDependencyVersion extends ScanningRecipe<UpgradeDependencyVe
             public J visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {
                 J.MethodInvocation m = (J.MethodInvocation) super.visitMethodInvocation(method, ctx);
                 if (isLikelyDependencyConfiguration(getCursor())) {
-                    if (m.getArguments().get(0) instanceof G.MapEntry) {
+                    if (m.getArguments().getFirst() instanceof G.MapEntry) {
                         String groupId = null;
                         String artifactId = null;
                         String version = null;
@@ -217,8 +223,8 @@ public class UpgradeDependencyVersion extends ScanningRecipe<UpgradeDependencyVe
                             } else if (arg.getValue() instanceof G.GString) {
                                 G.GString value = (G.GString) arg.getValue();
                                 List<J> strings = value.getStrings();
-                                if (!strings.isEmpty() && strings.get(0) instanceof G.GString.Value) {
-                                    G.GString.Value versionGStringValue = (G.GString.Value) strings.get(0);
+                                if (!strings.isEmpty() && strings.getFirst() instanceof G.GString.Value) {
+                                    G.GString.Value versionGStringValue = (G.GString.Value) strings.getFirst();
                                     if (versionGStringValue.getTree() instanceof J.Identifier) {
                                         valueValue = ((J.Identifier) versionGStringValue.getTree()).getSimpleName();
                                     }
@@ -260,13 +266,12 @@ public class UpgradeDependencyVersion extends ScanningRecipe<UpgradeDependencyVe
                         }
                     } else {
                         for (Expression depArg : m.getArguments()) {
-                            if (depArg instanceof G.GString) {
-                                G.GString gString = (G.GString) depArg;
+                            if (depArg instanceof G.GString gString) {
                                 List<J> strings = gString.getStrings();
-                                if (strings.size() != 2 || !(strings.get(0) instanceof J.Literal) || !(strings.get(1) instanceof G.GString.Value)) {
+                                if (strings.size() != 2 || !(strings.getFirst() instanceof J.Literal) || !(strings.get(1) instanceof G.GString.Value)) {
                                     continue;
                                 }
-                                J.Literal groupArtifact = (J.Literal) strings.get(0);
+                                J.Literal groupArtifact = (J.Literal) strings.getFirst();
                                 G.GString.Value versionValue = (G.GString.Value) strings.get(1);
                                 if (!(versionValue.getTree() instanceof J.Identifier) || !(groupArtifact.getValue() instanceof String)) {
                                     continue;
@@ -365,8 +370,7 @@ public class UpgradeDependencyVersion extends ScanningRecipe<UpgradeDependencyVe
 
         @Override
         public J postVisit(J tree, ExecutionContext ctx) {
-            if (tree instanceof JavaSourceFile) {
-                JavaSourceFile cu = (JavaSourceFile) tree;
+            if (tree instanceof JavaSourceFile cu) {
                 Map<String, Map<GroupArtifact, Set<String>>> variableNames = getCursor().getMessage(VERSION_VARIABLE_KEY);
                 if (variableNames != null && gradleProject != null) {
                     cu = (JavaSourceFile) new UpdateVariable(variableNames, gradleProject).visitNonNull(cu, ctx);
@@ -393,11 +397,11 @@ public class UpgradeDependencyVersion extends ScanningRecipe<UpgradeDependencyVe
             J.MethodInvocation m = (J.MethodInvocation) super.visitMethodInvocation(method, ctx);
             if (isLikelyDependencyConfiguration(getCursor())) {
                 List<Expression> depArgs = m.getArguments();
-                if (depArgs.get(0) instanceof J.Literal || depArgs.get(0) instanceof G.GString || depArgs.get(0) instanceof G.MapEntry) {
+                if (depArgs.getFirst() instanceof J.Literal || depArgs.getFirst() instanceof G.GString || depArgs.getFirst() instanceof G.MapEntry) {
                     m = updateDependency(m, ctx);
-                } else if (depArgs.get(0) instanceof J.MethodInvocation &&
-                           (((J.MethodInvocation) depArgs.get(0)).getSimpleName().equals("platform") ||
-                            ((J.MethodInvocation) depArgs.get(0)).getSimpleName().equals("enforcedPlatform"))) {
+                } else if (depArgs.getFirst() instanceof J.MethodInvocation &&
+                           (((J.MethodInvocation) depArgs.getFirst()).getSimpleName().equals("platform") ||
+                            ((J.MethodInvocation) depArgs.getFirst()).getSimpleName().equals("enforcedPlatform"))) {
                     m = m.withArguments(ListUtils.mapFirst(depArgs, platform -> updateDependency((J.MethodInvocation) platform, ctx)));
                 }
             }
@@ -407,13 +411,12 @@ public class UpgradeDependencyVersion extends ScanningRecipe<UpgradeDependencyVe
         private J.MethodInvocation updateDependency(J.MethodInvocation method, ExecutionContext ctx) {
             J.MethodInvocation m = method;
             m = m.withArguments(ListUtils.map(m.getArguments(), arg -> {
-                if (arg instanceof G.GString) {
-                    G.GString gString = (G.GString) arg;
+                if (arg instanceof G.GString gString) {
                     List<J> strings = gString.getStrings();
-                    if (strings.size() != 2 || !(strings.get(0) instanceof J.Literal) || !(strings.get(1) instanceof G.GString.Value)) {
+                    if (strings.size() != 2 || !(strings.getFirst() instanceof J.Literal) || !(strings.get(1) instanceof G.GString.Value)) {
                         return arg;
                     }
-                    J.Literal groupArtifact = (J.Literal) strings.get(0);
+                    J.Literal groupArtifact = (J.Literal) strings.getFirst();
                     G.GString.Value versionValue = (G.GString.Value) strings.get(1);
                     if (!(versionValue.getTree() instanceof J.Identifier) || !(groupArtifact.getValue() instanceof String)) {
                         return arg;
@@ -433,8 +436,7 @@ public class UpgradeDependencyVersion extends ScanningRecipe<UpgradeDependencyVe
                                 .computeIfAbsent(new GroupArtifact(dep.getGroupId(), dep.getArtifactId()), it -> new HashSet<>())
                                 .add(method.getSimpleName());
                     }
-                } else if (arg instanceof J.Literal) {
-                    J.Literal literal = (J.Literal) arg;
+                } else if (arg instanceof J.Literal literal) {
                     if (literal.getType() != JavaType.Primitive.String) {
                         return arg;
                     }
@@ -482,10 +484,10 @@ public class UpgradeDependencyVersion extends ScanningRecipe<UpgradeDependencyVe
                 m = Markup.warn(m, err);
             }
             List<Expression> depArgs = m.getArguments();
-            if (depArgs.size() >= 3 && depArgs.get(0) instanceof G.MapEntry
+            if (depArgs.size() >= 3 && depArgs.getFirst() instanceof G.MapEntry
                 && depArgs.get(1) instanceof G.MapEntry
                 && depArgs.get(2) instanceof G.MapEntry) {
-                Expression groupValue = ((G.MapEntry) depArgs.get(0)).getValue();
+                Expression groupValue = ((G.MapEntry) depArgs.getFirst()).getValue();
                 Expression artifactValue = ((G.MapEntry) depArgs.get(1)).getValue();
                 if (!(groupValue instanceof J.Literal) || !(artifactValue instanceof J.Literal)) {
                     return m;
@@ -497,13 +499,12 @@ public class UpgradeDependencyVersion extends ScanningRecipe<UpgradeDependencyVe
                     return m;
                 }
                 Object scanResult = acc.gaToNewVersion.get(new GroupArtifact((String) groupLiteral.getValue(), (String) artifactLiteral.getValue()));
-                if (scanResult instanceof Exception) {
-                    return Markup.warn(m, (Exception) scanResult);
+                if (scanResult instanceof Exception exception) {
+                    return Markup.warn(m, exception);
                 }
                 G.MapEntry versionEntry = (G.MapEntry) depArgs.get(2);
                 Expression versionExp = versionEntry.getValue();
-                if (versionExp instanceof J.Literal && ((J.Literal) versionExp).getValue() instanceof String) {
-                    J.Literal versionLiteral = (J.Literal) versionExp;
+                if (versionExp instanceof J.Literal versionLiteral && versionLiteral.getValue() instanceof String) {
                     String version = (String) versionLiteral.getValue();
                     if (version.startsWith("$")) {
                         return m;
@@ -520,7 +521,7 @@ public class UpgradeDependencyVersion extends ScanningRecipe<UpgradeDependencyVe
                         return m;
                     }
                     List<Expression> newArgs = new ArrayList<>(3);
-                    newArgs.add(depArgs.get(0));
+                    newArgs.add(depArgs.getFirst());
                     newArgs.add(depArgs.get(1));
                     newArgs.add(versionEntry.withValue(
                             versionLiteral
@@ -529,8 +530,8 @@ public class UpgradeDependencyVersion extends ScanningRecipe<UpgradeDependencyVe
                     newArgs.addAll(depArgs.subList(3, depArgs.size()));
 
                     return m.withArguments(newArgs);
-                } else if (versionExp instanceof J.Identifier) {
-                    String versionVariableName = ((J.Identifier) versionExp).getSimpleName();
+                } else if (versionExp instanceof J.Identifier identifier) {
+                    String versionVariableName = identifier.getSimpleName();
                     getCursor().dropParentUntil(p -> p instanceof SourceFile)
                             .computeMessageIfAbsent(VERSION_VARIABLE_KEY, v -> new HashMap<String, Map<GroupArtifact, Set<String>>>())
                             .computeIfAbsent(versionVariableName, it -> new HashMap<>())

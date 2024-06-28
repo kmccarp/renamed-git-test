@@ -83,10 +83,8 @@ public class RecipeRunCycle<LSS extends LargeSourceSet> {
 
                     SourceFile after = source;
 
-                    if (recipe instanceof ScanningRecipe) {
+                    if (recipe instanceof ScanningRecipe<?> scanningRecipe) {
                         try {
-                            //noinspection unchecked
-                            ScanningRecipe<Object> scanningRecipe = (ScanningRecipe<Object>) recipe;
                             Object acc = scanningRecipe.getAccumulator(rootCursor, ctx);
                             recipeRunStats.recordScan(recipe, () -> {
                                 TreeVisitor<?, ExecutionContext> scanner = scanningRecipe.getScanner(acc);
@@ -107,9 +105,7 @@ public class RecipeRunCycle<LSS extends LargeSourceSet> {
     public LSS generateSources(LSS sourceSet) {
         List<SourceFile> generatedInThisCycle = allRecipeStack.reduce(sourceSet, recipe, ctx, (acc, recipeStack) -> {
             Recipe recipe = recipeStack.peek();
-            if (recipe instanceof ScanningRecipe) {
-                //noinspection unchecked
-                ScanningRecipe<Object> scanningRecipe = (ScanningRecipe<Object>) recipe;
+            if (recipe instanceof ScanningRecipe<?> scanningRecipe) {
                 List<SourceFile> generated = new ArrayList<>(scanningRecipe.generate(scanningRecipe.getAccumulator(rootCursor, ctx), unmodifiableList(acc), ctx));
                 generated.replaceAll(source -> addRecipesThatMadeChanges(recipeStack, source));
                 acc.addAll(generated);
@@ -226,7 +222,7 @@ public class RecipeRunCycle<LSS extends LargeSourceSet> {
         } else {
             parentName = recipeStack.get(recipeStack.size() - 2).getName();
         }
-        Recipe recipe = recipeStack.get(recipeStack.size() - 1);
+        Recipe recipe = recipeStack.getLast();
         sourcesFileResults.insertRow(ctx, new SourcesFileResults.Row(
                 beforePath,
                 afterPath,
@@ -242,8 +238,7 @@ public class RecipeRunCycle<LSS extends LargeSourceSet> {
                                    Throwable t) {
         ctx.getOnError().accept(t);
 
-        if (t instanceof RecipeRunException) {
-            RecipeRunException vt = (RecipeRunException) t;
+        if (t instanceof RecipeRunException vt) {
             after = (SourceFile) new FindRecipeRunException(vt).visitNonNull(requireNonNull(after, "after is null"), 0);
         }
 

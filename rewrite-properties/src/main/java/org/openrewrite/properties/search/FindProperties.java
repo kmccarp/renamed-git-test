@@ -52,8 +52,10 @@ public class FindProperties extends Recipe {
     String propertyKey;
 
     @Option(displayName = "Use relaxed binding",
-            description = "Whether to match the `propertyKey` using [relaxed binding](https://docs.spring.io/spring-boot/docs/2.5.6/reference/html/features.html#features.external-config.typesafe-configuration-properties.relaxed-binding) " +
-                    "rules. Default is `true`. Set to `false`  to use exact matching.",
+            description = """
+                    Whether to match the `propertyKey` using [relaxed binding](https://docs.spring.io/spring-boot/docs/2.5.6/reference/html/features.html#features.external-config.typesafe-configuration-properties.relaxed-binding) \
+                    rules. Default is `true`. Set to `false`  to use exact matching.\
+                    """,
             required = false)
     @Nullable
     Boolean relaxedBinding;

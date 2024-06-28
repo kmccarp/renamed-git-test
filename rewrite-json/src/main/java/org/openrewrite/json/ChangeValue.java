@@ -46,7 +46,7 @@ public class ChangeValue extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s` to `%s`", oldKeyPath, value);
+        return "`%s` to `%s`".formatted(oldKeyPath, value);
     }
 
     @Override

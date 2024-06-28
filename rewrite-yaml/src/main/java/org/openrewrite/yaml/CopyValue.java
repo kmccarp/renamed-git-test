@@ -34,8 +34,10 @@ public class CopyValue extends ScanningRecipe<CopyValue.Accumulator> {
     String oldKeyPath;
 
     @Option(displayName = "Old file path",
-            description = "The file path to the YAML file to copy the value from. " +
-                          "If `null` then the value will be copied from any yaml file it appears within.",
+            description = """
+                          The file path to the YAML file to copy the value from. \
+                          If `null` then the value will be copied from any yaml file it appears within.\
+                          """,
             example = "src/main/resources/application.yaml",
             required = false)
     @Nullable
@@ -47,8 +49,10 @@ public class CopyValue extends ScanningRecipe<CopyValue.Accumulator> {
     String newKey;
 
     @Option(displayName = "New file path",
-            description = "The file path to the YAML file to copy the value to. " +
-                          "If `null` then the value will be copied only into the same file it was found in.",
+            description = """
+                          The file path to the YAML file to copy the value to. \
+                          If `null` then the value will be copied only into the same file it was found in.\
+                          """,
             example = "src/main/resources/application.yaml",
             required = false)
     @Nullable
@@ -61,7 +65,7 @@ public class CopyValue extends ScanningRecipe<CopyValue.Accumulator> {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("%s`%s` to %s`%s`",
+        return "%s`%s` to %s`%s`".formatted(
                 (oldFilePath == null) ? "" : oldFilePath + ":",
                 oldKeyPath,
                 (newFilePath == null) ? "" : newFilePath + ":",
@@ -70,10 +74,12 @@ public class CopyValue extends ScanningRecipe<CopyValue.Accumulator> {
 
     @Override
     public String getDescription() {
-        return "Copies a YAML value from one key to another. " +
-               "The existing key/value pair remains unaffected by this change. " +
-               "Attempts to merge the copied value into the new key if it already exists. " +
-               "Attempts to create the new key if it does not exist.";
+        return """
+               Copies a YAML value from one key to another. \
+               The existing key/value pair remains unaffected by this change. \
+               Attempts to merge the copied value into the new key if it already exists. \
+               Attempts to create the new key if it does not exist.\
+               """;
     }
 
     @Data

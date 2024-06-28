@@ -72,7 +72,7 @@ public class ImplementInterface<P> extends JavaIsoVisitor<P> {
             if (typeParameters != null && !typeParameters.isEmpty()) {
                 typeParameters.stream()
                         .map(Expression::getType)
-                        .map(t -> (t instanceof JavaType.FullyQualified) ? (JavaType.FullyQualified) t : null)
+                        .map(t -> (t instanceof JavaType.FullyQualified fq) ? fq : null)
                         .filter(Objects::nonNull)
                         .forEach(t -> maybeAddImport(t.getFullyQualifiedName()));
 
@@ -84,7 +84,7 @@ public class ImplementInterface<P> extends JavaIsoVisitor<P> {
                         randomId(),
                         Space.EMPTY,
                         Markers.EMPTY,
-                        interfaceType instanceof JavaType.Parameterized ? impl.withType(((JavaType.Parameterized) interfaceType).getType()) : impl,
+                        interfaceType instanceof JavaType.Parameterized p1 ? impl.withType(p1.getType()) : impl,
                         JContainer.build(Space.EMPTY, elements, Markers.EMPTY),
                         interfaceType
                 );

@@ -42,9 +42,11 @@ public class HasSourceSet extends Recipe {
 
     @Override
     public String getDescription() {
-        return "Source sets are a way to organize your source code into logical groups. " +
-               "For example, Java projects commonly have a `main` source set for application code and " +
-               "a `test` source set for test code. This recipe will find all files in a given source set.";
+        return """
+               Source sets are a way to organize your source code into logical groups. \
+               For example, Java projects commonly have a `main` source set for application code and \
+               a `test` source set for test code. This recipe will find all files in a given source set.\
+               """;
     }
 
     @Override

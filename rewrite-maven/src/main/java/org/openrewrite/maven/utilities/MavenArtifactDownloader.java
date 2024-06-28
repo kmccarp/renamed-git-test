@@ -93,7 +93,7 @@ public class MavenArtifactDownloader {
         }
         return mavenArtifactCache.computeArtifact(dependency, () -> {
             String baseUri = requireNonNull(dependency.getRepository(),
-                    String.format("Repository for dependency '%s' was null.", dependency)).getUri();
+                    "Repository for dependency '%s' was null.".formatted(dependency)).getUri();
             String path = dependency.getGroupId().replace('.', '/') + '/' +
                           dependency.getArtifactId() + '/' +
                           dependency.getVersion() + '/' +
@@ -113,7 +113,7 @@ public class MavenArtifactDownloader {
                 try (HttpSender.Response response = Failsafe.with(retryPolicy).get(() -> httpSender.send(request.build()));
                      InputStream body = response.getBody()) {
                     if (!response.isSuccessful() || body == null) {
-                        onError.accept(new MavenDownloadingException(String.format("Unable to download dependency %s:%s:%s from %s. Response was %d",
+                        onError.accept(new MavenDownloadingException("Unable to download dependency %s:%s:%s from %s. Response was %d".formatted(
                                 dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion(), uri, response.getCode()), null,
                                 dependency.getRequested().getGav()));
                         return null;

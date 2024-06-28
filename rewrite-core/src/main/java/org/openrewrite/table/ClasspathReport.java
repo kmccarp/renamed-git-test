@@ -33,9 +33,11 @@ public class ClasspathReport extends DataTable<ClasspathReport.Row> {
     @Value
     public static class Row {
         @Column(displayName = "Classpath entry URI",
-                description = "The URI where a particular classpath entry can be found. " +
-                        "May point to a jar or a directory containing class files. " +
-                        "Local to the system running the recipe.")
+                description = """
+                        The URI where a particular classpath entry can be found. \
+                        May point to a jar or a directory containing class files. \
+                        Local to the system running the recipe.\
+                        """)
         String uri;
 
         @Column(displayName = "Classpath entry resource",

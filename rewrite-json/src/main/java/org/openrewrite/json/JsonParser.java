@@ -87,7 +87,7 @@ public class JsonParser implements Parser {
         public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol,
                                 int line, int charPositionInLine, String msg, RecognitionException e) {
             ctx.getOnError().accept(new JsonParsingException(sourcePath,
-                    String.format("Syntax error in %s at line %d:%d %s.", sourcePath, line, charPositionInLine, msg), e));
+                    "Syntax error in %s at line %d:%d %s.".formatted(sourcePath, line, charPositionInLine, msg), e));
         }
     }
 

@@ -64,7 +64,7 @@ public class JavaAIEditor {
                 return Markup.warn(j, new IllegalStateException("Code edit failed: " + response.getError()));
             }
 
-            return JavaTemplate.builder(response.getChoices().get(0).getText())
+            return JavaTemplate.builder(response.getChoices().getFirst().getText())
                     .contextSensitive()
                     .build()
                     .apply(cursor.get(), j.getCoordinates().replace());

@@ -37,11 +37,13 @@ public class FindParseToPrintInequality extends Recipe {
 
     @Override
     public String getDescription() {
-        return "OpenRewrite `Parser` implementations should produce `SourceFile` objects whose `printAll()` " +
-               "method should be byte-for-byte equivalent with the original source file. When this isn't true, " +
-               "recipes can still run on the `SourceFile` and even produce diffs, but the diffs would fail to " +
-               "apply as a patch to the original source file. Most `Parser` use `Parser#requirePrintEqualsInput` " +
-               "to produce a `ParseError` when they fail to produce a `SourceFile` that is print idempotent.";
+        return """
+               OpenRewrite `Parser` implementations should produce `SourceFile` objects whose `printAll()` \
+               method should be byte-for-byte equivalent with the original source file. When this isn't true, \
+               recipes can still run on the `SourceFile` and even produce diffs, but the diffs would fail to \
+               apply as a patch to the original source file. Most `Parser` use `Parser#requirePrintEqualsInput` \
+               to produce a `ParseError` when they fail to produce a `SourceFile` that is print idempotent.\
+               """;
     }
 
     @Override
@@ -49,8 +51,7 @@ public class FindParseToPrintInequality extends Recipe {
         return new TreeVisitor<Tree, ExecutionContext>() {
             @Override
             public Tree visit(@Nullable Tree tree, ExecutionContext ctx) {
-                if (tree instanceof ParseError) {
-                    ParseError parseError = (ParseError) tree;
+                if (tree instanceof ParseError parseError) {
                     if (parseError.getErroneous() != null) {
                         try (InMemoryDiffEntry diffEntry = new InMemoryDiffEntry(
                                 parseError.getSourcePath(),

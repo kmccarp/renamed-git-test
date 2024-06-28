@@ -45,15 +45,19 @@ public class DeleteProperty extends Recipe {
 
     @Deprecated
     @Option(displayName = "Coalesce",
-            description = "(Deprecated: in a future version, this recipe will always use the `false` behavior)"
-                    + " Simplify nested map hierarchies into their simplest dot separated property form.",
+            description = """
+                    (Deprecated: in a future version, this recipe will always use the `false` behavior)\
+                     Simplify nested map hierarchies into their simplest dot separated property form.\
+                    """,
             required = false)
     @Nullable
     Boolean coalesce;
 
     @Option(displayName = "Use relaxed binding",
-            description = "Whether to match the `propertyKey` using [relaxed binding](https://docs.spring.io/spring-boot/docs/2.5.6/reference/html/features.html#features.external-config.typesafe-configuration-properties.relaxed-binding) " +
-                    "rules. Defaults to `true`. If you want to use exact matching in your search, set this to `false`.",
+            description = """
+                    Whether to match the `propertyKey` using [relaxed binding](https://docs.spring.io/spring-boot/docs/2.5.6/reference/html/features.html#features.external-config.typesafe-configuration-properties.relaxed-binding) \
+                    rules. Defaults to `true`. If you want to use exact matching in your search, set this to `false`.\
+                    """,
             required = false)
     @Nullable
     Boolean relaxedBinding;
@@ -65,8 +69,10 @@ public class DeleteProperty extends Recipe {
 
     @Override
     public String getDescription() {
-        return "Delete a YAML property. Nested YAML mappings are interpreted as dot separated property names, i.e. " +
-                " as Spring Boot interprets application.yml files like `a.b.c.d` or `a.b.c:d`.";
+        return """
+                Delete a YAML property. Nested YAML mappings are interpreted as dot separated property names, i.e. \
+                 as Spring Boot interprets application.yml files like `a.b.c.d` or `a.b.c:d`.\
+                """;
     }
 
     @Override

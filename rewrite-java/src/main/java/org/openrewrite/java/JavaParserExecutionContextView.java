@@ -30,8 +30,8 @@ public class JavaParserExecutionContextView extends DelegatingExecutionContext {
     }
 
     public static JavaParserExecutionContextView view(ExecutionContext ctx) {
-        if (ctx instanceof JavaParserExecutionContextView) {
-            return (JavaParserExecutionContextView) ctx;
+        if (ctx instanceof JavaParserExecutionContextView view) {
+            return view;
         }
         return new JavaParserExecutionContextView(ctx);
     }

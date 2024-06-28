@@ -51,11 +51,13 @@ public class AddDevelocityGradlePlugin extends Recipe {
     transient MavenMetadataFailures metadataFailures = new MavenMetadataFailures(this);
 
     @Option(displayName = "Plugin version",
-            description = "An exact version number or node-style semver selector used to select the version number. " +
-                          "You can also use `latest.release` for the latest available version and `latest.patch` if " +
-                          "the current version is a valid semantic version. For more details, you can look at the documentation " +
-                          "page of [version selectors](https://docs.openrewrite.org/reference/dependency-version-selectors). " +
-                          "Defaults to `latest.release`.",
+            description = """
+                          An exact version number or node-style semver selector used to select the version number. \
+                          You can also use `latest.release` for the latest available version and `latest.patch` if \
+                          the current version is a valid semantic version. For more details, you can look at the documentation \
+                          page of [version selectors](https://docs.openrewrite.org/reference/dependency-version-selectors). \
+                          Defaults to `latest.release`.\
+                          """,
             example = "3.x",
             required = false)
     @Nullable
@@ -69,33 +71,41 @@ public class AddDevelocityGradlePlugin extends Recipe {
     String server;
 
     @Option(displayName = "Allow untrusted server",
-            description = "When set to `true` the plugin will be configured to allow unencrypted http connections with the server. " +
-                          "If set to `false` or omitted, the plugin will refuse to communicate without transport layer security enabled.",
+            description = """
+                          When set to `true` the plugin will be configured to allow unencrypted http connections with the server. \
+                          If set to `false` or omitted, the plugin will refuse to communicate without transport layer security enabled.\
+                          """,
             required = false,
             example = "true")
     @Nullable
     Boolean allowUntrustedServer;
 
     @Option(displayName = "Capture task input files",
-            description = "When set to `true` the plugin will capture additional information about the inputs to Gradle tasks. " +
-                          "This increases the size of build scans, but is useful for diagnosing issues with task caching. ",
+            description = """
+                          When set to `true` the plugin will capture additional information about the inputs to Gradle tasks. \
+                          This increases the size of build scans, but is useful for diagnosing issues with task caching. \
+                          """,
             required = false,
             example = "true")
     @Nullable
     Boolean captureTaskInputFiles;
 
     @Option(displayName = "Upload in background",
-            description = "When set to `true` the plugin will capture additional information about the outputs of Gradle tasks. " +
-                          "This increases the size of build scans, but is useful for diagnosing issues with task caching. ",
+            description = """
+                          When set to `true` the plugin will capture additional information about the outputs of Gradle tasks. \
+                          This increases the size of build scans, but is useful for diagnosing issues with task caching. \
+                          """,
             required = false,
             example = "true")
     @Nullable
     Boolean uploadInBackground;
 
     @Option(displayName = "Publish Criteria",
-            description = "When set to `Always` the plugin will publish build scans of every single build. " +
-                          "When set to `Failure` the plugin will only publish build scans when the build fails. " +
-                          "When omitted scans will be published only when the `--scan` option is passed to the build.",
+            description = """
+                          When set to `Always` the plugin will publish build scans of every single build. \
+                          When set to `Failure` the plugin will only publish build scans when the build fails. \
+                          When omitted scans will be published only when the `--scan` option is passed to the build.\
+                          """,
             required = false,
             valid = {"Always", "Failure"},
             example = "Always")
@@ -132,7 +142,7 @@ public class AddDevelocityGradlePlugin extends Recipe {
             @Override
             public G.CompilationUnit visitCompilationUnit(G.CompilationUnit cu, ExecutionContext ctx) {
                 Optional<BuildTool> maybeBuildTool = cu.getMarkers().findFirst(BuildTool.class);
-                if (!maybeBuildTool.isPresent()) {
+                if (maybeBuildTool.isEmpty()) {
                     return cu;
                 }
                 BuildTool buildTool = maybeBuildTool.get();
@@ -152,7 +162,7 @@ public class AddDevelocityGradlePlugin extends Recipe {
                 if (gradleSixOrLater && cu.getSourcePath().endsWith("settings.gradle")) {
                     // Newer than 6.0 goes in settings
                     Optional<GradleSettings> maybeGradleSettings = cu.getMarkers().findFirst(GradleSettings.class);
-                    if (!maybeGradleSettings.isPresent()) {
+                    if (maybeGradleSettings.isEmpty()) {
                         return cu;
                     }
                     GradleSettings gradleSettings = maybeGradleSettings.get();
@@ -160,7 +170,7 @@ public class AddDevelocityGradlePlugin extends Recipe {
                 } else if (!gradleSixOrLater && cu.getSourcePath().toString().equals("build.gradle")) {
                     // Older than 6.0 goes in root build.gradle only, not in build.gradle of subprojects
                     Optional<GradleProject> maybeGradleProject = cu.getMarkers().findFirst(GradleProject.class);
-                    if (!maybeGradleProject.isPresent()) {
+                    if (maybeGradleProject.isEmpty()) {
                         return cu;
                     }
                     GradleProject gradleProject = maybeGradleProject.get();
@@ -267,7 +277,7 @@ public class AddDevelocityGradlePlugin extends Recipe {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Could not parse as Gradle"));
 
-        return (J.MethodInvocation) cu.getStatements().get(0);
+        return (J.MethodInvocation) cu.getStatements().getFirst();
     }
 
     private static String getIndent(G.CompilationUnit cu) {

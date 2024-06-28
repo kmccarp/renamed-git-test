@@ -37,9 +37,9 @@ public class OmitParenthesesForLastArgumentLambdaVisitor<P> extends GroovyIsoVis
     public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, P p) {
         J.MethodInvocation m = super.visitMethodInvocation(method, p);
         return method.withArguments(ListUtils.mapLast(m.getArguments(), last -> {
-            if (last instanceof J.Lambda) {
+            if (last instanceof J.Lambda lambda) {
                 J l = last.getPrefix().getWhitespace().isEmpty() ?
-                        ((J.Lambda) last).withPrefix(last.getPrefix().withWhitespace(" ")) :
+                        lambda.withPrefix(last.getPrefix().withWhitespace(" ")) :
                         last;
                 return l.withMarkers(l.getMarkers().computeByType(new OmitParentheses(randomId()), (s1, s2) -> s1));
             }

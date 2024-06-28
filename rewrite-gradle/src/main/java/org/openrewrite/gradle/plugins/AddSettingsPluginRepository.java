@@ -75,21 +75,18 @@ public class AddSettingsPluginRepository extends Recipe {
                     if (statements.isEmpty()) {
                         statements.add(pluginManagement);
                     } else {
-                        Statement statement = statements.get(0);
-                        if (statement instanceof J.MethodInvocation
-                            && ((J.MethodInvocation) statement).getSimpleName().equals("pluginManagement")) {
-                            J.MethodInvocation m = (J.MethodInvocation) statement;
+                        Statement statement = statements.getFirst();
+                        if (statement instanceof J.MethodInvocation m
+                            && m.getSimpleName().equals("pluginManagement")) {
                             m = m.withArguments(ListUtils.mapFirst(m.getArguments(), arg -> {
-                                if (arg instanceof J.Lambda && ((J.Lambda) arg).getBody() instanceof J.Block) {
-                                    J.Lambda lambda = (J.Lambda) arg;
+                                if (arg instanceof J.Lambda lambda && lambda.getBody() instanceof J.Block) {
                                     J.Block block = (J.Block) lambda.getBody();
                                     return lambda.withBody(block.withStatements(ListUtils.map(block.getStatements(), statement2 -> {
-                                        if ((statement2 instanceof J.MethodInvocation && ((J.MethodInvocation) statement2).getSimpleName().equals("repositories"))
-                                            || (statement2 instanceof J.Return && ((J.Return) statement2).getExpression() instanceof J.MethodInvocation && ((J.MethodInvocation) ((J.Return) statement2).getExpression()).getSimpleName().equals("repositories"))) {
-                                            J.MethodInvocation m2 = (J.MethodInvocation) (statement2 instanceof J.Return ? ((J.Return) statement2).getExpression() : statement2);
+                                        if ((statement2 instanceof J.MethodInvocation invocation && invocation.getSimpleName().equals("repositories"))
+                                            || (statement2 instanceof J.Return return1 && return1.getExpression() instanceof J.MethodInvocation && ((J.MethodInvocation) return1.getExpression()).getSimpleName().equals("repositories"))) {
+                                            J.MethodInvocation m2 = (J.MethodInvocation) (statement2 instanceof J.Return r ? r.getExpression() : statement2);
                                             return m2.withArguments(ListUtils.mapFirst(m2.getArguments(), arg2 -> {
-                                                if (arg2 instanceof J.Lambda && ((J.Lambda) arg2).getBody() instanceof J.Block) {
-                                                    J.Lambda lambda2 = (J.Lambda) arg2;
+                                                if (arg2 instanceof J.Lambda lambda2 && lambda2.getBody() instanceof J.Block) {
                                                     J.Block block2 = (J.Block) lambda2.getBody();
                                                     return lambda2.withBody(block2.withStatements(ListUtils.concat(block2.getStatements(), extractRepository(pluginManagement))));
                                                 }
@@ -103,7 +100,7 @@ public class AddSettingsPluginRepository extends Recipe {
                             }));
                             statements.set(0, m);
                         } else {
-                            statements.add(0, pluginManagement);
+                            statements.addFirst(pluginManagement);
                             statements.set(1, statements.get(1).withPrefix(Space.format("\n\n")));
                         }
                     }
@@ -134,14 +131,14 @@ public class AddSettingsPluginRepository extends Recipe {
 
                 return (J.MethodInvocation) GradleParser.builder().build().parseInputs(Collections.singletonList(Parser.Input.fromString(Paths.get("settings.gradle"), code)), null, ctx)
                         .map(G.CompilationUnit.class::cast)
-                        .collect(Collectors.toList()).get(0).getStatements().get(0);
+                        .collect(Collectors.toList()).getFirst().getStatements().getFirst();
             }
 
             private J.MethodInvocation extractRepository(J.MethodInvocation pluginManagement) {
                 J.MethodInvocation repositories = (J.MethodInvocation) ((J.Return) ((J.Block) ((J.Lambda) pluginManagement
-                        .getArguments().get(0)).getBody()).getStatements().get(0)).getExpression();
+                        .getArguments().getFirst()).getBody()).getStatements().getFirst()).getExpression();
                 return (J.MethodInvocation) requireNonNull(((J.Return) ((J.Block) ((J.Lambda) requireNonNull(repositories)
-                        .getArguments().get(0)).getBody()).getStatements().get(0)).getExpression());
+                        .getArguments().getFirst()).getBody()).getStatements().getFirst()).getExpression());
             }
         });
     }

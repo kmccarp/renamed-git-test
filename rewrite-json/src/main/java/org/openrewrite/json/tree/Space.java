@@ -68,14 +68,14 @@ public class Space {
 
     public String getIndent() {
         if (!comments.isEmpty()) {
-            return getWhitespaceIndent(comments.get(comments.size() - 1).getSuffix());
+            return getWhitespaceIndent(comments.getLast().getSuffix());
         }
         return getWhitespaceIndent(whitespace);
     }
 
     public String getLastWhitespace() {
         if (!comments.isEmpty()) {
-            return comments.get(comments.size() - 1).getSuffix();
+            return comments.getLast().getSuffix();
         }
         return whitespace == null ? "" : whitespace;
     }
@@ -135,7 +135,7 @@ public class Space {
     }
 
     public static Space firstPrefix(@Nullable List<? extends Json> trees) {
-        return trees == null || trees.isEmpty() ? Space.EMPTY : trees.iterator().next().getPrefix();
+        return trees == null || trees.isEmpty() ? Space.EMPTY : trees.getFirst().getPrefix();
     }
 
     public static Space format(String formatting) {
@@ -252,9 +252,9 @@ public class Space {
     }
 
     public static <H extends Json> List<H> formatFirstPrefix(List<H> trees, Space prefix) {
-        if (!trees.isEmpty() && !trees.get(0).getPrefix().equals(prefix)) {
+        if (!trees.isEmpty() && !trees.getFirst().getPrefix().equals(prefix)) {
             List<H> formattedTrees = new ArrayList<>(trees);
-            formattedTrees.set(0, formattedTrees.get(0).withPrefix(prefix));
+            formattedTrees.set(0, formattedTrees.getFirst().withPrefix(prefix));
             return formattedTrees;
         }
 

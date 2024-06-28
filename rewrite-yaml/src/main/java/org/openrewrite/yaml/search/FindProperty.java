@@ -40,8 +40,10 @@ public class FindProperty extends Recipe {
     String propertyKey;
 
     @Option(displayName = "Use relaxed binding",
-            description = "Whether to match the `propertyKey` using [relaxed binding](https://docs.spring.io/spring-boot/docs/2.5.6/reference/html/features.html#features.external-config.typesafe-configuration-properties.relaxed-binding) " +
-                    "rules. Defaults to `true`. If you want to use exact matching in your search, set this to `false`.",
+            description = """
+                    Whether to match the `propertyKey` using [relaxed binding](https://docs.spring.io/spring-boot/docs/2.5.6/reference/html/features.html#features.external-config.typesafe-configuration-properties.relaxed-binding) \
+                    rules. Defaults to `true`. If you want to use exact matching in your search, set this to `false`.\
+                    """,
             required = false)
     @Nullable
     Boolean relaxedBinding;
@@ -106,8 +108,7 @@ public class FindProperty extends Recipe {
         int i = 0;
         while (path.hasNext()) {
             Object next = path.next();
-            if (next instanceof Yaml.Mapping.Entry) {
-                Yaml.Mapping.Entry entry = (Yaml.Mapping.Entry) next;
+            if (next instanceof Yaml.Mapping.Entry entry) {
                 if (i++ > 0) {
                     asProperty.insert(0, '.');
                 }

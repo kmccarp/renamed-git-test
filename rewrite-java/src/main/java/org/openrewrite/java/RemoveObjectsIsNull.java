@@ -35,8 +35,10 @@ public class RemoveObjectsIsNull extends Recipe {
 
     @Override
     public String getDescription() {
-        return "Replace calls to `Objects.isNull(..)` and `Objects.nonNull(..)` with a simple null check. " +
-               "Using these methods outside of stream predicates is not idiomatic.";
+        return """
+               Replace calls to `Objects.isNull(..)` and `Objects.nonNull(..)` with a simple null check. \
+               Using these methods outside of stream predicates is not idiomatic.\
+               """;
     }
 
     @Override
@@ -58,14 +60,14 @@ public class RemoveObjectsIsNull extends Recipe {
                 maybeRemoveImport("java.util.Objects." + m.getSimpleName());
 
                 // Upcasted primitives are never null; simplify logic for use in SimplifyConstantIfBranchExecution
-                JavaType type = m.getArguments().get(0).getType();
+                JavaType type = m.getArguments().getFirst().getType();
                 if (type instanceof JavaType.Primitive && JavaType.Primitive.String != type) {
                     boolean replacementValue = NON_NULL.matches(m);
                     return new J.Literal(Tree.randomId(), Space.EMPTY, Markers.EMPTY, replacementValue, String.valueOf(replacementValue), null, JavaType.Primitive.Boolean);
                 }
 
                 // Replace the method invocation with a simple null check
-                Expression e = m.getArguments().get(0);
+                Expression e = m.getArguments().getFirst();
                 Expression replaced = JavaTemplate.apply(pattern, getCursor(), m.getCoordinates().replace(), e);
                 return (Expression) new UnnecessaryParenthesesVisitor<>().visitNonNull(replaced, ctx, getCursor());
             }

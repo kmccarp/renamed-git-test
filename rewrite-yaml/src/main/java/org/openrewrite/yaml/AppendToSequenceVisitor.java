@@ -47,7 +47,7 @@ public class AppendToSequenceVisitor extends YamlIsoVisitor<ExecutionContext> {
     public Yaml.Sequence visitSequence(Yaml.Sequence existingSeq, ExecutionContext ctx) {
         Cursor parent = getCursor().getParent();
         if (matcher.matches(parent) &&
-            !existingSeq.getMarkers().findFirst(AlreadyReplaced.class).filter(m -> m.getFind().equals(value)).isPresent() &&
+                existingSeq.getMarkers().findFirst(AlreadyReplaced.class).filter(m -> m.getFind().equals(value)).isEmpty() &&
             checkExistingSequenceValues(existingSeq, parent)) {
             return appendToSequence(existingSeq, this.value, ctx);
         }
@@ -75,8 +75,8 @@ public class AppendToSequenceVisitor extends YamlIsoVisitor<ExecutionContext> {
     }
 
     private String convertBlockToString(Yaml.Block block, Cursor cursor) {
-        if (block instanceof Yaml.Scalar) {
-            return ((Yaml.Scalar) block).getValue();
+        if (block instanceof Yaml.Scalar scalar) {
+            return scalar.getValue();
         } else {
             return block.printTrimmed(cursor);
         }
@@ -97,16 +97,15 @@ public class AppendToSequenceVisitor extends YamlIsoVisitor<ExecutionContext> {
             entryPrefix = existingEntry.getPrefix();
             entryTrailingCommaPrefix = existingEntry.getTrailingCommaPrefix();
             Yaml.Sequence.Block block = existingEntry.getBlock();
-            if (block instanceof Yaml.Sequence.Mapping) {
-                Yaml.Sequence.Mapping mapping = (Yaml.Sequence.Mapping) block;
+            if (block instanceof Yaml.Sequence.Mapping mapping) {
                 List<Yaml.Mapping.Entry> mappingEntries = mapping.getEntries();
                 if (!mappingEntries.isEmpty()) {
-                    Yaml.Mapping.Entry entry = mappingEntries.get(0);
+                    Yaml.Mapping.Entry entry = mappingEntries.getFirst();
                     itemPrefix = entry.getPrefix();
                 }
-            } else if (block instanceof Yaml.Sequence.Scalar) {
+            } else if (block instanceof Yaml.Sequence.Scalar scalar) {
                 itemPrefix = block.getPrefix();
-                style = ((Yaml.Sequence.Scalar) block).getStyle();
+                style = scalar.getStyle();
             }
             if (!existingEntry.isDash()) {
                 entries.set(lastEntryIndex, existingEntry.withTrailingCommaPrefix(""));

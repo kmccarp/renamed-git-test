@@ -305,7 +305,7 @@ public class MavenPomDownloader {
                     // from the current repo, cache an empty result.
                     mavenCache.putMavenMetadata(URI.create(repo.getUri()), gav, null);
                 }
-            } else if (!result.isPresent()) {
+            } else if (result.isEmpty()) {
                 repositoryResponses.put(repo, "Did not attempt to download because of a previous failure to retrieve from this repository.");
             }
 
@@ -757,8 +757,7 @@ public class MavenPomDownloader {
                     sendRequest(request.build());
                     normalized = repository.withUri(httpsUri).withKnownToExist(true);
                 } catch (Throwable t) {
-                    if (t instanceof HttpSenderResponseException) {
-                        HttpSenderResponseException e = (HttpSenderResponseException) t;
+                    if (t instanceof HttpSenderResponseException e) {
                         // response was returned from the server, but it was not a 200 OK. The server therefore exists.
                         if (e.isServerReached()) {
                             normalized = repository.withUri(httpsUri);
@@ -795,8 +794,8 @@ public class MavenPomDownloader {
                             }
                         }
                     }
-                    if (normalized == null && !(t instanceof HttpSenderResponseException &&
-                                                ((HttpSenderResponseException) t).getBody().contains("Directory listing forbidden"))) {
+                    if (normalized == null && !(t instanceof HttpSenderResponseException exception &&
+                                                exception.getBody().contains("Directory listing forbidden"))) {
                         ctx.getResolutionListener().repositoryAccessFailed(repository.getUri(), t);
                     }
                 }
@@ -809,7 +808,7 @@ public class MavenPomDownloader {
             mavenCache.putNormalizedRepository(repository, null);
         }
 
-        return result == null || !result.isPresent() ? null : applyAuthenticationToRepository(result.get());
+        return result == null || result.isEmpty() ? null : applyAuthenticationToRepository(result.get());
     }
 
     /**

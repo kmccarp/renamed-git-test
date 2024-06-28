@@ -46,7 +46,7 @@ public class RemovePlugin extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s:%s`", groupId, artifactId);
+        return "`%s:%s`".formatted(groupId, artifactId);
     }
 
     @Override

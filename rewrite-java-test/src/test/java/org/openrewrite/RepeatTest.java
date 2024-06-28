@@ -100,10 +100,12 @@ class RepeatTest implements RewriteTest {
         RecipeRunException e = (RecipeRunException) assertionError.getCause();
         assertThat(e.getMessage())
           .contains(
-            "Repeat visitor called on a non-source file tree without a cursor pointing to the root of the tree. " +
-            "Passed tree type: `org.openrewrite.java.tree.J$ClassDeclaration`. " +
-            "This is likely a bug in the calling code. " +
-            "Use a `visit` method that accepts a cursor instead."
+            """
+            Repeat visitor called on a non-source file tree without a cursor pointing to the root of the tree. \
+            Passed tree type: `org.openrewrite.java.tree.J$ClassDeclaration`. \
+            This is likely a bug in the calling code. \
+            Use a `visit` method that accepts a cursor instead.\
+            """
           );
     }
 }

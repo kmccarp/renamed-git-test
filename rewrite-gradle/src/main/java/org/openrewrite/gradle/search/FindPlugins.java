@@ -59,8 +59,8 @@ public class FindPlugins extends Recipe {
             @Override
             public J visitMethodInvocation(J.MethodInvocation method, ExecutionContext ctx) {
                 if (pluginMatcher.matches(method)) {
-                    if (method.getArguments().get(0) instanceof J.Literal &&
-                            pluginId.equals(((J.Literal) method.getArguments().get(0)).getValue())) {
+                    if (method.getArguments().getFirst() instanceof J.Literal &&
+                            pluginId.equals(((J.Literal) method.getArguments().getFirst()).getValue())) {
                         return SearchResult.found(method);
                     }
                 }
@@ -91,8 +91,8 @@ public class FindPlugins extends Recipe {
                 return Stream.of(new GradlePlugin(
                         plugin,
                         requireNonNull(((J.Literal) requireNonNull(((J.MethodInvocation) plugin.getSelect()))
-                                .getArguments().get(0)).getValue()).toString(),
-                        requireNonNull(((J.Literal) plugin.getArguments().get(0)).getValue()).toString()
+                                .getArguments().getFirst()).getValue()).toString(),
+                        requireNonNull(((J.Literal) plugin.getArguments().getFirst()).getValue()).toString()
                 ));
             }
             return Stream.empty();
@@ -103,7 +103,7 @@ public class FindPlugins extends Recipe {
                 return Stream.of(new GradlePlugin(
                         plugin,
                         requireNonNull(((J.Literal) requireNonNull(plugin)
-                                .getArguments().get(0)).getValue()).toString(),
+                                .getArguments().getFirst()).getValue()).toString(),
                         null
                 ));
             }

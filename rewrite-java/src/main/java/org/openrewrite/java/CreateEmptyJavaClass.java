@@ -123,7 +123,7 @@ public class CreateEmptyJavaClass extends ScanningRecipe<AtomicBoolean> {
     private Stream<SourceFile> createEmptyClass() {
         String packageModifier = "package-private".equals(modifier) ? "" : modifier + " ";
         return JavaParser.fromJavaVersion().build()
-                .parse(String.format(CreateEmptyJavaClass.NEW_CLASS_TEMPLATE, packageName, packageModifier, className))
+                .parse(CreateEmptyJavaClass.NEW_CLASS_TEMPLATE.formatted(packageName, packageModifier, className))
                 .map(brandNewFile -> brandNewFile.withSourcePath(getSourcePath()));
     }
 
@@ -138,8 +138,8 @@ public class CreateEmptyJavaClass extends ScanningRecipe<AtomicBoolean> {
             path = path + "/";
         }
 
-        return Paths.get(String.format(
-                "%s%s/%s/%s.java",
+        return Paths.get(
+                "%s%s/%s/%s.java".formatted(
                 path,
                 sourceRoot,
                 packageName.replace('.', '/'),

@@ -64,8 +64,8 @@ public class AddCommentToXmlTag extends Recipe {
                     if (tag.getContent() != null) {
                         List<Content> contents = new ArrayList<>(tag.getContent());
                         boolean containsComment = contents.stream()
-                                .anyMatch(c -> c instanceof Xml.Comment &&
-                                        commentText.equals(((Xml.Comment) c).getText()));
+                                .anyMatch(c -> c instanceof Xml.Comment c1 &&
+                                        commentText.equals(c1.getText()));
                         if (!containsComment) {
                             int insertPos = 0;
                             Xml.Comment customComment = new Xml.Comment(randomId(),

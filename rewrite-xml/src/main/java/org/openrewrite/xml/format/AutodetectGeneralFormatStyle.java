@@ -39,8 +39,8 @@ public class AutodetectGeneralFormatStyle extends XmlVisitor<LineEndingsCount> {
 
     @Override
     public @Nullable Xml visit(@Nullable Tree tree, LineEndingsCount count) {
-        if(tree instanceof Xml) {
-            String s = ((Xml) tree).getPrefix();
+        if(tree instanceof Xml xml) {
+            String s = xml.getPrefix();
             for (int i = 0; i < s.length(); i++) {
                 char current = s.charAt(i);
                 char next = '\0';

@@ -64,11 +64,11 @@ public class JavaTemplateJavaExtension extends JavaTemplateLanguageExtension {
                                                         substitutedTemplate +
                                                         "\nUse JavaTemplate.Builder.doBeforeParseTemplate() to see what stub is being generated and include it in any bug report.");
                     }
-                    return gen.get(0).withPrefix(annotation.getPrefix());
+                    return gen.getFirst().withPrefix(annotation.getPrefix());
                 } else if (loc.equals(ANNOTATION_ARGUMENTS) && mode.equals(JavaCoordinates.Mode.REPLACEMENT) &&
                            annotation.isScope(insertionPoint)) {
                     List<J.Annotation> gen = substitutions.unsubstitute(templateParser.parseAnnotations(getCursor(), "@Example(" + substitutedTemplate + ")"));
-                    return annotation.withArguments(gen.get(0).getArguments());
+                    return annotation.withArguments(gen.getFirst().getArguments());
                 }
 
                 return super.visitAnnotation(annotation, integer);
@@ -334,7 +334,7 @@ public class JavaTemplateJavaExtension extends JavaTemplateLanguageExtension {
                                                 "Multi-variable declarations may not be used in a method declaration's " +
                                                 "parameter list: " + parameter.print(getCursor()));
                                     }
-                                    J.VariableDeclarations.NamedVariable namedVariable = decl.getVariables().get(0);
+                                    J.VariableDeclarations.NamedVariable namedVariable = decl.getVariables().getFirst();
                                     paramNames.add(namedVariable.getSimpleName());
                                     // Make a best-effort attempt to update the type information
                                     if (namedVariable.getType() == null && decl.getTypeExpression() instanceof J.Identifier) {
@@ -351,7 +351,7 @@ public class JavaTemplateJavaExtension extends JavaTemplateLanguageExtension {
                                                 if (bounds == null || bounds.isEmpty()) {
                                                     bound = JavaType.ShallowClass.build("java.lang.Object");
                                                 } else {
-                                                    bound = (JavaType.FullyQualified) bounds.get(0);
+                                                    bound = (JavaType.FullyQualified) bounds.getFirst();
                                                 }
 
                                                 JavaType.GenericTypeVariable genericType = new JavaType.GenericTypeVariable(
@@ -398,7 +398,7 @@ public class JavaTemplateJavaExtension extends JavaTemplateLanguageExtension {
                             if (m.getName().getType() != null) {
                                 m = m.withName(method.getName().withType(m.getMethodType()));
                             }
-                            return autoFormat(m, typeParameters.get(typeParameters.size() - 1), p,
+                            return autoFormat(m, typeParameters.getLast(), p,
                                     getCursor().getParentOrThrow());
                         }
                     }
@@ -478,11 +478,11 @@ public class JavaTemplateJavaExtension extends JavaTemplateLanguageExtension {
                             // and an empty, e.g. for a statement replacement in Groovy for the last statement
                             // of a method that has an implicit return
                             if (gen.size() == 2) {
-                                if (gen.get(0) instanceof J.Empty) {
+                                if (gen.getFirst() instanceof J.Empty) {
                                     return autoFormat(gen.get(1).withPrefix(statement.getPrefix()), p);
                                 }
                                 if (gen.get(1) instanceof J.Empty) {
-                                    return autoFormat(gen.get(0).withPrefix(statement.getPrefix()), p);
+                                    return autoFormat(gen.getFirst().withPrefix(statement.getPrefix()), p);
                                 }
                             }
                             throw new IllegalArgumentException("Expected a template that would generate exactly one " +
@@ -491,7 +491,7 @@ public class JavaTemplateJavaExtension extends JavaTemplateLanguageExtension {
                                                                "\nStatement:\n" + statement);
                         }
 
-                        return autoFormat(gen.get(0).withPrefix(statement.getPrefix()), p);
+                        return autoFormat(gen.getFirst().withPrefix(statement.getPrefix()), p);
                     }
                     throw new IllegalArgumentException("Cannot insert a new statement before an existing statement and return both to a visit method that returns one statement.");
                 }

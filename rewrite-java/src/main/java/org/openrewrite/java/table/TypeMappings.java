@@ -54,8 +54,10 @@ public class TypeMappings extends DataTable<TypeMappings.Row> {
          * in the cursor stack.
          */
         @Column(displayName = "Nearest non-null tree class name",
-                description = "The simple class name of the nearest non-null `J` element when " +
-                              "`typeName` is null.")
+                description = """
+                              The simple class name of the nearest non-null `J` element when \
+                              `typeName` is null.\
+                              """)
         String nearestNonNullTreeName;
     }
 }

@@ -505,10 +505,10 @@ class AddImportTest implements RewriteTest {
 
             List<SourceSpecs> sources = new ArrayList<>(otherImports);
             sources.add(java(
-              String.format("""
+                    """
                     package %s;
                     public class B {}
-                """, pkg),
+                """.formatted(pkg),
               SourceSpec::skip
             ));
 
@@ -523,15 +523,15 @@ class AddImportTest implements RewriteTest {
                       
                   class A {}
                   """,
-                String.format("""
+                      """
                     package a;
                                         
                     %s
                                         
                     class A {}
-                    """,
-                  expectedImports.stream().map(i -> "import " + i + ";").collect(Collectors.joining("\n"))
-                )
+                    """.formatted(
+                              expectedImports.stream().map(i -> "import " + i + ";").collect(Collectors.joining("\n"))
+                      )
               )
             );
 

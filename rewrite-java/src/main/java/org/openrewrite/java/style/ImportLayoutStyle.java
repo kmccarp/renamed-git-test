@@ -178,7 +178,7 @@ public class ImportLayoutStyle implements JavaStyle {
         if (!(insertPosition == 0 && pkg == null)) {
             if (before == null) {
                 if (pkg != null) {
-                    Space prefix = originalImports.get(0).getElement().getPrefix();
+                    Space prefix = originalImports.getFirst().getElement().getPrefix();
                     paddedToAdd = paddedToAdd.withElement(paddedToAdd.getElement().withPrefix(prefix));
                 }
             } else if (block(before) != addToBlock) {
@@ -334,9 +334,9 @@ public class ImportLayoutStyle implements JavaStyle {
         int extraLineSpaceCount = 0;
         String prevWhitespace = "";
         for (Block block : layout) {
-            if (block instanceof Block.BlankLines) {
+            if (block instanceof Block.BlankLines lines) {
                 extraLineSpaceCount = 0;
-                for (int i = 0; i < ((Block.BlankLines) block).getCount(); i++) {
+                for (int i = 0; i < lines.getCount(); i++) {
                     extraLineSpaceCount += 1;
                 }
             } else {
@@ -345,7 +345,7 @@ public class ImportLayoutStyle implements JavaStyle {
                     boolean whitespaceContainsCRLF = orderedImport.getElement().getPrefix().getWhitespace().contains("\r\n");
                     Space prefix;
                     if (importIndex == 0) {
-                        prefix = originalImports.get(0).getElement().getPrefix();
+                        prefix = originalImports.getFirst().getElement().getPrefix();
                     } else {
                         // Preserve the existing newline character type of either CRLF or LF.
                         // Classic Mac OS new line return '\r' is replaced by '\n'.
@@ -399,8 +399,8 @@ public class ImportLayoutStyle implements JavaStyle {
 
         public Builder blankLine() {
             if (!blocks.isEmpty() &&
-                    blocks.get(blocks.size() - 1) instanceof Block.BlankLines) {
-                ((Block.BlankLines) blocks.get(blocks.size() - 1)).count++;
+                    blocks.getLast() instanceof Block.BlankLines) {
+                ((Block.BlankLines) blocks.getLast()).count++;
             } else {
                 blocks.add(new Block.BlankLines());
             }
@@ -454,14 +454,14 @@ public class ImportLayoutStyle implements JavaStyle {
         }
 
         public ImportLayoutStyle build() {
-            assert (blocks.stream().anyMatch(it -> it instanceof Block.AllOthers && ((Block.AllOthers) it).isStatic()))
+            assert (blocks.stream().anyMatch(it -> it instanceof Block.AllOthers ao && ao.isStatic()))
                     : "There must be at least one block that accepts all static imports, but no such block was found in the specified layout";
-            assert (blocks.stream().anyMatch(it -> it instanceof Block.AllOthers && !((Block.AllOthers) it).isStatic()))
+            assert (blocks.stream().anyMatch(it -> it instanceof Block.AllOthers ao && !ao.isStatic()))
                     : "There must be at least one block that accepts all non-static imports, but no such block was found in the specified layout";
 
             for (Block block : blocks) {
-                if (block instanceof Block.AllOthers) {
-                    ((Block.AllOthers) block).setPackageImports(blocks.stream()
+                if (block instanceof Block.AllOthers others) {
+                    others.setPackageImports(blocks.stream()
                             .filter(b -> b.getClass().equals(Block.ImportPackage.class))
                             .map(Block.ImportPackage.class::cast)
                             .collect(toList()));
@@ -683,7 +683,7 @@ public class ImportLayoutStyle implements JavaStyle {
                 List<JRightPadded<J.Import>> ordered = new ArrayList<>(imports.size());
 
                 for (List<JRightPadded<J.Import>> importGroup : groupedImports.values()) {
-                    JRightPadded<J.Import> toStar = importGroup.get(0);
+                    JRightPadded<J.Import> toStar = importGroup.getFirst();
                     int threshold = toStar.getElement().isStatic() ? nameCountToUseStarImport : classCountToUseStarImport;
                     boolean starImportExists = importGroup.stream()
                             .anyMatch(it -> it.getElement().getQualid().getSimpleName().equals("*"));
@@ -705,7 +705,7 @@ public class ImportLayoutStyle implements JavaStyle {
                                 .map(im -> im.getElement().getTypeName())
                                 .findAny();
 
-                        if (starImportExists || !oneOfTheTypesIsInAnotherGroupToo.isPresent()) {
+                        if (starImportExists || oneOfTheTypesIsInAnotherGroupToo.isEmpty()) {
                             ordered.add(toStar.withElement(toStar.getElement().withQualid(qualid.withName(name.withSimpleName("*")))));
                             continue;
                         }
@@ -898,11 +898,10 @@ class Serializer extends JsonSerializer<ImportLayoutStyle> {
                 .map(block -> {
                     if (block instanceof ImportLayoutStyle.Block.BlankLines) {
                         return "<blank line>";
-                    } else if (block instanceof ImportLayoutStyle.Block.AllOthers) {
-                        return "import " + (((ImportLayoutStyle.Block.AllOthers) block).isStatic() ? "static " : "") +
+                    } else if (block instanceof ImportLayoutStyle.Block.AllOthers others) {
+                        return "import " + (others.isStatic() ? "static " : "") +
                                 "all other imports";
-                    } else if (block instanceof ImportLayoutStyle.Block.ImportPackage) {
-                        ImportLayoutStyle.Block.ImportPackage importPackage = (ImportLayoutStyle.Block.ImportPackage) block;
+                    } else if (block instanceof ImportLayoutStyle.Block.ImportPackage importPackage) {
                         String withSubpackages = importPackage.getPackageWildcard().pattern().contains("[^.]+") ? " without subpackages" : "";
                         return "import " + (importPackage.isStatic() ? "static " : "") + importPackage.getPackageWildcard().pattern()
                                 .replace("\\.", ".")
@@ -915,8 +914,7 @@ class Serializer extends JsonSerializer<ImportLayoutStyle> {
 
         @SuppressWarnings("SuspiciousToArrayCall") String[] packagesToFold = value.getPackagesToFold().stream()
                 .map(block -> {
-                    if (block instanceof ImportLayoutStyle.Block.ImportPackage) {
-                        ImportLayoutStyle.Block.ImportPackage importPackage = (ImportLayoutStyle.Block.ImportPackage) block;
+                    if (block instanceof ImportLayoutStyle.Block.ImportPackage importPackage) {
                         String withSubpackages = importPackage.getPackageWildcard().pattern().contains("[^.]+") ? " without subpackages" : "";
                         return "import " + (importPackage.isStatic() ? "static " : "") + importPackage.getPackageWildcard().pattern()
                                 .replace("\\.", ".")

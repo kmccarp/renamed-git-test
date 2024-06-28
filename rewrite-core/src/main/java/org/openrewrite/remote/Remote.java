@@ -77,7 +77,7 @@ public interface Remote extends SourceFile {
 
     @Override
     default <P> String printAll(P p) {
-        ExecutionContext ctx = p instanceof ExecutionContext ? (ExecutionContext) p :
+        ExecutionContext ctx = p instanceof ExecutionContext ec ? ec :
                 new InMemoryExecutionContext();
         return StringUtils.readFully(getInputStream(ctx), StandardCharsets.UTF_8);
     }

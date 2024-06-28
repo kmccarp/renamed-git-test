@@ -47,16 +47,14 @@ final class PatternVariables {
             return true;
         }
 
-        if (expr instanceof J.Parentheses) {
-            J.Parentheses<?> parens = (J.Parentheses<?>) expr;
+        if (expr instanceof J.Parentheses<?> parens) {
             collector.builder.append('(');
             try {
                 return simplifiedPatternVariableCondition0(parens.getTree(), toReplace, collector);
             } finally {
                 collector.builder.append(')');
             }
-        } else if (expr instanceof J.Unary) {
-            J.Unary unary = (J.Unary) expr;
+        } else if (expr instanceof J.Unary unary) {
             switch (unary.getOperator()) {
                 case PostIncrement: {
                     boolean found = simplifiedPatternVariableCondition0(unary.getExpression(), toReplace, collector);
@@ -90,8 +88,7 @@ final class PatternVariables {
                     throw new IllegalStateException("Unexpected unary operator: " + unary.getOperator());
             }
             return simplifiedPatternVariableCondition0(unary.getExpression(), toReplace, collector);
-        } else if (expr instanceof J.Binary) {
-            J.Binary binary = (J.Binary) expr;
+        } else if (expr instanceof J.Binary binary) {
             int length = collector.builder.length();
             boolean result = simplifiedPatternVariableCondition0(binary.getLeft(), toReplace, collector);
             switch (binary.getOperator()) {
@@ -172,16 +169,14 @@ final class PatternVariables {
                 }
             }
             return result;
-        } else if (expr instanceof J.InstanceOf) {
-            J.InstanceOf instanceOf = (J.InstanceOf) expr;
+        } else if (expr instanceof J.InstanceOf instanceOf) {
             if (instanceOf.getPattern() != null) {
                 collector.builder.append("((Object)null) instanceof ").append(instanceOf.getClazz()).append(' ').append(instanceOf.getPattern());
                 collector.instanceOfFound = true;
                 return true;
             }
             collector.builder.append("true");
-        } else if (expr instanceof J.Literal) {
-            J.Literal literal = (J.Literal) expr;
+        } else if (expr instanceof J.Literal literal) {
             collector.builder.append(literal.getValue());
         } else if (expr instanceof Expression) {
             collector.builder.append("null");
@@ -196,26 +191,21 @@ final class PatternVariables {
     private static boolean neverCompletesNormally0(@Nullable Statement statement, Set<String> labelsToIgnore) {
         if (statement instanceof J.Return || statement instanceof J.Throw) {
             return true;
-        } else if (statement instanceof J.Break) {
-            J.Break breakStatement = (J.Break) statement;
+        } else if (statement instanceof J.Break breakStatement) {
             return breakStatement.getLabel() != null && !labelsToIgnore.contains(breakStatement.getLabel().getSimpleName())
                     || breakStatement.getLabel() == null && !labelsToIgnore.contains(DEFAULT_LABEL);
-        } else if (statement instanceof J.Continue) {
-            J.Continue continueStatement = (J.Continue) statement;
+        } else if (statement instanceof J.Continue continueStatement) {
             return continueStatement.getLabel() != null && !labelsToIgnore.contains(continueStatement.getLabel().getSimpleName())
                     || continueStatement.getLabel() == null && !labelsToIgnore.contains(DEFAULT_LABEL);
         } else if (statement instanceof J.Block) {
             return neverCompletesNormally0(getLastStatement(statement), labelsToIgnore);
-        } else if (statement instanceof Loop) {
-            Loop loop = (Loop) statement;
+        } else if (statement instanceof Loop loop) {
             return neverCompletesNormallyIgnoringLabel(loop.getBody(), DEFAULT_LABEL, labelsToIgnore);
-        } else if (statement instanceof J.If) {
-            J.If if_ = (J.If) statement;
+        } else if (statement instanceof J.If if_) {
             return if_.getElsePart() != null
                     && neverCompletesNormally0(if_.getThenPart(), labelsToIgnore)
                     && neverCompletesNormally0(if_.getElsePart().getBody(), labelsToIgnore);
-        } else if (statement instanceof J.Switch) {
-            J.Switch switch_ = (J.Switch) statement;
+        } else if (statement instanceof J.Switch switch_) {
             if (switch_.getCases().getStatements().isEmpty()) {
                 return false;
             }
@@ -224,23 +214,21 @@ final class PatternVariables {
                 if (!neverCompletesNormallyIgnoringLabel(case_, DEFAULT_LABEL, labelsToIgnore)) {
                     return false;
                 }
-                if (case_ instanceof J.Case) {
-                    Expression elem = ((J.Case) case_).getPattern();
-                    if (elem instanceof J.Identifier && ((J.Identifier) elem).getSimpleName().equals("default")) {
+                if (case_ instanceof J.Case case1) {
+                    Expression elem = case1.getPattern();
+                    if (elem instanceof J.Identifier identifier && identifier.getSimpleName().equals("default")) {
                         defaultCase = case_;
                     }
                 }
             }
             return neverCompletesNormallyIgnoringLabel(defaultCase, DEFAULT_LABEL, labelsToIgnore);
-        } else if (statement instanceof J.Case) {
-            J.Case case_ = (J.Case) statement;
+        } else if (statement instanceof J.Case case_) {
             if (case_.getStatements().isEmpty()) {
                 // fallthrough to next case
                 return true;
             }
             return neverCompletesNormally0(getLastStatement(case_), labelsToIgnore);
-        } else if (statement instanceof J.Try) {
-            J.Try try_ = (J.Try) statement;
+        } else if (statement instanceof J.Try try_) {
             if (try_.getFinally() != null && !try_.getFinally().getStatements().isEmpty()
                     && neverCompletesNormally0(try_.getFinally(), labelsToIgnore)) {
                 return true;
@@ -256,11 +244,11 @@ final class PatternVariables {
                 }
             }
             return bodyHasExit;
-        } else if (statement instanceof J.Synchronized) {
-            return neverCompletesNormally0(((J.Synchronized) statement).getBody(), labelsToIgnore);
-        } else if (statement instanceof J.Label) {
-            String label = ((J.Label) statement).getLabel().getSimpleName();
-            Statement labeledStatement = ((J.Label) statement).getStatement();
+        } else if (statement instanceof J.Synchronized synchronized1) {
+            return neverCompletesNormally0(synchronized1.getBody(), labelsToIgnore);
+        } else if (statement instanceof J.Label label1) {
+            String label = label1.getLabel().getSimpleName();
+            Statement labeledStatement = label1.getStatement();
             return neverCompletesNormallyIgnoringLabel(labeledStatement, label, labelsToIgnore);
         }
         return false;
@@ -279,14 +267,14 @@ final class PatternVariables {
 
     @Nullable
     private static Statement getLastStatement(Statement statement) {
-        if (statement instanceof J.Block) {
-            List<Statement> statements = ((J.Block) statement).getStatements();
-            return statements.isEmpty() ? null : getLastStatement(statements.get(statements.size() - 1));
-        } else if (statement instanceof J.Case) {
-            List<Statement> statements = ((J.Case) statement).getStatements();
-            return statements.isEmpty() ? null : getLastStatement(statements.get(statements.size() - 1));
-        } else if (statement instanceof Loop) {
-            return getLastStatement(((Loop) statement).getBody());
+        if (statement instanceof J.Block block) {
+            List<Statement> statements = block.getStatements();
+            return statements.isEmpty() ? null : getLastStatement(statements.getLast());
+        } else if (statement instanceof J.Case case1) {
+            List<Statement> statements = case1.getStatements();
+            return statements.isEmpty() ? null : getLastStatement(statements.getLast());
+        } else if (statement instanceof Loop loop) {
+            return getLastStatement(loop.getBody());
         }
         return statement;
     }

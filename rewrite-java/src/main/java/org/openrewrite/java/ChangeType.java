@@ -47,8 +47,10 @@ public class ChangeType extends Recipe {
     String newFullyQualifiedTypeName;
 
     @Option(displayName = "Ignore type definition",
-            description = "When set to `true` the definition of the old type will be left untouched. " +
-                          "This is useful when you're replacing usage of a class but don't want to rename it.",
+            description = """
+                          When set to `true` the definition of the old type will be left untouched. \
+                          This is useful when you're replacing usage of a class but don't want to rename it.\
+                          """,
             required = false)
     @Nullable
     Boolean ignoreDefinition;
@@ -63,11 +65,11 @@ public class ChangeType extends Recipe {
         String oldShort = oldFullyQualifiedTypeName.substring(oldFullyQualifiedTypeName.lastIndexOf('.') + 1);
         String newShort = newFullyQualifiedTypeName.substring(newFullyQualifiedTypeName.lastIndexOf('.') + 1);
         if (oldShort.equals(newShort)) {
-            return String.format("`%s` to `%s`",
+            return "`%s` to `%s`".formatted(
                     oldFullyQualifiedTypeName,
                     newFullyQualifiedTypeName);
         } else {
-            return String.format("`%s` to `%s`",
+            return "`%s` to `%s`".formatted(
                     oldShort, newShort);
         }
     }
@@ -118,8 +120,7 @@ public class ChangeType extends Recipe {
 
         @Override
         public J visit(@Nullable Tree tree, ExecutionContext ctx) {
-            if (tree instanceof JavaSourceFile) {
-                JavaSourceFile cu = (JavaSourceFile) tree;
+            if (tree instanceof JavaSourceFile cu) {
                 if (!Boolean.TRUE.equals(ignoreDefinition)) {
                     JavaType.FullyQualified fq = TypeUtils.asFullyQualified(targetType);
                     if (fq != null) {
@@ -174,27 +175,22 @@ public class ChangeType extends Recipe {
         @Override
         public @Nullable J postVisit(J tree, ExecutionContext ctx) {
             J j = super.postVisit(tree, ctx);
-            if (j instanceof J.ArrayType) {
-                J.ArrayType arrayType = (J.ArrayType) j;
+            if (j instanceof J.ArrayType arrayType) {
                 JavaType type = updateType(arrayType.getType());
                 j = arrayType.withType(type);
-            } else if (j instanceof J.MethodDeclaration) {
-                J.MethodDeclaration method = (J.MethodDeclaration) j;
+            } else if (j instanceof J.MethodDeclaration method) {
                 JavaType.Method mt = updateType(method.getMethodType());
                 j = method.withMethodType(mt)
                         .withName(method.getName().withType(mt));
-            } else if (j instanceof J.MethodInvocation) {
-                J.MethodInvocation method = (J.MethodInvocation) j;
+            } else if (j instanceof J.MethodInvocation method) {
                 JavaType.Method mt = updateType(method.getMethodType());
                 j = method.withMethodType(mt)
                         .withName(method.getName().withType(mt));
-            } else if (j instanceof J.NewClass) {
-                J.NewClass n = (J.NewClass) j;
+            } else if (j instanceof J.NewClass n) {
                 j = n.withConstructorType(updateType(n.getConstructorType()));
-            } else if (tree instanceof TypedTree) {
-                j = ((TypedTree) tree).withType(updateType(((TypedTree) tree).getType()));
-            } else if (tree instanceof JavaSourceFile) {
-                JavaSourceFile sf = (JavaSourceFile) tree;
+            } else if (tree instanceof TypedTree typedTree) {
+                j = typedTree.withType(updateType(typedTree.getType()));
+            } else if (tree instanceof JavaSourceFile sf) {
                 if (targetType instanceof JavaType.FullyQualified) {
                     for (J.Import anImport : sf.getImports()) {
                         if (anImport.isStatic()) {
@@ -202,8 +198,7 @@ public class ChangeType extends Recipe {
                         }
 
                         JavaType maybeType = anImport.getQualid().getType();
-                        if (maybeType instanceof JavaType.FullyQualified) {
-                            JavaType.FullyQualified type = (JavaType.FullyQualified) maybeType;
+                        if (maybeType instanceof JavaType.FullyQualified type) {
                             if (originalType.getFullyQualifiedName().equals(type.getFullyQualifiedName())) {
                                 sf = (JavaSourceFile) new RemoveImport<ExecutionContext>(originalType.getFullyQualifiedName()).visit(sf, ctx, getCursor().getParentOrThrow());
                             } else if (originalType.getOwningClass() != null && originalType.getOwningClass().getFullyQualifiedName().equals(type.getFullyQualifiedName())) {
@@ -239,26 +234,25 @@ public class ChangeType extends Recipe {
         @Override
         public J visitFieldAccess(J.FieldAccess fieldAccess, ExecutionContext ctx) {
             if (fieldAccess.isFullyQualifiedClassReference(originalType.getFullyQualifiedName())) {
-                if (targetType instanceof JavaType.FullyQualified) {
-                    return updateOuterClassTypes(TypeTree.build(((JavaType.FullyQualified) targetType).getFullyQualifiedName())
+                if (targetType instanceof JavaType.FullyQualified qualified) {
+                    return updateOuterClassTypes(TypeTree.build(qualified.getFullyQualifiedName())
                             .withPrefix(fieldAccess.getPrefix()));
-                } else if (targetType instanceof JavaType.Primitive) {
+                } else if (targetType instanceof JavaType.Primitive primitive) {
                     return new J.Primitive(
                             fieldAccess.getId(),
                             fieldAccess.getPrefix(),
                             Markers.EMPTY,
-                            (JavaType.Primitive) targetType
+                            primitive
                     );
                 }
             } else {
                 StringBuilder maybeClass = new StringBuilder();
                 for (Expression target = fieldAccess; target != null; ) {
-                    if (target instanceof J.FieldAccess) {
-                        J.FieldAccess fa = (J.FieldAccess) target;
+                    if (target instanceof J.FieldAccess fa) {
                         maybeClass.insert(0, fa.getSimpleName()).insert(0, '.');
                         target = fa.getTarget();
-                    } else if (target instanceof J.Identifier) {
-                        maybeClass.insert(0, ((J.Identifier) target).getSimpleName());
+                    } else if (target instanceof J.Identifier identifier) {
+                        maybeClass.insert(0, identifier.getSimpleName());
                         target = null;
                     } else {
                         maybeClass = new StringBuilder("__NOT_IT__");
@@ -271,8 +265,7 @@ public class ChangeType extends Recipe {
                     Expression e = updateOuterClassTypes(TypeTree.build(((JavaType.FullyQualified) targetType).getClassName())
                             .withPrefix(fieldAccess.getPrefix()));
                     // If a FieldAccess like Map.Entry has been replaced with an Identifier, ensure that identifier has the correct type
-                    if (e instanceof J.Identifier && e.getType() == null) {
-                        J.Identifier i = (J.Identifier) e;
+                    if (e instanceof J.Identifier i && e.getType() == null) {
                         e = i.withType(targetType);
                     }
                     return e;
@@ -298,16 +291,16 @@ public class ChangeType extends Recipe {
                 }
 
                 if (ident.getSimpleName().equals(className)) {
-                    if (targetType instanceof JavaType.FullyQualified) {
-                        if (((JavaType.FullyQualified) targetType).getOwningClass() != null) {
-                            return updateOuterClassTypes(TypeTree.build(((JavaType.FullyQualified) targetType).getClassName())
+                    if (targetType instanceof JavaType.FullyQualified qualified) {
+                        if (qualified.getOwningClass() != null) {
+                            return updateOuterClassTypes(TypeTree.build(qualified.getClassName())
                                     .withType(null)
                                     .withPrefix(ident.getPrefix()));
                         } else {
-                            ident = ident.withSimpleName(((JavaType.FullyQualified) targetType).getClassName());
+                            ident = ident.withSimpleName(qualified.getClassName());
                         }
-                    } else if (targetType instanceof JavaType.Primitive) {
-                        ident = ident.withSimpleName(((JavaType.Primitive) targetType).getKeyword());
+                    } else if (targetType instanceof JavaType.Primitive primitive) {
+                        ident = ident.withSimpleName(primitive.getKeyword());
                     }
                 }
 
@@ -354,7 +347,7 @@ public class ChangeType extends Recipe {
         }
 
         private Expression updateOuterClassTypes(Expression typeTree) {
-            if (typeTree instanceof J.FieldAccess) {
+            if (typeTree instanceof J.FieldAccess access) {
                 JavaType.FullyQualified type = (JavaType.FullyQualified) targetType;
 
                 if (type.getOwningClass() == null) {
@@ -368,17 +361,17 @@ public class ChangeType extends Recipe {
                 Stack<JavaType.FullyQualified> attrStack = new Stack<>();
                 attrStack.push(type);
 
-                for (Expression t = ((J.FieldAccess) typeTree).getTarget(); ; ) {
+                for (Expression t = access.getTarget(); ; ) {
                     typeStack.push(t);
-                    if (t instanceof J.FieldAccess) {
-                        if (Character.isUpperCase(((J.FieldAccess) t).getSimpleName().charAt(0))) {
+                    if (t instanceof J.FieldAccess access) {
+                        if (Character.isUpperCase(access.getSimpleName().charAt(0))) {
                             if (attrStack.peek().getOwningClass() != null) {
                                 attrStack.push(attrStack.peek().getOwningClass());
                             }
                         }
-                        t = ((J.FieldAccess) t).getTarget();
-                    } else if (t instanceof J.Identifier) {
-                        if (Character.isUpperCase(((J.Identifier) t).getSimpleName().charAt(0))) {
+                        t = access.getTarget();
+                    } else if (t instanceof J.Identifier identifier) {
+                        if (Character.isUpperCase(identifier.getSimpleName().charAt(0))) {
                             if (attrStack.peek().getOwningClass() != null) {
                                 attrStack.push(attrStack.peek().getOwningClass());
                             }
@@ -389,18 +382,18 @@ public class ChangeType extends Recipe {
 
                 Expression attributed = null;
                 for (Expression e = typeStack.pop(); ; e = typeStack.pop()) {
-                    if (e instanceof J.Identifier) {
+                    if (e instanceof J.Identifier identifier) {
                         if (attrStack.size() == typeStack.size() + 1) {
-                            attributed = ((J.Identifier) e).withType(attrStack.pop());
+                            attributed = identifier.withType(attrStack.pop());
                         } else {
                             attributed = e;
                         }
-                    } else if (e instanceof J.FieldAccess) {
+                    } else if (e instanceof J.FieldAccess access) {
                         if (attrStack.size() == typeStack.size() + 1) {
-                            attributed = ((J.FieldAccess) e).withTarget(attributed)
+                            attributed = access.withTarget(attributed)
                                     .withType(attrStack.pop());
                         } else {
-                            attributed = ((J.FieldAccess) e).withTarget(attributed);
+                            attributed = access.withTarget(attributed);
                         }
                     }
                     if (typeStack.isEmpty()) {
@@ -425,11 +418,9 @@ public class ChangeType extends Recipe {
                 return type;
             }
 
-            if (oldType instanceof JavaType.Parameterized) {
-                JavaType.Parameterized pt = (JavaType.Parameterized) oldType;
+            if (oldType instanceof JavaType.Parameterized pt) {
                 pt = pt.withTypeParameters(ListUtils.map(pt.getTypeParameters(), tp -> {
-                    if (tp instanceof JavaType.FullyQualified) {
-                        JavaType.FullyQualified tpFq = (JavaType.FullyQualified) tp;
+                    if (tp instanceof JavaType.FullyQualified tpFq) {
                         if (isTargetFullyQualifiedType(tpFq)) {
                             return updateType(tpFq);
                         }
@@ -449,10 +440,9 @@ public class ChangeType extends Recipe {
                     oldNameToChangedType.put(oldType, targetType);
                     return targetType;
                 }
-            } else if (oldType instanceof JavaType.GenericTypeVariable) {
-                JavaType.GenericTypeVariable gtv = (JavaType.GenericTypeVariable) oldType;
+            } else if (oldType instanceof JavaType.GenericTypeVariable gtv) {
                 gtv = gtv.withBounds(ListUtils.map(gtv.getBounds(), b -> {
-                    if (b instanceof JavaType.FullyQualified && isTargetFullyQualifiedType((JavaType.FullyQualified) b)) {
+                    if (b instanceof JavaType.FullyQualified qualified && isTargetFullyQualifiedType(qualified)) {
                         return updateType(b);
                     }
                     return b;
@@ -461,15 +451,13 @@ public class ChangeType extends Recipe {
                 oldNameToChangedType.put(oldType, gtv);
                 oldNameToChangedType.put(gtv, gtv);
                 return gtv;
-            } else if (oldType instanceof JavaType.Variable) {
-                JavaType.Variable variable = (JavaType.Variable) oldType;
+            } else if (oldType instanceof JavaType.Variable variable) {
                 variable = variable.withOwner(updateType(variable.getOwner()));
                 variable = variable.withType(updateType(variable.getType()));
                 oldNameToChangedType.put(oldType, variable);
                 oldNameToChangedType.put(variable, variable);
                 return variable;
-            } else if (oldType instanceof JavaType.Array) {
-                JavaType.Array array = (JavaType.Array) oldType;
+            } else if (oldType instanceof JavaType.Array array) {
                 array = array.withElemType(updateType(array.getElemType()));
                 oldNameToChangedType.put(oldType, array);
                 oldNameToChangedType.put(array, array);
@@ -516,8 +504,7 @@ public class ChangeType extends Recipe {
 
         @Override
         public J visit(@Nullable Tree tree, ExecutionContext ctx) {
-            if (tree instanceof JavaSourceFile) {
-                JavaSourceFile cu = (JavaSourceFile) tree;
+            if (tree instanceof JavaSourceFile cu) {
                 for (J.ClassDeclaration declaration : cu.getClasses()) {
                     // Check the class name instead of source path, as it might differ
                     String fqn = declaration.getType().getFullyQualifiedName();

@@ -43,10 +43,12 @@ public class UpgradeTransitiveDependencyVersion extends ScanningRecipe<AddManage
 
     @Override
     public String getDescription() {
-        return "Upgrades the version of a transitive dependency in a Maven pom file. " +
-               "Leaves direct dependencies unmodified. " +
-               "Can be paired with the regular Upgrade Dependency Version recipe to upgrade a dependency everywhere, " +
-               "regardless of whether it is direct or transitive.";
+        return """
+               Upgrades the version of a transitive dependency in a Maven pom file. \
+               Leaves direct dependencies unmodified. \
+               Can be paired with the regular Upgrade Dependency Version recipe to upgrade a dependency everywhere, \
+               regardless of whether it is direct or transitive.\
+               """;
     }
 
     @Option(displayName = "Group",
@@ -88,8 +90,10 @@ public class UpgradeTransitiveDependencyVersion extends ScanningRecipe<AddManage
     String classifier;
 
     @Option(displayName = "Version pattern",
-            description = "Allows version selection to be extended beyond the original Node Semver semantics. So for example," +
-                          "Setting 'version' to \"25-29\" can be paired with a metadata pattern of \"-jre\" to select 29.0-jre",
+            description = """
+                          Allows version selection to be extended beyond the original Node Semver semantics. So for example,\
+                          Setting 'version' to "25-29" can be paired with a metadata pattern of "-jre" to select 29.0-jre\
+                          """,
             example = "-jre",
             required = false)
     @Nullable

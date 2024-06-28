@@ -123,7 +123,7 @@ public class ReloadableJava11ParserVisitor extends TreePathScanner<J, Space> {
             Space argsPrefix = sourceBefore("(");
             List<JRightPadded<Expression>> expressions;
             if (node.getArguments().size() == 1) {
-                ExpressionTree arg = node.getArguments().get(0);
+                ExpressionTree arg = node.getArguments().getFirst();
                 if (arg instanceof JCAssign) {
                     if (endPos(arg) < 0) {
                         expressions = singletonList(convert(((JCAssign) arg).rhs, t -> sourceBefore(")")));
@@ -742,8 +742,7 @@ public class ReloadableJava11ParserVisitor extends TreePathScanner<J, Space> {
         String valueSource = source.substring(((JCLiteral) node).getStartPosition(), endPos(node));
         JavaType.Primitive type = typeMapping.primitive(((JCTree.JCLiteral) node).typetag);
 
-        if (value instanceof Character) {
-            char c = (Character) value;
+        if (value instanceof Character c) {
             if (c >= SURR_FIRST && c <= SURR_LAST) {
                 return new J.Literal(randomId(), fmt, Markers.EMPTY, null, "''",
                         singletonList(new J.Literal.UnicodeEscape(1,
@@ -1169,8 +1168,7 @@ public class ReloadableJava11ParserVisitor extends TreePathScanner<J, Space> {
                 Space resourcePrefix = resourceVar.getPrefix();
                 resourceVar = resourceVar.withPrefix(EMPTY); // moved to the containing Try.Resource
 
-                if (semicolonPresent && resourceVar instanceof J.VariableDeclarations) {
-                    J.VariableDeclarations resourceVarDecl = (J.VariableDeclarations) resourceVar;
+                if (semicolonPresent && resourceVar instanceof J.VariableDeclarations resourceVarDecl) {
                     resourceVar = resourceVarDecl.getPadding().withVariables(Space.formatLastSuffix(resourceVarDecl
                             .getPadding().getVariables(), sourceBefore(";")));
                 }
@@ -1445,7 +1443,7 @@ public class ReloadableJava11ParserVisitor extends TreePathScanner<J, Space> {
     }
 
     private J.VariableDeclarations visitVariables(List<VariableTree> nodes, Space fmt) {
-        JCTree.JCVariableDecl node = (JCVariableDecl) nodes.get(0);
+        JCTree.JCVariableDecl node = (JCVariableDecl) nodes.getFirst();
 
         JCExpression vartype = node.vartype;
 
@@ -1485,7 +1483,7 @@ public class ReloadableJava11ParserVisitor extends TreePathScanner<J, Space> {
         }
 
         if (typeExpr != null && !typeExprAnnotations.isEmpty()) {
-            Space prefix = typeExprAnnotations.get(0).getPrefix();
+            Space prefix = typeExprAnnotations.getFirst().getPrefix();
             typeExpr = new J.AnnotatedType(randomId(), prefix, Markers.EMPTY, ListUtils.mapFirst(typeExprAnnotations, a -> a.withPrefix(EMPTY)), typeExpr);
         }
 
@@ -1508,8 +1506,8 @@ public class ReloadableJava11ParserVisitor extends TreePathScanner<J, Space> {
 
             JavaType type = typeMapping.type(n);
             J.Identifier name = new J.Identifier(randomId(), EMPTY, Markers.EMPTY, emptyList(), n.getName().toString(),
-                    type instanceof JavaType.Variable ? ((JavaType.Variable) type).getType() : type,
-                    type instanceof JavaType.Variable ? (JavaType.Variable) type : null);
+                    type instanceof JavaType.Variable v ? v.getType() : type,
+                    type instanceof JavaType.Variable v ? v : null);
             List<JLeftPadded<Space>> dimensionsAfterName = arrayDimensions();
 
             vars.add(
@@ -1726,13 +1724,13 @@ public class ReloadableJava11ParserVisitor extends TreePathScanner<J, Space> {
         List<JRightPadded<Statement>> converted = new ArrayList<>(treesGroupedByStartPosition.size());
         for (List<? extends Tree> treeGroup : treesGroupedByStartPosition.values()) {
             if (treeGroup.size() == 1) {
-                converted.add(convert(treeGroup.get(0), suffix));
+                converted.add(convert(treeGroup.getFirst(), suffix));
             } else {
                 // multi-variable declarations are split into independent overlapping JCVariableDecl's by the OpenJDK AST
-                String prefix = source.substring(cursor, max(((JCTree) treeGroup.get(0)).getStartPosition(), cursor));
+                String prefix = source.substring(cursor, max(((JCTree) treeGroup.getFirst()).getStartPosition(), cursor));
                 cursor += prefix.length();
 
-                Tree last = treeGroup.get(treeGroup.size() - 1);
+                Tree last = treeGroup.getLast();
 
                 @SuppressWarnings("unchecked")
                 J.VariableDeclarations vars = visitVariables((List<VariableTree>) treeGroup, format(prefix));

@@ -28,8 +28,8 @@ public class AIExecutionContextView extends DelegatingExecutionContext {
     }
 
     public static AIExecutionContextView view(ExecutionContext ctx) {
-        if (ctx instanceof AIExecutionContextView) {
-            return (AIExecutionContextView) ctx;
+        if (ctx instanceof AIExecutionContextView view) {
+            return view;
         }
         return new AIExecutionContextView(ctx);
     }

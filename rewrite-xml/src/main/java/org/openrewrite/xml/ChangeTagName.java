@@ -43,7 +43,7 @@ public class ChangeTagName extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s` to `%s`", elementName, newName);
+        return "`%s` to `%s`".formatted(elementName, newName);
     }
 
     @Override

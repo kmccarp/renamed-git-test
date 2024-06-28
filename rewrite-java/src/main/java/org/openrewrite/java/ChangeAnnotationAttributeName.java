@@ -56,7 +56,7 @@ public class ChangeAnnotationAttributeName extends Recipe {
     @Override
     public String getInstanceNameSuffix() {
         String shortType = annotationType.substring(annotationType.lastIndexOf('.') + 1);
-        return String.format("`@%s(%s)` to `@%s(%s)`",
+        return "`@%s(%s)` to `@%s(%s)`".formatted(
                 shortType, oldAttributeName,
                 shortType, newAttributeName);
     }
@@ -78,9 +78,8 @@ public class ChangeAnnotationAttributeName extends Recipe {
                     return a;
                 }
                 return a.withArguments(ListUtils.map(a.getArguments(), arg -> {
-                    if (arg instanceof J.Assignment) {
+                    if (arg instanceof J.Assignment assignment) {
                         if (!oldAttributeName.equals(newAttributeName)) {
-                            J.Assignment assignment = (J.Assignment) arg;
                             J.Identifier variable = (J.Identifier) assignment.getVariable();
                             if (oldAttributeName.equals(variable.getSimpleName())) {
                                 return assignment.withVariable(variable.withSimpleName(newAttributeName));

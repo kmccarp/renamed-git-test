@@ -65,9 +65,11 @@ public class AddProperty extends Recipe {
 
     @Override
     public String getDescription() {
-        return "Adds a new property to a property file. " +
-               "Attempts to place the new property in alphabetical order by the property keys. " +
-               "Whitespace before and after the `=` must be included in the property and value.";
+        return """
+               Adds a new property to a property file. \
+               Attempts to place the new property in alphabetical order by the property keys. \
+               Whitespace before and after the `=` must be included in the property and value.\
+               """;
     }
 
     @Override

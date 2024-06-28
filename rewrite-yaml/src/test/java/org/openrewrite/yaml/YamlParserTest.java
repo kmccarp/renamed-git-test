@@ -38,15 +38,15 @@ class YamlParserTest implements RewriteTest {
         List<SourceFile> yamlSources = YamlParser.builder().build().parse("a: b\n").toList();
         assertThat(yamlSources).singleElement().isInstanceOf(Yaml.Documents.class);
 
-        Yaml.Documents documents = (Yaml.Documents) yamlSources.get(0);
-        Yaml.Document document = documents.getDocuments().get(0);
+        Yaml.Documents documents = (Yaml.Documents) yamlSources.getFirst();
+        Yaml.Document document = documents.getDocuments().getFirst();
 
         // Assert that end is parsed correctly
         assertThat(document.getEnd().getPrefix()).isEqualTo("\n");
 
         // Assert that the title is parsed correctly
         Yaml.Mapping mapping = (Yaml.Mapping) document.getBlock();
-        Yaml.Mapping.Entry entry = mapping.getEntries().get(0);
+        Yaml.Mapping.Entry entry = mapping.getEntries().getFirst();
         Yaml.Scalar title = (Yaml.Scalar) entry.getValue();
         assertThat(title.getValue()).isEqualTo("b");
     }
@@ -121,11 +121,11 @@ class YamlParserTest implements RewriteTest {
         assertThat(sourceFile).isNotInstanceOf(ParseError.class);
 
         Yaml.Documents documents = (Yaml.Documents) sourceFile;
-        Yaml.Document document = documents.getDocuments().get(0);
+        Yaml.Document document = documents.getDocuments().getFirst();
 
         // Assert that end is parsed correctly
         Yaml.Mapping mapping = (Yaml.Mapping) document.getBlock();
-        Yaml.Mapping.Entry entry = mapping.getEntries().get(0);
+        Yaml.Mapping.Entry entry = mapping.getEntries().getFirst();
         Yaml.Scalar title = (Yaml.Scalar) entry.getValue();
         assertThat(title.getValue()).isEqualTo(input.trim());
     }

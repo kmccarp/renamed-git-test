@@ -41,9 +41,11 @@ public class DependencyUseStringNotation extends Recipe {
 
     @Override
     public String getDescription() {
-        return "In Gradle, dependencies can be expressed as a `String` like `\"groupId:artifactId:version\"`, " +
-                "or equivalently as a `Map` like `group: 'groupId', name: 'artifactId', version: 'version'`. " +
-                "This recipe replaces dependencies represented as `Maps` with an equivalent dependency represented as a `String`.";
+        return """
+                In Gradle, dependencies can be expressed as a `String` like `"groupId:artifactId:version"`, \
+                or equivalently as a `Map` like `group: 'groupId', name: 'artifactId', version: 'version'`. \
+                This recipe replaces dependencies represented as `Maps` with an equivalent dependency represented as a `String`.\
+                """;
     }
 
     @Override
@@ -62,8 +64,8 @@ public class DependencyUseStringNotation extends Recipe {
                 }
 
                 Map<String, Expression> mapNotation = new HashMap<>();
-                if (m.getArguments().get(0) instanceof G.MapLiteral) {
-                    G.MapLiteral arg = (G.MapLiteral) m.getArguments().get(0);
+                if (m.getArguments().getFirst() instanceof G.MapLiteral) {
+                    G.MapLiteral arg = (G.MapLiteral) m.getArguments().getFirst();
 
                     for (G.MapEntry entry : arg.getElements()) {
                         if (entry.getKey() instanceof J.Literal) {
@@ -85,14 +87,13 @@ public class DependencyUseStringNotation extends Recipe {
                     } else {
                         m = m.withArguments(Collections.singletonList(stringNotation));
                     }
-                } else if (m.getArguments().get(0) instanceof G.MapEntry) {
-                    G.MapEntry firstEntry = (G.MapEntry) m.getArguments().get(0);
+                } else if (m.getArguments().getFirst() instanceof G.MapEntry) {
+                    G.MapEntry firstEntry = (G.MapEntry) m.getArguments().getFirst();
                     Space prefix = firstEntry.getPrefix();
                     Markers markers = firstEntry.getMarkers();
 
                     for (Expression e : m.getArguments()) {
-                        if (e instanceof G.MapEntry) {
-                            G.MapEntry entry = (G.MapEntry) e;
+                        if (e instanceof G.MapEntry entry) {
                             if (entry.getKey() instanceof J.Literal) {
                                 J.Literal key = (J.Literal) entry.getKey();
                                 if (key.getType() == JavaType.Primitive.String) {
@@ -150,20 +151,20 @@ public class DependencyUseStringNotation extends Recipe {
 
             @Nullable
             private String coerceToStringNotation(Expression expression) {
-                if (expression instanceof J.Literal) {
-                    return (String) ((J.Literal) expression).getValue();
-                } else if (expression instanceof J.Identifier) {
-                    return "$" + ((J.Identifier) expression).getSimpleName();
-                } else if (expression instanceof G.GString) {
-                    List<J> str = ((G.GString) expression).getStrings();
+                if (expression instanceof J.Literal literal) {
+                    return (String) literal.getValue();
+                } else if (expression instanceof J.Identifier identifier) {
+                    return "$" + identifier.getSimpleName();
+                } else if (expression instanceof G.GString string) {
+                    List<J> str = string.getStrings();
                     StringBuilder sb = new StringBuilder();
                     for (J valuePart : str) {
-                        if (valuePart instanceof Expression) {
-                            sb.append(coerceToStringNotation((Expression) valuePart));
-                        } else if (valuePart instanceof G.GString.Value) {
-                            J tree = ((G.GString.Value) valuePart).getTree();
-                            if (tree instanceof Expression) {
-                                sb.append(coerceToStringNotation((Expression) tree));
+                        if (valuePart instanceof Expression expression1) {
+                            sb.append(coerceToStringNotation(expression1));
+                        } else if (valuePart instanceof G.GString.Value value) {
+                            J tree = value.getTree();
+                            if (tree instanceof Expression expression1) {
+                                sb.append(coerceToStringNotation(expression1));
                             }
                             //Can it be something else? If so, what?
                         }

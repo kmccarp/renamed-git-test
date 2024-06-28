@@ -39,7 +39,7 @@ class MethodDeclarationTest implements RewriteTest {
               }
               """,
             spec -> spec.beforeRecipe(cu -> {
-                var method = (J.MethodDeclaration) cu.getClasses().get(0).getBody().getStatements().get(0);
+                var method = (J.MethodDeclaration) cu.getClasses().getFirst().getBody().getStatements().getFirst();
                 JavaType.Method methodType = method.getMethodType();
                 assertThat(methodType).isNotNull();
                 assertThat(methodType.getName()).isEqualTo("method");

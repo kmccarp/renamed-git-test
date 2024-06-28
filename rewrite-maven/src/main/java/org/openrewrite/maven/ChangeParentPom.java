@@ -88,16 +88,20 @@ public class ChangeParentPom extends Recipe {
     String newRelativePath;
 
     @Option(displayName = "Version pattern",
-            description = "Allows version selection to be extended beyond the original Node Semver semantics. So for example," +
-                          "Setting 'version' to \"25-29\" can be paired with a metadata pattern of \"-jre\" to select Guava 29.0-jre",
+            description = """
+                          Allows version selection to be extended beyond the original Node Semver semantics. So for example,\
+                          Setting 'version' to "25-29" can be paired with a metadata pattern of "-jre" to select Guava 29.0-jre\
+                          """,
             example = "-jre",
             required = false)
     @Nullable
     String versionPattern;
 
     @Option(displayName = "Allow version downgrades",
-            description = "If the new parent has the same group/artifact, this flag can be used to only upgrade the " +
-                          "version if the target version is newer than the current.",
+            description = """
+                          If the new parent has the same group/artifact, this flag can be used to only upgrade the \
+                          version if the target version is newer than the current.\
+                          """,
             required = false)
     @Nullable
     Boolean allowVersionDowngrades;
@@ -109,7 +113,7 @@ public class ChangeParentPom extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s:%s:%s`", newGroupId, newArtifactId, newVersion);
+        return "`%s:%s:%s`".formatted(newGroupId, newArtifactId, newVersion);
     }
 
     @Override
@@ -168,7 +172,7 @@ public class ChangeParentPom extends Recipe {
                         String targetRelativePath = newRelativePath == null ? tag.getChildValue("relativePath").orElse(oldRelativePath) : newRelativePath;
                         try {
                             Optional<String> targetVersion = findAcceptableVersion(targetGroupId, targetArtifactId, oldVersion, ctx);
-                            if (!targetVersion.isPresent() ||
+                            if (targetVersion.isEmpty() ||
                                 (Objects.equals(targetGroupId, currentGroupId) &&
                                  Objects.equals(targetArtifactId, currentArtifactId) &&
                                  Objects.equals(targetVersion.get(), oldVersion) &&
@@ -292,8 +296,8 @@ public class ChangeParentPom extends Recipe {
             @Override
             public Xml.Tag visitTag(Xml.Tag tag, ExecutionContext ctx) {
                 Xml.Tag t = super.visitTag(tag, ctx);
-                if(t.getContent() != null && t.getContent().size() == 1 && t.getContent().get(0) instanceof Xml.CharData) {
-                    String text = ((Xml.CharData) t.getContent().get(0)).getText().trim();
+                if(t.getContent() != null && t.getContent().size() == 1 && t.getContent().getFirst() instanceof Xml.CharData) {
+                    String text = ((Xml.CharData) t.getContent().getFirst()).getText().trim();
                     Matcher m = PROPERTY_PATTERN.matcher(text);
                     while(m.find()) {
                         if(resolvedPom == null) {
@@ -368,10 +372,10 @@ public class ChangeParentPom extends Recipe {
             Xml.Document d = super.visitDocument(document, ctx);
             Xml.Tag root = d.getRoot();
             Optional<Xml.Tag> properties = root.getChild("properties");
-            if (!properties.isPresent()) {
+            if (properties.isEmpty()) {
                 Xml.Tag propertiesTag = Xml.Tag.build("<properties>\n<" + key + ">" + value + "</" + key + ">\n</properties>");
                 d = (Xml.Document) new AddToTagVisitor<ExecutionContext>(root, propertiesTag, new MavenTagInsertionComparator(root.getChildren())).visitNonNull(d, ctx);
-            } else if (!properties.get().getChildValue(key).isPresent()) {
+            } else if (properties.get().getChildValue(key).isEmpty()) {
                 Xml.Tag propertyTag = Xml.Tag.build("<" + key + ">" + value + "</" + key + ">");
                 d = (Xml.Document) new AddToTagVisitor<>(properties.get(), propertyTag, new TagNameComparator()).visitNonNull(d, ctx);
             }

@@ -55,14 +55,13 @@ public class MaybeUsesImport<P> extends JavaIsoVisitor<P> {
         Expression prior = null;
         for (String segment : fullyQualifiedTypeSegments) {
             for (Expression expr = i.getQualid(); expr != prior; ) {
-                if (expr instanceof J.Identifier) {
+                if (expr instanceof J.Identifier identifier) {
                     // this can only be the first segment
                     prior = expr;
-                    if (!((J.Identifier) expr).getSimpleName().equals(segment)) {
+                    if (!identifier.getSimpleName().equals(segment)) {
                         return false;
                     }
-                } else if (expr instanceof J.FieldAccess) {
-                    J.FieldAccess fa = (J.FieldAccess) expr;
+                } else if (expr instanceof J.FieldAccess fa) {
                     if (fa.getTarget() == prior) {
                         String simpleName = fa.getSimpleName();
                         if (!"*".equals(segment) && !simpleName.equals(segment) && !"*".equals(simpleName)) {

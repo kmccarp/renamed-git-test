@@ -67,7 +67,7 @@ class JavaParserTest implements RewriteTest {
               }
               """,
             spec -> spec.afterRecipe(cu ->
-              assertThat(cu.getClasses().get(0).getLeadingAnnotations()).hasSize(2))
+              assertThat(cu.getClasses().getFirst().getLeadingAnnotations()).hasSize(2))
           )
         );
     }
@@ -84,7 +84,7 @@ class JavaParserTest implements RewriteTest {
               }
               """,
             spec -> spec.afterRecipe(cu ->
-              assertThat(cu.getClasses().get(0).getLeadingAnnotations()).hasSize(2))
+              assertThat(cu.getClasses().getFirst().getLeadingAnnotations()).hasSize(2))
           )
         );
     }
@@ -100,8 +100,10 @@ class JavaParserTest implements RewriteTest {
           .singleElement()
           .matches(Files::exists, "File extracted from classpath resources exists on disk")
           .matches(path -> path.endsWith("guava-31.0-jre.jar"),
-            "classpathFromResources should return guava-31.0-jre.jar from resources, even when the target " +
-            "directory contains guava-30.0-jre.jar which has the same prefix");
+            """
+            classpathFromResources should return guava-31.0-jre.jar from resources, even when the target \
+            directory contains guava-30.0-jre.jar which has the same prefix\
+            """);
     }
 
     @Test

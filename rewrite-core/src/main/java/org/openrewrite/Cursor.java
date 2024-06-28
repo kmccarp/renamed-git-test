@@ -258,8 +258,8 @@ public class Cursor {
     }
 
     public boolean isScopeInPath(Tree scope) {
-        return value instanceof Tree && ((Tree) value).getId().equals(scope.getId()) ||
-               getPathAsStream().anyMatch(p -> p instanceof Tree && ((Tree) p).getId().equals(scope.getId()));
+        return value instanceof Tree t && t.getId().equals(scope.getId()) ||
+               getPathAsStream().anyMatch(p -> p instanceof Tree t && t.getId().equals(scope.getId()));
     }
 
     public void putMessageOnFirstEnclosing(Class<?> enclosing, String key, Object value) {

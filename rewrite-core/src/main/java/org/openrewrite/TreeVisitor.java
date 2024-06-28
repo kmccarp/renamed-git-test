@@ -128,8 +128,10 @@ public abstract class TreeVisitor<T extends Tree, P> {
             throw new IllegalArgumentException("To update the cursor, it must currently be positioned at a Tree instance");
         }
         if (!((Tree) old).getId().equals(currentValue.getId())) {
-            throw new IllegalArgumentException("Updating the cursor in place is only supported for mutations on a Tree instance " +
-                                               "that maintain the same ID after the mutation.");
+            throw new IllegalArgumentException("""
+                                               Updating the cursor in place is only supported for mutations on a Tree instance \
+                                               that maintain the same ID after the mutation.\
+                                               """);
         }
         cursor = new Cursor(cursor.getParentOrThrow(), currentValue);
         return cursor;
@@ -253,8 +255,7 @@ public abstract class TreeVisitor<T extends Tree, P> {
                         t = postVisit(t, p);
                     }
                 }
-                if (t != tree && t != null && p instanceof ExecutionContext) {
-                    ExecutionContext ctx = (ExecutionContext) p;
+                if (t != tree && t != null && p instanceof ExecutionContext ctx) {
                     for (TreeObserver.Subscription observer : ctx.getObservers()) {
                         if (observer.isSubscribed(tree)) {
                             t = observer.treeChanged(getCursor(), t, tree);
@@ -352,25 +353,25 @@ public abstract class TreeVisitor<T extends Tree, P> {
     protected Class<? extends Tree> visitorTreeType(Class<? extends TreeVisitor> v) {
         for (TypeVariable<? extends Class<? extends TreeVisitor>> tp : v.getTypeParameters()) {
             for (Type bound : tp.getBounds()) {
-                if (bound instanceof Class && Tree.class.isAssignableFrom((Class<?>) bound)) {
+                if (bound instanceof Class<?> class1 && Tree.class.isAssignableFrom(class1)) {
                     //noinspection unchecked
-                    return (Class<? extends Tree>) bound;
+                    return class1;
                 }
             }
         }
 
         Type sup = v.getGenericSuperclass();
         for (int i = 0; i < 20; i++) {
-            if (sup instanceof ParameterizedType) {
-                for (Type bound : ((ParameterizedType) sup).getActualTypeArguments()) {
-                    if (bound instanceof Class && Tree.class.isAssignableFrom((Class<?>) bound)) {
+            if (sup instanceof ParameterizedType type) {
+                for (Type bound : type.getActualTypeArguments()) {
+                    if (bound instanceof Class<?> class1 && Tree.class.isAssignableFrom(class1)) {
                         //noinspection unchecked
-                        return (Class<? extends Tree>) bound;
+                        return class1;
                     }
                 }
-                sup = ((ParameterizedType) sup).getRawType();
-            } else if (sup instanceof Class) {
-                sup = ((Class<?>) sup).getGenericSuperclass();
+                sup = type.getRawType();
+            } else if (sup instanceof Class<?> class1) {
+                sup = class1.getGenericSuperclass();
             }
         }
         throw new IllegalArgumentException("Expected to find a tree type somewhere in the type parameters of the " +

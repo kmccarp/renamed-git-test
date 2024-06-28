@@ -50,19 +50,23 @@ public class ChangePluginVersion extends Recipe {
     String pluginIdPattern;
 
     @Option(displayName = "New version",
-            description = "An exact version number or node-style semver selector used to select the version number. " +
-                          "You can also use `latest.release` for the latest available version and `latest.patch` if " +
-                          "the current version is a valid semantic version. For more details, you can look at the documentation " +
-                          "page of [version selectors](https://docs.openrewrite.org/reference/dependency-version-selectors). " +
-                          "Defaults to `latest.release`.",
+            description = """
+                          An exact version number or node-style semver selector used to select the version number. \
+                          You can also use `latest.release` for the latest available version and `latest.patch` if \
+                          the current version is a valid semantic version. For more details, you can look at the documentation \
+                          page of [version selectors](https://docs.openrewrite.org/reference/dependency-version-selectors). \
+                          Defaults to `latest.release`.\
+                          """,
             example = "29.X",
             required = false)
     @Nullable
     String newVersion;
 
     @Option(displayName = "Version pattern",
-            description = "Allows version selection to be extended beyond the original Node Semver semantics. So for example," +
-                          "Setting 'version' to \"25-29\" can be paired with a metadata pattern of \"-jre\" to select Guava 29.0-jre",
+            description = """
+                          Allows version selection to be extended beyond the original Node Semver semantics. So for example,\
+                          Setting 'version' to "25-29" can be paired with a metadata pattern of "-jre" to select Guava 29.0-jre\
+                          """,
             example = "-jre",
             required = false)
     @Nullable
@@ -117,18 +121,18 @@ public class ChangePluginVersion extends Recipe {
                     return m;
                 }
                 List<Expression> pluginArgs = ((J.MethodInvocation) m.getSelect()).getArguments();
-                if (!(pluginArgs.get(0) instanceof J.Literal)) {
+                if (!(pluginArgs.getFirst() instanceof J.Literal)) {
                     return m;
                 }
-                String pluginId = (String) ((J.Literal) pluginArgs.get(0)).getValue();
+                String pluginId = (String) ((J.Literal) pluginArgs.getFirst()).getValue();
                 if (pluginId == null || !StringUtils.matchesGlob(pluginId, pluginIdPattern)) {
                     return m;
                 }
 
                 List<Expression> versionArgs = m.getArguments();
                 String currentVersion = "0";
-                if (versionArgs.get(0) instanceof J.Literal) {
-                    currentVersion = (String) ((J.Literal) versionArgs.get(0)).getValue();
+                if (versionArgs.getFirst() instanceof J.Literal) {
+                    currentVersion = (String) ((J.Literal) versionArgs.getFirst()).getValue();
                     if (currentVersion == null) {
                         currentVersion = "0";
                     }

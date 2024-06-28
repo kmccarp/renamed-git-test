@@ -31,8 +31,8 @@ public class ParsingExecutionContextView extends DelegatingExecutionContext {
     }
 
     public static ParsingExecutionContextView view(ExecutionContext ctx) {
-        if (ctx instanceof ParsingExecutionContextView) {
-            return (ParsingExecutionContextView) ctx;
+        if (ctx instanceof ParsingExecutionContextView view) {
+            return view;
         }
         return new ParsingExecutionContextView(ctx);
     }

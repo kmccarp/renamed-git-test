@@ -37,22 +37,23 @@ public class StarImportBenchmark {
     public void starImport() {
         //language=java
         JavaParser.fromJavaVersion().build()
-                .parse("" +
-                       "import java.util.*;" +
-                       "import java.awt.*;" +
-                       "import java.time.*;" +
-                       "import java.io.*;" +
-                       "import java.math.*;" +
-                       "import java.nio.*;" +
-                       "import java.security.*;" +
-                       "class Test {" +
-                       "    Collection<File> s;" +
-                       "    Color c;" +
-                       "    DateTimeException dte;" +
-                       "    BigInteger b;" +
-                       "    ByteBuffer bb;" +
-                       "    Principal p;" +
-                       "}"
+                .parse("""
+                       import java.util.*;\
+                       import java.awt.*;\
+                       import java.time.*;\
+                       import java.io.*;\
+                       import java.math.*;\
+                       import java.nio.*;\
+                       import java.security.*;\
+                       class Test {\
+                           Collection<File> s;\
+                           Color c;\
+                           DateTimeException dte;\
+                           BigInteger b;\
+                           ByteBuffer bb;\
+                           Principal p;\
+                       }\
+                       """
                 );
     }
 
@@ -60,22 +61,23 @@ public class StarImportBenchmark {
     public void noStarImport() {
         //language=java
         JavaParser.fromJavaVersion().build()
-                .parse("" +
-                       "import java.util.Collection;" +
-                       "import java.awt.Color;" +
-                       "import java.time.DateTimeException;" +
-                       "import java.io.File;" +
-                       "import java.math.BigInteger;" +
-                       "import java.nio.ByteBuffer;" +
-                       "import java.security.Principal;" +
-                       "class Test {" +
-                       "    Collection<File> s;" +
-                       "    Color c;" +
-                       "    DateTimeException dte;" +
-                       "    BigInteger b;" +
-                       "    ByteBuffer bb;" +
-                       "    Principal p;" +
-                       "}"
+                .parse("""
+                       import java.util.Collection;\
+                       import java.awt.Color;\
+                       import java.time.DateTimeException;\
+                       import java.io.File;\
+                       import java.math.BigInteger;\
+                       import java.nio.ByteBuffer;\
+                       import java.security.Principal;\
+                       class Test {\
+                           Collection<File> s;\
+                           Color c;\
+                           DateTimeException dte;\
+                           BigInteger b;\
+                           ByteBuffer bb;\
+                           Principal p;\
+                       }\
+                       """
                 );
     }
 

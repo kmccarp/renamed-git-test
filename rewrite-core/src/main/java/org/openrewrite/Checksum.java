@@ -101,8 +101,8 @@ public class Checksum {
         try {
             MessageDigest md = MessageDigest.getInstance(algorithm);
             InputStream is;
-            if (sourceFile instanceof Remote) {
-                is = ((Remote) sourceFile).getInputStream(ctx);
+            if (sourceFile instanceof Remote remote) {
+                is = remote.getInputStream(ctx);
             } else {
                 is = Files.newInputStream(sourceFile.getSourcePath());
             }

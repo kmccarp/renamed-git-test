@@ -83,8 +83,8 @@ public class ExtractField<P> extends JavaVisitor<P> {
                     .apply(
                             getCursor(),
                             multiVariable.getCoordinates().replace(),
-                            multiVariable.getVariables().get(0).getSimpleName(),
-                            multiVariable.getVariables().get(0).getInitializer()
+                            multiVariable.getVariables().getFirst().getSimpleName(),
+                            multiVariable.getVariables().getFirst().getInitializer()
                     );
             return assignment.withType(multiVariable.getType());
         }

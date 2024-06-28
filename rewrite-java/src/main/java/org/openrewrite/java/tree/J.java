@@ -141,8 +141,8 @@ public interface J extends Tree {
         public List<Annotation> getAllAnnotations() {
             List<J.Annotation> allAnnotations = annotations;
             List<J.Annotation> moreAnnotations;
-            if (typeExpression instanceof FieldAccess &&
-                !(moreAnnotations = ((FieldAccess) typeExpression).getName().getAnnotations()).isEmpty()) {
+            if (typeExpression instanceof FieldAccess access &&
+                !(moreAnnotations = access.getName().getAnnotations()).isEmpty()) {
                 if (allAnnotations.isEmpty()) {
                     allAnnotations = moreAnnotations;
                 } else {
@@ -197,10 +197,10 @@ public interface J extends Tree {
         NameTree annotationType;
 
         public String getSimpleName() {
-            if (annotationType instanceof Identifier) {
-                return ((Identifier) annotationType).getSimpleName();
-            } else if (annotationType instanceof J.FieldAccess) {
-                return ((J.FieldAccess) annotationType).getSimpleName();
+            if (annotationType instanceof Identifier identifier) {
+                return identifier.getSimpleName();
+            } else if (annotationType instanceof J.FieldAccess access) {
+                return access.getSimpleName();
             } else {
                 // allow for extending languages like Kotlin to supply a different representation
                 return annotationType.printTrimmed();
@@ -388,7 +388,7 @@ public interface J extends Tree {
                             Markers.EMPTY,
                             elementType,
                             null,
-                            JLeftPadded.build(dimensions.get(0).getAfter()).withBefore(dimensions.get(0).getElement()),
+                            JLeftPadded.build(dimensions.getFirst().getAfter()).withBefore(dimensions.getFirst().getElement()),
                             new JavaType.Array(null, elementType.getType(), null)
                     ),
                     dimensions.subList(1, count)
@@ -915,16 +915,14 @@ public interface J extends Tree {
                 if (parentBlock != null && next instanceof J.Block) {
                     // If we find an outer block before a ClassDeclaration or NewClass, we're not in an initializer block.
                     return false;
-                } else if (next instanceof J.Block) {
-                    parentBlock = (J.Block) next;
+                } else if (next instanceof J.Block block1) {
+                    parentBlock = block1;
                     if (!parentBlock.getStatements().contains(block)) {
                         return false;
                     }
-                } else if (next instanceof J.ClassDeclaration) {
-                    J.ClassDeclaration classDeclaration = (J.ClassDeclaration) next;
+                } else if (next instanceof J.ClassDeclaration classDeclaration) {
                     return classDeclaration.getBody() == parentBlock;
-                } else if (next instanceof J.NewClass) {
-                    J.NewClass newClass = (J.NewClass) next;
+                } else if (next instanceof J.NewClass newClass) {
                     return newClass.getBody() == parentBlock;
                 } else if (next instanceof J.Lambda) {
                     return false;
@@ -1019,7 +1017,7 @@ public interface J extends Tree {
          */
         @Deprecated
         public Expression getPattern() {
-            return getExpressions().get(0);
+            return getExpressions().getFirst();
         }
 
         /**
@@ -1977,12 +1975,12 @@ public interface J extends Tree {
          */
         @Nullable
         public NameTree asClassReference() {
-            if (target instanceof NameTree) {
+            if (target instanceof NameTree tree) {
                 String fqn = null;
-                if (type instanceof JavaType.FullyQualified) {
-                    fqn = ((JavaType.FullyQualified) type).getFullyQualifiedName();
+                if (type instanceof JavaType.FullyQualified qualified) {
+                    fqn = qualified.getFullyQualifiedName();
                 }
-                return "java.lang.Class".equals(fqn) ? (NameTree) target : null;
+                return "java.lang.Class".equals(fqn) ? tree : null;
             }
             return null;
         }
@@ -2761,7 +2759,7 @@ public interface J extends Tree {
                     }
                 }
 
-                return target instanceof Identifier ? ((Identifier) target).getSimpleName() : getTypeName((FieldAccess) target);
+                return target instanceof Identifier i ? i.getSimpleName() : getTypeName((FieldAccess) target);
             }
 
             return getTypeName(qualid);
@@ -3324,8 +3322,8 @@ public interface J extends Tree {
             if (type == this.type) {
                 return this;
             }
-            if (type instanceof JavaType.Primitive) {
-                return new Literal(id, prefix, markers, value, valueSource, unicodeEscapes, (JavaType.Primitive) type);
+            if (type instanceof JavaType.Primitive primitive) {
+                return new Literal(id, prefix, markers, value, valueSource, unicodeEscapes, primitive);
             }
             return this;
         }
@@ -3369,8 +3367,7 @@ public interface J extends Tree {
          */
         @Incubating(since = "7.25.0")
         public static boolean isLiteralValue(@Nullable Expression maybeLiteral, Object value) {
-            if (maybeLiteral instanceof Literal) {
-                Literal literal = (Literal) maybeLiteral;
+            if (maybeLiteral instanceof Literal literal) {
                 return literal.getValue() != null && literal.getValue().equals(value);
             }
             return false;
@@ -3720,8 +3717,8 @@ public interface J extends Tree {
             if (typeParameters != null) {
                 allAnnotations.addAll(typeParameters.getAnnotations());
             }
-            if (returnTypeExpression instanceof AnnotatedType) {
-                allAnnotations.addAll(((AnnotatedType) returnTypeExpression).getAnnotations());
+            if (returnTypeExpression instanceof AnnotatedType type) {
+                allAnnotations.addAll(type.getAnnotations());
             }
             allAnnotations.addAll(name.getAnnotations());
             return allAnnotations;
@@ -4879,14 +4876,14 @@ public interface J extends Tree {
         @Override
         public JavaType getType() {
             J2 element = tree.getElement();
-            if (element instanceof Expression) {
-                return ((Expression) element).getType();
+            if (element instanceof Expression expression) {
+                return expression.getType();
             }
-            if (element instanceof NameTree) {
-                return ((NameTree) element).getType();
+            if (element instanceof NameTree nameTree) {
+                return nameTree.getType();
             }
-            if (element instanceof J.VariableDeclarations) {
-                return ((VariableDeclarations) element).getType();
+            if (element instanceof J.VariableDeclarations declarations) {
+                return declarations.getType();
             }
             return null;
         }
@@ -5088,8 +5085,8 @@ public interface J extends Tree {
                 @Override
                 public J visitBlock(Block block, AtomicReference<JavaType> javaType) {
                     if (!block.getStatements().isEmpty()) {
-                        Case caze = (Case) block.getStatements().get(0);
-                        javaType.set(caze.getExpressions().get(0).getType());
+                        Case caze = (Case) block.getStatements().getFirst();
+                        javaType.set(caze.getExpressions().getFirst().getType());
                     }
                     return block;
                 }
@@ -5856,8 +5853,8 @@ public interface J extends Tree {
             for (J.Modifier modifier : modifiers) {
                 allAnnotations.addAll(modifier.getAnnotations());
             }
-            if (typeExpression != null && typeExpression instanceof J.AnnotatedType) {
-                allAnnotations.addAll(((J.AnnotatedType) typeExpression).getAnnotations());
+            if (typeExpression != null && typeExpression instanceof J.AnnotatedType type) {
+                allAnnotations.addAll(type.getAnnotations());
             }
             return allAnnotations;
         }

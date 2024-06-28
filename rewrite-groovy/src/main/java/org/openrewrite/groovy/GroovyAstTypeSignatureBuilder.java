@@ -35,8 +35,7 @@ class GroovyAstTypeSignatureBuilder implements JavaTypeSignatureBuilder {
 
         try {
             ASTNode astNode = (ASTNode) t;
-            if (astNode instanceof ClassNode) {
-                ClassNode clazz = (ClassNode) astNode;
+            if (astNode instanceof ClassNode clazz) {
                 if (clazz.isArray()) {
                     return arraySignature(clazz);
                 } else if (ClassHelper.isPrimitiveType(clazz)) {
@@ -47,10 +46,10 @@ class GroovyAstTypeSignatureBuilder implements JavaTypeSignatureBuilder {
                 return classSignature(astNode);
             } else if (astNode instanceof GenericsType) {
                 return genericSignature(astNode);
-            } else if (astNode instanceof MethodNode) {
-                return methodSignature((MethodNode) astNode);
-            } else if (astNode instanceof FieldNode) {
-                return variableSignature((FieldNode) astNode);
+            } else if (astNode instanceof MethodNode node) {
+                return methodSignature(node);
+            } else if (astNode instanceof FieldNode node) {
+                return variableSignature(node);
             }
         } catch (NoClassDefFoundError e) {
             // e.getMessage() returns fully qualified name of type that couldn't be found on the classpath

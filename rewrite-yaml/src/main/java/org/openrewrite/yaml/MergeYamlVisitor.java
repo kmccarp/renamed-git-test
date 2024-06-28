@@ -50,8 +50,8 @@ public class MergeYamlVisitor<P> extends YamlVisitor<P> {
 
     @Override
     public Yaml visitScalar(Yaml.Scalar existingScalar, P p) {
-        if (scope.isScope(existingScalar) && incoming instanceof Yaml.Scalar) {
-            return mergeScalar(existingScalar, (Yaml.Scalar) incoming);
+        if (scope.isScope(existingScalar) && incoming instanceof Yaml.Scalar scalar) {
+            return mergeScalar(existingScalar, scalar);
         }
         return super.visitScalar(existingScalar, p);
     }
@@ -67,8 +67,8 @@ public class MergeYamlVisitor<P> extends YamlVisitor<P> {
                             .visitNonNull(existingSeqEntry.getBlock(), p, new Cursor(getCursor(), existingSeqEntry));
                     return existingSeqEntry.withBlock(b);
                 }));
-            } else if (incoming instanceof Yaml.Sequence) {
-                return mergeSequence(existingSeq, (Yaml.Sequence) incoming, p, getCursor());
+            } else if (incoming instanceof Yaml.Sequence sequence) {
+                return mergeSequence(existingSeq, sequence, p, getCursor());
             }
         }
         return super.visitSequence(existingSeq, p);
@@ -76,8 +76,8 @@ public class MergeYamlVisitor<P> extends YamlVisitor<P> {
 
     @Override
     public Yaml visitMapping(Yaml.Mapping existingMapping, P p) {
-        if (scope.isScope(existingMapping) && incoming instanceof Yaml.Mapping) {
-            return mergeMapping(existingMapping, (Yaml.Mapping) incoming, p, getCursor());
+        if (scope.isScope(existingMapping) && incoming instanceof Yaml.Mapping mapping) {
+            return mergeMapping(existingMapping, mapping, p, getCursor());
         }
         return super.visitMapping(existingMapping, p);
     }

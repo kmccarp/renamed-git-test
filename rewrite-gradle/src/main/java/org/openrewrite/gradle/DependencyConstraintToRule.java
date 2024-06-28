@@ -51,11 +51,13 @@ public class DependencyConstraintToRule extends Recipe {
 
     @Override
     public String getDescription() {
-        return "Gradle [dependency constraints](https://docs.gradle.org/current/userguide/dependency_constraints.html#dependency-constraints) " +
-               "are useful for managing the versions of transitive dependencies. " +
-               "Some plugins, such as the Spring Dependency Management plugin, do not respect these constraints. " +
-               "This recipe converts constraints into [resolution rules](https://docs.gradle.org/current/userguide/resolution_rules.html), " +
-               "which can achieve similar effects to constraints but are harder for plugins to ignore.";
+        return """
+               Gradle [dependency constraints](https://docs.gradle.org/current/userguide/dependency_constraints.html#dependency-constraints) \
+               are useful for managing the versions of transitive dependencies. \
+               Some plugins, such as the Spring Dependency Management plugin, do not respect these constraints. \
+               This recipe converts constraints into [resolution rules](https://docs.gradle.org/current/userguide/resolution_rules.html), \
+               which can achieve similar effects to constraints but are harder for plugins to ignore.\
+               """;
     }
 
     @Override
@@ -96,27 +98,27 @@ public class DependencyConstraintToRule extends Recipe {
         public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, List<GroupArtifactVersionBecause> groupArtifactVersions) {
             J.MethodInvocation m = super.visitMethodInvocation(method, groupArtifactVersions);
             if ("constraints".equals(m.getSimpleName()) && isInDependenciesBlock(getCursor())) {
-                if (!(m.getArguments().get(0) instanceof J.Lambda)) {
+                if (!(m.getArguments().getFirst() instanceof J.Lambda)) {
                     return null;
                 }
-                J.Lambda closure = (J.Lambda) m.getArguments().get(0);
+                J.Lambda closure = (J.Lambda) m.getArguments().getFirst();
                 if (!(closure.getBody() instanceof J.Block)) {
                     return null;
                 }
                 List<Statement> withoutConvertableConstraints = ListUtils.map(((J.Block) closure.getBody()).getStatements(), statement -> {
                     J.MethodInvocation constraint = null;
-                    if (statement instanceof J.MethodInvocation) {
-                        constraint = (J.MethodInvocation) statement;
-                    } else if (statement instanceof J.Return) {
-                        constraint = (J.MethodInvocation) ((J.Return) statement).getExpression();
+                    if (statement instanceof J.MethodInvocation invocation) {
+                        constraint = invocation;
+                    } else if (statement instanceof J.Return return1) {
+                        constraint = (J.MethodInvocation) return1.getExpression();
                     }
                     if (constraint == null) {
                         return statement;
                     }
-                    if (!(constraint.getArguments().get(0) instanceof J.Literal)) {
+                    if (!(constraint.getArguments().getFirst() instanceof J.Literal)) {
                         return statement;
                     }
-                    J.Literal rawGav = (J.Literal) constraint.getArguments().get(0);
+                    J.Literal rawGav = (J.Literal) constraint.getArguments().getFirst();
                     String[] gav = rawGav.getValue().toString().split(":");
                     if (gav.length != 3) {
                         return statement;
@@ -126,8 +128,8 @@ public class DependencyConstraintToRule extends Recipe {
                         @Override
                         public J.MethodInvocation visitMethodInvocation(J.MethodInvocation method, Integer integer) {
                             J.MethodInvocation m1 = super.visitMethodInvocation(method, integer);
-                            if("because".equals(m1.getSimpleName()) && m1.getArguments().get(0) instanceof J.Literal) {
-                                because.set(((J.Literal) m1.getArguments().get(0)).getValue().toString());
+                            if("because".equals(m1.getSimpleName()) && m1.getArguments().getFirst() instanceof J.Literal) {
+                                because.set(((J.Literal) m1.getArguments().getFirst()).getValue().toString());
                             }
                             return m1;
                         }
@@ -176,17 +178,17 @@ public class DependencyConstraintToRule extends Recipe {
                 return m;
             }
             // Identify the parameter name used in the eachDependency closure
-            Expression maybeClosure = m.getArguments().get(0);
+            Expression maybeClosure = m.getArguments().getFirst();
             if (!(maybeClosure instanceof J.Lambda) || !(((J.Lambda) maybeClosure).getBody() instanceof J.Block)) {
                 return m;
             }
             J.Lambda closure = (J.Lambda) maybeClosure;
             J.Block closureBody = (J.Block) closure.getBody();
-            J rawParam = ((J.Lambda) maybeClosure).getParameters().getParameters().get(0);
+            J rawParam = ((J.Lambda) maybeClosure).getParameters().getParameters().getFirst();
             if (!(rawParam instanceof J.VariableDeclarations)) {
                 return m;
             }
-            String p = ((J.VariableDeclarations) rawParam).getVariables().get(0).getSimpleName();
+            String p = ((J.VariableDeclarations) rawParam).getVariables().getFirst().getSimpleName();
             @SuppressWarnings("GroovyEmptyStatementBody") @Language("groovy")
             String snippet = "Object " + p + " = null\n" +
                              "if (" + p + ".requested.group == '" + groupArtifactVersion.getGroupId() + "' && " +
@@ -297,21 +299,23 @@ public class DependencyConstraintToRule extends Recipe {
             int insertionIndex = 0;
             while (insertionIndex < cu.getStatements().size()) {
                 Statement s = cu.getStatements().get(insertionIndex);
-                if (s instanceof J.MethodInvocation && DEPENDENCIES_DSL_MATCHER.matches((J.MethodInvocation) s)) {
+                if (s instanceof J.MethodInvocation invocation && DEPENDENCIES_DSL_MATCHER.matches(invocation)) {
                     break;
                 }
                 insertionIndex++;
             }
             J.MethodInvocation m = GradleParser.builder()
                     .build()
-                    .parse("\n" +
-                           "configurations.all {\n" +
-                           "    resolutionStrategy.eachDependency { details ->\n" +
-                           "    }\n" +
-                           "}")
+                    .parse("""
+                           
+                           configurations.all {
+                               resolutionStrategy.eachDependency { details ->
+                               }
+                           }\
+                           """)
                     .map(G.CompilationUnit.class::cast)
                     .map(G.CompilationUnit::getStatements)
-                    .map(it -> it.get(0))
+                    .map(it -> it.getFirst())
                     .map(J.MethodInvocation.class::cast)
                     .findFirst()
                     .orElseThrow(() -> new IllegalStateException("Unable to create a new configurations.all block"));
@@ -341,7 +345,7 @@ public class DependencyConstraintToRule extends Recipe {
     private static boolean isInDependenciesBlock(Cursor cursor) {
         Cursor c = cursor.dropParentUntil(value ->
                 value == Cursor.ROOT_VALUE
-                || (value instanceof J.MethodInvocation && DEPENDENCIES_DSL_MATCHER.matches((J.MethodInvocation) value)));
+                || (value instanceof J.MethodInvocation mi && DEPENDENCIES_DSL_MATCHER.matches(mi)));
         return c.getValue() instanceof J.MethodInvocation;
     }
 

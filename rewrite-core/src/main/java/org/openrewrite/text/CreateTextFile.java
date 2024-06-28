@@ -87,8 +87,8 @@ public class CreateTextFile extends ScanningRecipe<AtomicBoolean> {
             public SourceFile visit(@Nullable Tree tree, ExecutionContext ctx) {
                 SourceFile sourceFile = (SourceFile) requireNonNull(tree);
                 if ((created.get() || Boolean.TRUE.equals(overwriteExisting)) && path.equals(sourceFile.getSourcePath())) {
-                    if (sourceFile instanceof PlainText) {
-                        return ((PlainText) sourceFile).withText(fileContents);
+                    if (sourceFile instanceof PlainText text) {
+                        return text.withText(fileContents);
                     }
                     PlainText plainText = PlainText.builder()
                             .id(sourceFile.getId())

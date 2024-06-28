@@ -383,7 +383,7 @@ public class ResolvedPom {
         }
 
         private void resolveParentPropertiesAndRepositoriesRecursively(List<Pom> pomAncestry) throws MavenDownloadingException {
-            Pom pom = pomAncestry.get(0);
+            Pom pom = pomAncestry.getFirst();
 
             //Resolve properties
             for (Profile profile : pom.getProfiles()) {
@@ -411,13 +411,13 @@ public class ResolvedPom {
                     }
                 }
 
-                pomAncestry.add(0, parentPom);
+                pomAncestry.addFirst(parentPom);
                 resolveParentPropertiesAndRepositoriesRecursively(pomAncestry);
             }
         }
 
         private void resolveParentDependenciesRecursively(List<Pom> pomAncestry) throws MavenDownloadingException {
-            Pom pom = pomAncestry.get(0);
+            Pom pom = pomAncestry.getFirst();
 
             for (Profile profile : pom.getProfiles()) {
                 if (profile.isActive(activeProfiles)) {
@@ -443,13 +443,13 @@ public class ResolvedPom {
                     }
                 }
 
-                pomAncestry.add(0, parentPom);
+                pomAncestry.addFirst(parentPom);
                 resolveParentDependenciesRecursively(pomAncestry);
             }
         }
 
         private void resolveParentPluginsRecursively(List<Pom> pomAncestry) throws MavenDownloadingException {
-            Pom pom = pomAncestry.get(0);
+            Pom pom = pomAncestry.getFirst();
 
             for (Profile profile : pom.getProfiles()) {
                 if (profile.isActive(activeProfiles)) {
@@ -475,7 +475,7 @@ public class ResolvedPom {
                     }
                 }
 
-                pomAncestry.add(0, parentPom);
+                pomAncestry.addFirst(parentPom);
                 resolveParentPluginsRecursively(pomAncestry);
             }
 
@@ -585,7 +585,7 @@ public class ResolvedPom {
                 return list.deepCopy();
             }
             // We can only have one key remaining in a list
-            String arrayElemField = keys.get(0);
+            String arrayElemField = keys.getFirst();
 
             // Copy elements of the list
             JsonNode retNode = ret.get(arrayElemField);
@@ -596,8 +596,8 @@ public class ResolvedPom {
                 ret.set(arrayElemField, arrayNode);
                 retNode = arrayNode;
             }
-            if (node instanceof ArrayNode) {
-                ((ArrayNode) retNode).addAll((ArrayNode) node);
+            if (node instanceof ArrayNode arrayNode) {
+                ((ArrayNode) retNode).addAll(arrayNode);
             } else if (node != null) {
                 ((ArrayNode) retNode).add(node);
             }
@@ -774,8 +774,8 @@ public class ResolvedPom {
                     dependencyManagement = new ArrayList<>();
                 }
                 for (ManagedDependency d : incomingDependencyManagement) {
-                    if (d instanceof Imported) {
-                        ResolvedPom bom = downloader.download(getValues(((Imported) d).getGav()), null, ResolvedPom.this, repositories)
+                    if (d instanceof Imported imported) {
+                        ResolvedPom bom = downloader.download(getValues(imported.getGav()), null, ResolvedPom.this, repositories)
                                 .resolve(activeProfiles, downloader, initialRepositories, ctx);
                         MavenExecutionContextView.view(ctx)
                                 .getResolutionListener()
@@ -783,8 +783,7 @@ public class ResolvedPom {
                         dependencyManagement.addAll(ListUtils.map(bom.getDependencyManagement(), dm -> dm
                                 .withRequestedBom(d)
                                 .withBomGav(bom.getGav())));
-                    } else if (d instanceof Defined) {
-                        Defined defined = (Defined) d;
+                    } else if (d instanceof Defined defined) {
                         MavenExecutionContextView.view(ctx)
                                 .getResolutionListener()
                                 .dependencyManagement(defined.withGav(getValues(defined.getGav())), pom);

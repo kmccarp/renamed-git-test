@@ -33,10 +33,12 @@ public class RecipeEqualsAndHashCodeCallSuper extends Recipe {
 
     @Override
     public String getDescription() {
-        return "Recipes are value objects, so should use `@EqualsAndHashCode(callSuper = false)`. " +
-               "While in most cases recipes do not extend other classes and so the option is moot, as " +
-               "a matter of stylistic consistency and to enforce the idea that recipes are value objects, " +
-               "this value should be set to `false`.";
+        return """
+               Recipes are value objects, so should use `@EqualsAndHashCode(callSuper = false)`. \
+               While in most cases recipes do not extend other classes and so the option is moot, as \
+               a matter of stylistic consistency and to enforce the idea that recipes are value objects, \
+               this value should be set to `false`.\
+               """;
     }
 
     @Override

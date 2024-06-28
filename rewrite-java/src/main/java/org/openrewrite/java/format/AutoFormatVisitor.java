@@ -49,8 +49,8 @@ public class AutoFormatVisitor<P> extends JavaIsoVisitor<P> {
 
     @Override
     public J visit(@Nullable Tree tree, P p, Cursor cursor) {
-        JavaSourceFile cu = (tree instanceof JavaSourceFile) ?
-                (JavaSourceFile) tree :
+        JavaSourceFile cu = (tree instanceof JavaSourceFile jsf) ?
+                jsf :
                 cursor.firstEnclosingOrThrow(JavaSourceFile.class);
 
         J t = new NormalizeFormatVisitor<>(stopAfter).visit(tree, p, cursor.fork());

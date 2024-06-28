@@ -59,17 +59,21 @@ public class UpdateGradleWrapper extends ScanningRecipe<UpdateGradleWrapper.Grad
 
     @Override
     public String getDescription() {
-        return "Update the version of Gradle used in an existing Gradle wrapper. " +
-               "Queries services.gradle.org to determine the available releases, but prefers the artifact repository URL " +
-               "which already exists within the wrapper properties file. " +
-               "If your artifact repository does not contain the same Gradle distributions as services.gradle.org, " +
-               "then the recipe may suggest a version which is not available in your artifact repository.";
+        return """
+               Update the version of Gradle used in an existing Gradle wrapper. \
+               Queries services.gradle.org to determine the available releases, but prefers the artifact repository URL \
+               which already exists within the wrapper properties file. \
+               If your artifact repository does not contain the same Gradle distributions as services.gradle.org, \
+               then the recipe may suggest a version which is not available in your artifact repository.\
+               """;
     }
 
     @Getter
     @Option(displayName = "New version",
-            description = "An exact version number or node-style semver selector used to select the version number. " +
-                          "Defaults to the latest release available from services.gradle.org if not specified.",
+            description = """
+                          An exact version number or node-style semver selector used to select the version number. \
+                          Defaults to the latest release available from services.gradle.org if not specified.\
+                          """,
             example = "7.x",
             required = false)
     @Nullable
@@ -77,9 +81,11 @@ public class UpdateGradleWrapper extends ScanningRecipe<UpdateGradleWrapper.Grad
 
     @Getter
     @Option(displayName = "Distribution type",
-            description = "The distribution of Gradle to use. \"bin\" includes Gradle binaries. " +
-                          "\"all\" includes Gradle binaries, source code, and documentation. " +
-                          "Defaults to \"bin\".",
+            description = """
+                          The distribution of Gradle to use. "bin" includes Gradle binaries. \
+                          "all" includes Gradle binaries, source code, and documentation. \
+                          Defaults to "bin".\
+                          """,
             valid = {"bin", "all"},
             required = false
     )
@@ -95,11 +101,13 @@ public class UpdateGradleWrapper extends ScanningRecipe<UpdateGradleWrapper.Grad
 
     @Getter
             @Option(example = "https://services.gradle.org/distributions/gradle-${version}-${distribution}.zip", displayName = "Wrapper URI",
-                    description = "The URI of the Gradle wrapper distribution. " +
-                            "Lookup of available versions still requires access to https://services.gradle.org " +
-                            "When this is specified the exact literal values supplied for `version` and `distribution` " +
-                            "will be interpolated into this string wherever `${version}` and `${distribution}` appear respectively. " +
-                            "Defaults to https://services.gradle.org/distributions/gradle-${version}-${distribution}.zip.",
+                    description = """
+                            The URI of the Gradle wrapper distribution. \
+                            Lookup of available versions still requires access to https://services.gradle.org \
+                            When this is specified the exact literal values supplied for `version` and `distribution` \
+                            will be interpolated into this string wherever `${version}` and `${distribution}` appear respectively. \
+                            Defaults to https://services.gradle.org/distributions/gradle-${version}-${distribution}.zip.\
+                            """,
                     required = false)
     @Nullable
     final String wrapperUri;
@@ -154,7 +162,7 @@ public class UpdateGradleWrapper extends ScanningRecipe<UpdateGradleWrapper.Grad
                         }
 
                         Optional<BuildTool> maybeBuildTool = sourceFile.getMarkers().findFirst(BuildTool.class);
-                        if (!maybeBuildTool.isPresent()) {
+                        if (maybeBuildTool.isEmpty()) {
                             return false;
                         }
                         BuildTool buildTool = maybeBuildTool.get();

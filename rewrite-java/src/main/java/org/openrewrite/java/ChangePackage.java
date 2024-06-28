@@ -61,7 +61,7 @@ public class ChangePackage extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s` to `%s`", oldPackageName, newPackageName);
+        return "`%s` to `%s`".formatted(oldPackageName, newPackageName);
     }
 
     @Override
@@ -104,8 +104,8 @@ public class ChangePackage extends Recipe {
                         }
                     }
                     for (JavaType type : cu.getTypesInUse().getTypesInUse()) {
-                        if (type instanceof JavaType.FullyQualified) {
-                            String packageName = ((JavaType.FullyQualified) type).getPackageName();
+                        if (type instanceof JavaType.FullyQualified qualified) {
+                            String packageName = qualified.getPackageName();
                             if (packageName.equals(oldPackageName) || recursive && packageName.startsWith(recursivePackageNamePrefix)) {
                                 return SearchResult.found(cu);
                             }
@@ -203,21 +203,17 @@ public class ChangePackage extends Recipe {
         @Override
         public J postVisit(J tree, ExecutionContext ctx) {
             J j = super.postVisit(tree, ctx);
-            if (j instanceof J.MethodDeclaration) {
-                J.MethodDeclaration m = (J.MethodDeclaration) j;
+            if (j instanceof J.MethodDeclaration m) {
                 JavaType.Method mt = updateType(m.getMethodType());
                 return m.withMethodType(mt).withName(m.getName().withType(mt));
-            } else if (j instanceof J.MethodInvocation) {
-                J.MethodInvocation m = (J.MethodInvocation) j;
+            } else if (j instanceof J.MethodInvocation m) {
                 JavaType.Method mt = updateType(m.getMethodType());
                 return m.withMethodType(mt).withName(m.getName().withType(mt));
-            } else if (j instanceof J.NewClass) {
-                J.NewClass n = (J.NewClass) j;
+            } else if (j instanceof J.NewClass n) {
                 return n.withConstructorType(updateType(n.getConstructorType()));
-            } else if (j instanceof TypedTree) {
-                return ((TypedTree) j).withType(updateType(((TypedTree) j).getType()));
-            } else if (j instanceof JavaSourceFile) {
-                JavaSourceFile sf = (JavaSourceFile) j;
+            } else if (j instanceof TypedTree typedTree) {
+                return typedTree.withType(updateType(typedTree.getType()));
+            } else if (j instanceof JavaSourceFile sf) {
 
                 String changingTo = getCursor().getNearestMessage(RENAME_TO_KEY);
                 if (changingTo != null) {
@@ -253,11 +249,9 @@ public class ChangePackage extends Recipe {
                 return type;
             }
 
-            if (oldType instanceof JavaType.Parameterized) {
-                JavaType.Parameterized pt = (JavaType.Parameterized) oldType;
+            if (oldType instanceof JavaType.Parameterized pt) {
                 pt = pt.withTypeParameters(ListUtils.map(pt.getTypeParameters(), tp -> {
-                    if (tp instanceof JavaType.FullyQualified) {
-                        JavaType.FullyQualified tpFq = (JavaType.FullyQualified) tp;
+                    if (tp instanceof JavaType.FullyQualified tpFq) {
                         if (isTargetFullyQualifiedType(tpFq)) {
                             return updateType(tpFq);
                         }
@@ -279,10 +273,9 @@ public class ChangePackage extends Recipe {
                     oldNameToChangedType.put(fq, fq);
                     return fq;
                 }
-            } else if (oldType instanceof JavaType.GenericTypeVariable) {
-                JavaType.GenericTypeVariable gtv = (JavaType.GenericTypeVariable) oldType;
+            } else if (oldType instanceof JavaType.GenericTypeVariable gtv) {
                 gtv = gtv.withBounds(ListUtils.map(gtv.getBounds(), b -> {
-                    if (b instanceof JavaType.FullyQualified && isTargetFullyQualifiedType((JavaType.FullyQualified) b)) {
+                    if (b instanceof JavaType.FullyQualified qualified && isTargetFullyQualifiedType(qualified)) {
                         return updateType(b);
                     }
                     return b;
@@ -291,15 +284,13 @@ public class ChangePackage extends Recipe {
                 oldNameToChangedType.put(oldType, gtv);
                 oldNameToChangedType.put(gtv, gtv);
                 return gtv;
-            } else if (oldType instanceof JavaType.Variable) {
-                JavaType.Variable variable = (JavaType.Variable) oldType;
+            } else if (oldType instanceof JavaType.Variable variable) {
                 variable = variable.withOwner(updateType(variable.getOwner()));
                 variable = variable.withType(updateType(variable.getType()));
                 oldNameToChangedType.put(oldType, variable);
                 oldNameToChangedType.put(variable, variable);
                 return variable;
-            } else if (oldType instanceof JavaType.Array) {
-                JavaType.Array array = (JavaType.Array) oldType;
+            } else if (oldType instanceof JavaType.Array array) {
                 array = array.withElemType(updateType(array.getElemType()));
                 oldNameToChangedType.put(oldType, array);
                 oldNameToChangedType.put(array, array);

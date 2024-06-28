@@ -411,13 +411,13 @@ public class JavaPrinter<P> extends JavaVisitor<PrintOutputCapture<P>> {
                 return;
             }
 
-            if (s instanceof MethodDeclaration && ((MethodDeclaration) s).getBody() == null) {
+            if (s instanceof MethodDeclaration declaration && declaration.getBody() == null) {
                 p.append(';');
                 return;
             }
 
-            if (s instanceof Label) {
-                s = ((Label) s).getStatement();
+            if (s instanceof Label label) {
+                s = label.getStatement();
                 continue;
             }
 
@@ -455,7 +455,7 @@ public class JavaPrinter<P> extends JavaVisitor<PrintOutputCapture<P>> {
     @Override
     public J visitCase(Case case_, PrintOutputCapture<P> p) {
         beforeSyntax(case_, Space.Location.CASE_PREFIX, p);
-        Expression elem = case_.getExpressions().get(0);
+        Expression elem = case_.getExpressions().getFirst();
         if (!(elem instanceof Identifier) || !((Identifier) elem).getSimpleName().equals("default")) {
             p.append("case");
         }
@@ -594,7 +594,7 @@ public class JavaPrinter<P> extends JavaVisitor<PrintOutputCapture<P>> {
         if (enum_.getInitializer() != null) {
             visitSpace(initializer.getPrefix(), Space.Location.NEW_CLASS_PREFIX, p);
             visitSpace(initializer.getNew(), Space.Location.NEW_PREFIX, p);
-            if (!initializer.getPadding().getArguments().getMarkers().findFirst(OmitParentheses.class).isPresent()) {
+            if (initializer.getPadding().getArguments().getMarkers().findFirst(OmitParentheses.class).isEmpty()) {
                 visitContainer("(", initializer.getPadding().getArguments(), JContainer.Location.NEW_CLASS_ARGUMENTS, ",", ")", p);
             }
             visit(initializer.getBody(), p);
@@ -800,7 +800,7 @@ public class JavaPrinter<P> extends JavaVisitor<PrintOutputCapture<P>> {
         visit(method.getReturnTypeExpression(), p);
         visit(method.getAnnotations().getName().getAnnotations(), p);
         visit(method.getName(), p);
-        if (!method.getMarkers().findFirst(CompactConstructor.class).isPresent()) {
+        if (method.getMarkers().findFirst(CompactConstructor.class).isEmpty()) {
             visitContainer("(", method.getPadding().getParameters(), JContainer.Location.METHOD_DECLARATION_PARAMETERS, ",", ")", p);
         }
         visitContainer("throws", method.getPadding().getThrows(), JContainer.Location.THROWS, ",", null, p);
@@ -874,7 +874,7 @@ public class JavaPrinter<P> extends JavaVisitor<PrintOutputCapture<P>> {
         visitSpace(newClass.getNew(), Space.Location.NEW_PREFIX, p);
         p.append("new");
         visit(newClass.getClazz(), p);
-        if (!newClass.getPadding().getArguments().getMarkers().findFirst(OmitParentheses.class).isPresent()) {
+        if (newClass.getPadding().getArguments().getMarkers().findFirst(OmitParentheses.class).isEmpty()) {
             visitContainer("(", newClass.getPadding().getArguments(), JContainer.Location.NEW_CLASS_ARGUMENTS, ",", ")", p);
         }
         visit(newClass.getBody(), p);

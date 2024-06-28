@@ -102,7 +102,7 @@ public class BracketsVisitor<P> extends HclIsoVisitor<P> {
     public Hcl.Block visitBlock(final Hcl.Block block, final P p) {
         final List<BodyContent> body = block.getBody();
         if (!body.isEmpty()) {
-            BodyContent first = body.get(0);
+            BodyContent first = body.getFirst();
             if (!first.getPrefix().getLastWhitespace().contains("\n")) {
                 List<BodyContent> newBody = new ArrayList<>(body);
                 newBody.set(0, first.withPrefix(first.getPrefix().withWhitespace("\n")));

@@ -185,12 +185,12 @@ public class JavaVisitor<P> extends TreeVisitor<J, P> {
             return space;
         }
         return space.withComments(ListUtils.map(space.getComments(), comment -> {
-            if (comment instanceof Javadoc) {
+            if (comment instanceof Javadoc javadoc) {
                 if (javadocVisitor == null) {
                     javadocVisitor = getJavadocVisitor();
                 }
                 Cursor previous = javadocVisitor.getCursor();
-                Comment c = (Comment) javadocVisitor.visit((Javadoc) comment, p, getCursor());
+                Comment c = (Comment) javadocVisitor.visit(javadoc, p, getCursor());
                 javadocVisitor.setCursor(previous);
                 return c;
             }
@@ -1456,15 +1456,14 @@ public class JavaVisitor<P> extends TreeVisitor<J, P> {
         //Now walk up the child path looking for the base scope.
         for (Iterator<Object> it = child.getPath(); it.hasNext(); ) {
             Object childScope = it.next();
-            if (childScope instanceof J.ClassDeclaration) {
-                J.ClassDeclaration childClass = (J.ClassDeclaration) childScope;
+            if (childScope instanceof J.ClassDeclaration childClass) {
                 if (!(childClass.getKind().equals(J.ClassDeclaration.Kind.Type.Class)) ||
                     childClass.hasModifier(J.Modifier.Type.Static)) {
                     //Short circuit the search if a terminating element is encountered.
                     return false;
                 }
             }
-            if (childScope instanceof Tree && baseScope.isScope((Tree) childScope)) {
+            if (childScope instanceof Tree tree && baseScope.isScope(tree)) {
                 return true;
             }
         }

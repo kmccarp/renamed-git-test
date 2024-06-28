@@ -133,8 +133,7 @@ public class MinimumViableSpacingVisitor<P> extends JavaIsoVisitor<P> {
                 // If it's a J.AnnotatedType, because the first annotation has its prefix, so don't need to set the
                 // prefix for the return type again to avoid two spaces, instead, we need to trim the prefix of the 1st
                 // annotation to be single space.
-                if (returnTypeExpression instanceof J.AnnotatedType) {
-                    J.AnnotatedType annotatedType = (J.AnnotatedType) returnTypeExpression;
+                if (returnTypeExpression instanceof J.AnnotatedType annotatedType) {
                     List<J.Annotation> annotations = ListUtils.mapFirst(annotatedType.getAnnotations(), annotation ->
                             annotation.withPrefix(annotation.getPrefix().withWhitespace(" "))
                     );
@@ -164,7 +163,7 @@ public class MinimumViableSpacingVisitor<P> extends JavaIsoVisitor<P> {
     public J.Return visitReturn(J.Return return_, P p) {
         J.Return r = super.visitReturn(return_, p);
         if (r.getExpression() != null && r.getExpression().getPrefix().getWhitespace().isEmpty() &&
-            !return_.getMarkers().findFirst(ImplicitReturn.class).isPresent()) {
+                return_.getMarkers().findFirst(ImplicitReturn.class).isEmpty()) {
             r = r.withExpression(r.getExpression().withPrefix(r.getExpression().getPrefix().withWhitespace(" ")));
         }
         return r;
@@ -204,7 +203,7 @@ public class MinimumViableSpacingVisitor<P> extends JavaIsoVisitor<P> {
         if (!(firstEnclosing instanceof J.Lambda)) {
             if (Space.firstPrefix(v.getVariables()).isEmpty()) {
                 v = v.withVariables(Space.formatFirstPrefix(v.getVariables(),
-                        v.getVariables().iterator().next().getPrefix().withWhitespace(" ")));
+                        v.getVariables().getFirst().getPrefix().withWhitespace(" ")));
             }
         }
 

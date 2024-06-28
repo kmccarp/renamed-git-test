@@ -64,16 +64,20 @@ public class AddDependency extends ScanningRecipe<AddDependency.Scanned> {
     String version;
 
     @Option(displayName = "Version pattern",
-            description = "Allows version selection to be extended beyond the original Node Semver semantics. So for example," +
-                          "Setting 'version' to \"25-29\" can be paired with a metadata pattern of \"-jre\" to select Guava 29.0-jre",
+            description = """
+                          Allows version selection to be extended beyond the original Node Semver semantics. So for example,\
+                          Setting 'version' to "25-29" can be paired with a metadata pattern of "-jre" to select Guava 29.0-jre\
+                          """,
             example = "-jre",
             required = false)
     @Nullable
     String versionPattern;
 
     @Option(displayName = "Scope",
-            description = "A scope to use when it is not what can be inferred from usage. Most of the time this will be left empty, but " +
-                          "is used when adding a runtime, provided, or import dependency.",
+            description = """
+                          A scope to use when it is not what can be inferred from usage. Most of the time this will be left empty, but \
+                          is used when adding a runtime, provided, or import dependency.\
+                          """,
             example = "runtime",
             valid = {"import", "runtime", "provided"},
             required = false)
@@ -118,8 +122,10 @@ public class AddDependency extends ScanningRecipe<AddDependency.Scanned> {
      * A glob expression used to identify other dependencies in the same family as the dependency to be added.
      */
     @Option(displayName = "Family pattern",
-            description = "A pattern, applied to groupIds, used to determine which other dependencies should have aligned version numbers. " +
-                          "Accepts '*' as a wildcard character.",
+            description = """
+                          A pattern, applied to groupIds, used to determine which other dependencies should have aligned version numbers. \
+                          Accepts '*' as a wildcard character.\
+                          """,
             example = "com.fasterxml.jackson*",
             required = false)
     @Nullable
@@ -150,7 +156,7 @@ public class AddDependency extends ScanningRecipe<AddDependency.Scanned> {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s:%s:%s`", groupId, artifactId, version);
+        return "`%s:%s:%s`".formatted(groupId, artifactId, version);
     }
 
     @Override
@@ -187,8 +193,7 @@ public class AddDependency extends ScanningRecipe<AddDependency.Scanned> {
                             );
                         }
                     }
-                } else if(tree instanceof Xml.Document) {
-                    Xml.Document doc = (Xml.Document) tree;
+                } else if(tree instanceof Xml.Document doc) {
                     MavenResolutionResult mrr = doc.getMarkers().findFirst(MavenResolutionResult.class).orElse(null);
                     if(mrr == null) {
                         return sourceFile;

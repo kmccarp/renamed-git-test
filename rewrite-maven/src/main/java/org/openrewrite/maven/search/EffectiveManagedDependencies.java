@@ -64,7 +64,7 @@ public class EffectiveManagedDependencies extends Recipe {
             for (ResolvedManagedDependency managed : mrr.getPom().getDependencyManagement()) {
                 dependencyGraph.insertRow(ctx, new ManagedDependencyGraph.Row(
                         String.format("%s:%s:%s", mrr.getPom().getGroupId(), mrr.getPom().getArtifactId(), mrr.getPom().getVersion()),
-                        String.format("%s:%s:%s", managed.getGroupId(), managed.getArtifactId(), managed.getVersion())
+                        "%s:%s:%s".formatted(managed.getGroupId(), managed.getArtifactId(), managed.getVersion())
                 ));
             }
         }

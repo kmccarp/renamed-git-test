@@ -44,9 +44,9 @@ public class Preconditions {
         return new TreeVisitor<Tree, ExecutionContext>() {
             @Override
             public @Nullable Tree visit(@Nullable Tree tree, ExecutionContext ctx) {
-                if (tree instanceof SourceFile) {
+                if (tree instanceof SourceFile file) {
                     for (TreeVisitor<?, ExecutionContext> v : vs) {
-                        if (v.isAcceptable((SourceFile) tree, ctx)) {
+                        if (v.isAcceptable(file, ctx)) {
                             return v.visit(tree, ctx);
                         }
                     }
@@ -60,7 +60,7 @@ public class Preconditions {
         return new TreeVisitor<Tree, ExecutionContext>() {
             @Override
             public Tree visit(@Nullable Tree tree, ExecutionContext ctx) {
-                SourceFile sourceFile = tree instanceof SourceFile ? (SourceFile) tree : null;
+                SourceFile sourceFile = tree instanceof SourceFile sf ? sf : null;
                 // calling `isAcceptable()` in case `v` overrides `visit(Tree, P)`
                 if (sourceFile != null && !v.isAcceptable(sourceFile, ctx)) {
                     return SearchResult.found(tree);
@@ -78,7 +78,7 @@ public class Preconditions {
         return new TreeVisitor<Tree, ExecutionContext>() {
             @Override
             public Tree visit(@Nullable Tree tree, ExecutionContext ctx) {
-                SourceFile sourceFile = tree instanceof SourceFile ? (SourceFile) tree : null;
+                SourceFile sourceFile = tree instanceof SourceFile sf ? sf : null;
                 for (TreeVisitor<?, ExecutionContext> v : vs) {
                     // calling `isAcceptable()` in case `v` overrides `visit(Tree, P)`
                     if (sourceFile != null && !v.isAcceptable(sourceFile, ctx)) {
@@ -99,7 +99,7 @@ public class Preconditions {
         return new TreeVisitor<Tree, ExecutionContext>() {
             @Override
             public Tree visit(@Nullable Tree tree, ExecutionContext ctx) {
-                SourceFile sourceFile = tree instanceof SourceFile ? (SourceFile) tree : null;
+                SourceFile sourceFile = tree instanceof SourceFile sf ? sf : null;
                 Tree t2 = tree;
                 for (TreeVisitor<?, ExecutionContext> v : vs) {
                     // calling `isAcceptable()` in case `v` overrides `visit(Tree, P)`

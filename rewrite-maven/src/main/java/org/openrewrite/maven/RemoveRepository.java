@@ -49,7 +49,7 @@ public class RemoveRepository extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s`", url);
+        return "`%s`".formatted(url);
     }
 
     @Override

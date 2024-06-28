@@ -169,8 +169,8 @@ public class TreeVisitingPrinter extends TreeVisitor<Tree, ExecutionContext> {
             return "";
         }
 
-        if (tree instanceof J.Literal) {
-            String s = ((J.Literal) tree).getValueSource();
+        if (tree instanceof J.Literal literal) {
+            String s = literal.getValueSource();
             return s != null ? s : "";
         }
 
@@ -246,14 +246,12 @@ public class TreeVisitingPrinter extends TreeVisitor<Tree, ExecutionContext> {
                         .append(UNVISITED_PREFIX)
                         .append(element instanceof String ? element : element.getClass().getSimpleName());
 
-                    if (element instanceof JRightPadded) {
-                        JRightPadded rp = (JRightPadded) element;
+                    if (element instanceof JRightPadded<?> rp) {
                         newLine.append(" | ");
                         newLine.append(" after = ").append(printSpace(rp.getAfter()));
                     }
 
-                    if (element instanceof JLeftPadded) {
-                        JLeftPadded lp = (JLeftPadded) element;
+                    if (element instanceof JLeftPadded<?> lp) {
                         newLine.append(" | ");
                         newLine.append(" before = ").append(printSpace(lp.getBefore()));
                     }

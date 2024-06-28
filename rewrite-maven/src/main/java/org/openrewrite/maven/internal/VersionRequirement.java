@@ -246,11 +246,11 @@ public class VersionRequirement {
 
         while (next != null) {
             VersionSpec spec = next.versionSpec;
-            if (spec instanceof DirectRequirement) {
+            if (spec instanceof DirectRequirement requirement) {
                 // dependencies defined in the project POM always win
-                return ((DirectRequirement) spec).getVersion();
-            } else if (spec instanceof SoftRequirement) {
-                nearestSoftRequirement = ((SoftRequirement) spec).version;
+                return requirement.getVersion();
+            } else if (spec instanceof SoftRequirement requirement) {
+                nearestSoftRequirement = requirement.version;
             } else {
                 nearestHardRequirement = next;
             }
@@ -265,8 +265,8 @@ public class VersionRequirement {
         for (String availableVersion : availableVersions.call()) {
             Version version = new Version(availableVersion);
 
-            if ((hardRequirement instanceof DynamicVersion && ((DynamicVersion) hardRequirement).matches(version)) ||
-                (hardRequirement instanceof RangeSet && ((RangeSet) hardRequirement).matches(version))) {
+            if ((hardRequirement instanceof DynamicVersion dynamicVersion && dynamicVersion.matches(version)) ||
+                (hardRequirement instanceof RangeSet set && set.matches(version))) {
 
                 if (latest == null || version.compareTo(latest) > 0) {
                     latest = version;

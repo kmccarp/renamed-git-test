@@ -204,14 +204,14 @@ public class GroovyPrinter<P> extends GroovyVisitor<PrintOutputCapture<P>> {
                 for (Marker m : node.getMarkers().getMarkers()) {
                     // Maintaining for backwards compatibility with old LSTs
                     //noinspection deprecation
-                    if (m instanceof TrailingComma) {
+                    if (m instanceof TrailingComma comma) {
                         p.append(suffixBetween);
                         //noinspection deprecation
-                        visitSpace(((TrailingComma) m).getSuffix(), Space.Location.LANGUAGE_EXTENSION, p);
+                        visitSpace(comma.getSuffix(), Space.Location.LANGUAGE_EXTENSION, p);
                         break;
-                    } else if (m instanceof org.openrewrite.java.marker.TrailingComma) {
+                    } else if (m instanceof org.openrewrite.java.marker.TrailingComma comma) {
                         p.append(suffixBetween);
-                        visitSpace(((org.openrewrite.java.marker.TrailingComma) m).getSuffix(), Space.Location.LANGUAGE_EXTENSION, p);
+                        visitSpace(comma.getSuffix(), Space.Location.LANGUAGE_EXTENSION, p);
                         break;
                     }
                 }
@@ -246,7 +246,7 @@ public class GroovyPrinter<P> extends GroovyVisitor<PrintOutputCapture<P>> {
 
         @Override
         public J visitTypeCast(J.TypeCast t, PrintOutputCapture<P> p) {
-            if (!t.getMarkers().findFirst(AsStyleTypeCast.class).isPresent()) {
+            if (t.getMarkers().findFirst(AsStyleTypeCast.class).isEmpty()) {
                 return super.visitTypeCast(t, p);
             }
             beforeSyntax(t, Space.Location.TYPE_CAST_PREFIX, p);
@@ -342,7 +342,7 @@ public class GroovyPrinter<P> extends GroovyVisitor<PrintOutputCapture<P>> {
             visit(method.getName(), p);
             Optional<EmptyArgumentListPrecedesArgument> maybeEal = method.getMarkers().findFirst(EmptyArgumentListPrecedesArgument.class);
             // If a recipe changed the number or kind of arguments then this marker is nonsense, even if the recipe forgets to remove it
-            if (maybeEal.isPresent() && method.getArguments().size() == 1 && method.getArguments().get(0) instanceof J.Lambda) {
+            if (maybeEal.isPresent() && method.getArguments().size() == 1 && method.getArguments().getFirst() instanceof J.Lambda) {
                 EmptyArgumentListPrecedesArgument eal = maybeEal.get();
                 visitSpace(eal.getPrefix(), Space.Location.LANGUAGE_EXTENSION, p);
                 p.append("(");
@@ -365,8 +365,8 @@ public class GroovyPrinter<P> extends GroovyVisitor<PrintOutputCapture<P>> {
                 if (i == 0 && !omitParens) {
                     p.append('(');
                 } else if (i > 0 && omitParens && (
-                        !args.get(0).getElement().getMarkers().findFirst(OmitParentheses.class).isPresent() &&
-                        !args.get(0).getElement().getMarkers().findFirst(org.openrewrite.java.marker.OmitParentheses.class).isPresent()
+                        args.getFirst().getElement().getMarkers().findFirst(OmitParentheses.class).isEmpty() &&
+                                args.getFirst().getElement().getMarkers().findFirst(org.openrewrite.java.marker.OmitParentheses.class).isEmpty()
                 )) {
                     p.append(')');
                 } else if (i > 0) {

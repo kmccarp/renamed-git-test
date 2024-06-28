@@ -49,34 +49,34 @@ public class RemovePluginVisitor extends GroovyIsoVisitor<ExecutionContext> {
         if (m != null && buildPluginsContainerMatcher.matches(m) || settingsPluginsContainerMatcher.matches(m)) {
             b = b.withStatements(ListUtils.map(b.getStatements(), statement -> {
                 if (!(statement instanceof J.MethodInvocation
-                        || (statement instanceof J.Return && ((J.Return) statement).getExpression() instanceof J.MethodInvocation))) {
+                        || (statement instanceof J.Return return1 && return1.getExpression() instanceof J.MethodInvocation))) {
                     return statement;
                 }
 
-                J.MethodInvocation m2 = (J.MethodInvocation) (statement instanceof J.Return ? ((J.Return) statement).getExpression() : statement);
+                J.MethodInvocation m2 = (J.MethodInvocation) (statement instanceof J.Return r ? r.getExpression() : statement);
                 if (buildPluginMatcher.matches(m2) || settingsPluginMatcher.matches(m2)) {
-                    if (m2.getArguments().get(0) instanceof J.Literal && pluginId.equals(((J.Literal) m2.getArguments().get(0)).getValue())) {
+                    if (m2.getArguments().getFirst() instanceof J.Literal && pluginId.equals(((J.Literal) m2.getArguments().getFirst()).getValue())) {
                         return null;
                     }
                 } else if (buildPluginWithVersionMatcher.matches(m2) || settingsPluginWithVersionMatcher.matches(m2)) {
                     if (m2.getSelect() instanceof J.MethodInvocation
-                            && ((J.MethodInvocation) m2.getSelect()).getArguments().get(0) instanceof J.Literal
-                            && pluginId.equals(((J.Literal) ((J.MethodInvocation) m2.getSelect()).getArguments().get(0)).getValue())) {
+                            && ((J.MethodInvocation) m2.getSelect()).getArguments().getFirst() instanceof J.Literal
+                            && pluginId.equals(((J.Literal) ((J.MethodInvocation) m2.getSelect()).getArguments().getFirst()).getValue())) {
                         return null;
                     }
                 } else if (buildPluginWithApplyMatcher.matches(m2) || settingsPluginWithApplyMatcher.matches(m2)) {
                     if (buildPluginMatcher.matches(m2.getSelect()) || settingsPluginMatcher.matches(m2.getSelect())) {
                         if (m2.getSelect() instanceof J.MethodInvocation
-                                && ((J.MethodInvocation) m2.getSelect()).getArguments().get(0) instanceof J.Literal
-                                && pluginId.equals(((J.Literal) ((J.MethodInvocation) m2.getSelect()).getArguments().get(0)).getValue())) {
+                                && ((J.MethodInvocation) m2.getSelect()).getArguments().getFirst() instanceof J.Literal
+                                && pluginId.equals(((J.Literal) ((J.MethodInvocation) m2.getSelect()).getArguments().getFirst()).getValue())) {
                             return null;
                         }
                     } else if (buildPluginWithVersionMatcher.matches(m2.getSelect()) || settingsPluginWithVersionMatcher.matches(m2.getSelect())) {
                         if (m2.getSelect() instanceof J.MethodInvocation
                                 && (buildPluginMatcher.matches(((J.MethodInvocation) m2.getSelect()).getSelect()) || settingsPluginMatcher.matches(((J.MethodInvocation) m2.getSelect()).getSelect()))) {
                             if (((J.MethodInvocation) m2.getSelect()).getSelect() instanceof J.MethodInvocation
-                                    && ((J.MethodInvocation) ((J.MethodInvocation) m2.getSelect()).getSelect()).getArguments().get(0) instanceof J.Literal
-                                    && pluginId.equals(((J.Literal) ((J.MethodInvocation) ((J.MethodInvocation) m2.getSelect()).getSelect()).getArguments().get(0)).getValue())) {
+                                    && ((J.MethodInvocation) ((J.MethodInvocation) m2.getSelect()).getSelect()).getArguments().getFirst() instanceof J.Literal
+                                    && pluginId.equals(((J.Literal) ((J.MethodInvocation) ((J.MethodInvocation) m2.getSelect()).getSelect()).getArguments().getFirst()).getValue())) {
                                 return null;
                             }
                         }
@@ -95,16 +95,15 @@ public class RemovePluginVisitor extends GroovyIsoVisitor<ExecutionContext> {
         J.MethodInvocation m = super.visitMethodInvocation(method, executionContext);
 
         if (buildPluginsContainerMatcher.matches(m) || settingsPluginsContainerMatcher.matches(m)) {
-            if (m.getArguments().get(0) instanceof J.Lambda
-                    && ((J.Lambda) m.getArguments().get(0)).getBody() instanceof J.Block
-                    && ((J.Block) ((J.Lambda) m.getArguments().get(0)).getBody()).getStatements().isEmpty()) {
+            if (m.getArguments().getFirst() instanceof J.Lambda
+                    && ((J.Lambda) m.getArguments().getFirst()).getBody() instanceof J.Block
+                    && ((J.Block) ((J.Lambda) m.getArguments().getFirst()).getBody()).getStatements().isEmpty()) {
                 //noinspection DataFlowIssue
                 return null;
             }
         } else if(applyPluginMatcher.matches(m)) {
             for (Expression arg : m.getArguments()) {
-                if(arg instanceof G.MapEntry) {
-                    G.MapEntry me = (G.MapEntry) arg;
+                if(arg instanceof G.MapEntry me) {
                     if(me.getKey() instanceof J.Literal && me.getValue() instanceof J.Literal) {
                         J.Literal pluginLiteral = (J.Literal) me.getKey();
                         J.Literal pluginIdLiteral = (J.Literal) me.getValue();

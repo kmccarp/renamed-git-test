@@ -49,7 +49,7 @@ public class CommentOutProperty extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s`", propertyKey);
+        return "`%s`".formatted(propertyKey);
     }
 
     @Override

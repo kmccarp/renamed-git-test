@@ -145,8 +145,10 @@ public class CategoryTree<G> {
                 break;
             }
             if (categoryDescriptor == null) {
-                throw new IllegalStateException("Unable to find a descriptor for category. This represents " +
-                                                "a bug in CategoryTree, since it should never occur.");
+                throw new IllegalStateException("""
+                                                Unable to find a descriptor for category. This represents \
+                                                a bug in CategoryTree, since it should never occur.\
+                                                """);
             }
         }
 
@@ -260,7 +262,7 @@ public class CategoryTree<G> {
         // same category with a potentially different descriptor coming from this group
         if (categoryPackage.equals(packageName)) {
             if (!groups.contains(group)) {
-                groups.add(0, group);
+                groups.addFirst(group);
 
                 // might be synthetic, but it's the first so add it
                 descriptorsByGroup.put(group, category);
@@ -279,7 +281,7 @@ public class CategoryTree<G> {
                 String subtreePackage = subtree.getDescriptor().getPackageName();
                 if (subtreePackage.equals(categoryPackage) || categoryPackage.startsWith(subtreePackage + ".")) {
                     if (!subtree.groups.contains(group)) {
-                        subtree.groups.add(0, group);
+                        subtree.groups.addFirst(group);
                         subtree.descriptorsByGroup.put(group, new CategoryDescriptor(
                                 StringUtils.capitalize(subtreePackage.substring(subtreePackage.lastIndexOf('.') + 1)),
                                 subtreePackage,

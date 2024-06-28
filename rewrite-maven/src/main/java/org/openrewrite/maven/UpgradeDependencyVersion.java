@@ -69,16 +69,20 @@ public class UpgradeDependencyVersion extends ScanningRecipe<UpgradeDependencyVe
     String artifactId;
 
     @Option(displayName = "New version",
-            description = "An exact version number or node-style semver selector used to select the version number. " +
-                          "You can also use `latest.release` for the latest available version and `latest.patch` if " +
-                          "the current version is a valid semantic version. For more details, you can look at the documentation " +
-                          "page of [version selectors](https://docs.openrewrite.org/reference/dependency-version-selectors)",
+            description = """
+                          An exact version number or node-style semver selector used to select the version number. \
+                          You can also use `latest.release` for the latest available version and `latest.patch` if \
+                          the current version is a valid semantic version. For more details, you can look at the documentation \
+                          page of [version selectors](https://docs.openrewrite.org/reference/dependency-version-selectors)\
+                          """,
             example = "29.X")
     String newVersion;
 
     @Option(displayName = "Version pattern",
-            description = "Allows version selection to be extended beyond the original Node Semver semantics. So for example," +
-                          "Setting 'newVersion' to \"25-29\" can be paired with a metadata pattern of \"-jre\" to select Guava 29.0-jre",
+            description = """
+                          Allows version selection to be extended beyond the original Node Semver semantics. So for example,\
+                          Setting 'newVersion' to "25-29" can be paired with a metadata pattern of "-jre" to select Guava 29.0-jre\
+                          """,
             example = "-jre",
             required = false)
     @Nullable
@@ -91,9 +95,11 @@ public class UpgradeDependencyVersion extends ScanningRecipe<UpgradeDependencyVe
     Boolean overrideManagedVersion;
 
     @Option(displayName = "Retain versions",
-            description = "Accepts a list of GAVs. For each GAV, if it is a project direct dependency, and it is removed "
-                          + "from dependency management after the changes from this recipe, then it will be retained with an explicit version. "
-                          + "The version can be omitted from the GAV to use the old value from dependency management",
+            description = """
+                          Accepts a list of GAVs. For each GAV, if it is a project direct dependency, and it is removed \
+                          from dependency management after the changes from this recipe, then it will be retained with an explicit version. \
+                          The version can be omitted from the GAV to use the old value from dependency management\
+                          """,
             example = "com.jcraft:jsch",
             required = false)
     @Nullable
@@ -116,13 +122,15 @@ public class UpgradeDependencyVersion extends ScanningRecipe<UpgradeDependencyVe
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("`%s:%s:%s`", groupId, artifactId, newVersion);
+        return "`%s:%s:%s`".formatted(groupId, artifactId, newVersion);
     }
 
     @Override
     public String getDescription() {
-        return "Upgrade the version of a dependency by specifying a group and (optionally) an artifact using Node Semver " +
-               "advanced range selectors, allowing more precise control over version updates to patch or minor releases.";
+        return """
+               Upgrade the version of a dependency by specifying a group and (optionally) an artifact using Node Semver \
+               advanced range selectors, allowing more precise control over version updates to patch or minor releases.\
+               """;
     }
 
     @Override
@@ -216,7 +224,7 @@ public class UpgradeDependencyVersion extends ScanningRecipe<UpgradeDependencyVe
                             if (pomProperty.pomFilePath.equals(pomSourcePath) &&
                                 pomProperty.propertyName.equals(tag.getName())) {
                                 Optional<String> value = tag.getValue();
-                                if (!value.isPresent() || !value.get().equals(pomProperty.propertyValue)) {
+                                if (value.isEmpty() || !value.get().equals(pomProperty.propertyValue)) {
                                     doAfterVisit(new ChangeTagValueVisitor<>(tag, pomProperty.propertyValue));
                                     maybeUpdateModel();
                                 }
@@ -430,7 +438,7 @@ public class UpgradeDependencyVersion extends ScanningRecipe<UpgradeDependencyVe
             // handle upgrades from non semver versions like "org.springframework.cloud:spring-cloud-dependencies:Camden.SR5"
             if (!Semver.isVersion(finalVersion) && !versions.isEmpty()) {
                 versions.sort(versionComparator);
-                return versions.get(versions.size() - 1);
+                return versions.getLast();
             }
             return versionComparator.upgrade(finalVersion, versions).orElse(null);
         } catch (IllegalStateException e) {

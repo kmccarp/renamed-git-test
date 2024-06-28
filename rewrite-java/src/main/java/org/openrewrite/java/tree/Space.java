@@ -69,14 +69,14 @@ public class Space {
 
     public String getIndent() {
         if (!comments.isEmpty()) {
-            return getWhitespaceIndent(comments.get(comments.size() - 1).getSuffix());
+            return getWhitespaceIndent(comments.getLast().getSuffix());
         }
         return getWhitespaceIndent(whitespace);
     }
 
     public String getLastWhitespace() {
         if (!comments.isEmpty()) {
-            return comments.get(comments.size() - 1).getSuffix();
+            return comments.getLast().getSuffix();
         }
         return whitespace == null ? "" : whitespace;
     }
@@ -129,7 +129,7 @@ public class Space {
     }
 
     public static Space firstPrefix(@Nullable List<? extends J> trees) {
-        return trees == null || trees.isEmpty() ? Space.EMPTY : trees.get(0).getPrefix();
+        return trees == null || trees.isEmpty() ? Space.EMPTY : trees.getFirst().getPrefix();
     }
 
     public static Space format(String formatting) {
@@ -239,11 +239,11 @@ public class Space {
             return null;
         }
 
-        if (!trees.isEmpty() && !trees.get(trees.size() - 1).getAfter().equals(suffix)) {
+        if (!trees.isEmpty() && !trees.getLast().getAfter().equals(suffix)) {
             List<JRightPadded<J2>> formattedTrees = new ArrayList<>(trees);
             formattedTrees.set(
                     formattedTrees.size() - 1,
-                    formattedTrees.get(formattedTrees.size() - 1).withAfter(suffix)
+                    formattedTrees.getLast().withAfter(suffix)
             );
             return formattedTrees;
         }
@@ -252,9 +252,9 @@ public class Space {
     }
 
     public static <J2 extends J> List<J2> formatFirstPrefix(List<J2> trees, Space prefix) {
-        if (!trees.isEmpty() && !trees.get(0).getPrefix().equals(prefix)) {
+        if (!trees.isEmpty() && !trees.getFirst().getPrefix().equals(prefix)) {
             List<J2> formattedTrees = new ArrayList<>(trees);
-            formattedTrees.set(0, formattedTrees.get(0).withPrefix(prefix));
+            formattedTrees.set(0, formattedTrees.getFirst().withPrefix(prefix));
             return formattedTrees;
         }
 

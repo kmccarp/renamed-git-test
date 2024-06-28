@@ -124,7 +124,7 @@ public class AddDependencyVisitor extends MavenIsoVisitor<ExecutionContext> {
         }
 
         Xml.Tag root = maven.getRoot();
-        if (!root.getChild("dependencies").isPresent()) {
+        if (root.getChild("dependencies").isEmpty()) {
             doAfterVisit(new AddToTagVisitor<>(root, Xml.Tag.build("<dependencies/>"),
                     new MavenTagInsertionComparator(root.getContent() == null ? emptyList() : root.getContent())));
         }

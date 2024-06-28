@@ -88,7 +88,7 @@ public class ProtoContainer<T> {
     }
 
     public Space getLastSpace() {
-        return elements.isEmpty() ? Space.EMPTY : elements.get(elements.size() - 1).getAfter();
+        return elements.isEmpty() ? Space.EMPTY : elements.getLast().getAfter();
     }
 
     public Padding<T> getPadding() {

@@ -36,7 +36,7 @@ class FindRecipesTest implements RewriteTest {
               .classpath(JavaParser.runtimeClasspath()))
             .dataTable(RewriteRecipeSource.Row.class, rows -> {
                 assertThat(rows).hasSize(1);
-                RewriteRecipeSource.Row row = rows.get(0);
+                RewriteRecipeSource.Row row = rows.getFirst();
                 assertThat(row.getDisplayName()).isEqualTo("My recipe");
                 assertThat(row.getDescription()).isEqualTo("This is my recipe.");
                 assertThat(row.getOptions()).isEqualTo("[{\"name\":\"methodPattern\",\"displayName\":\"Method pattern\",\"description\":\"A method pattern that is used to find matching method declarations/invocations.\",\"example\":\"org.mockito.Matchers anyVararg()\"},{\"name\":\"newAccessLevel\",\"displayName\":\"New access level\",\"description\":\"New method access level to apply to the method, like \\\"public\\\".\",\"example\":\"public\",\"valid\":[\"private\",\"protected\",\"package\",\"public\"],\"required\":false}]");

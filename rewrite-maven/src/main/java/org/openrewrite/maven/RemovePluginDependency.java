@@ -35,14 +35,18 @@ public class RemovePluginDependency extends Recipe {
     private static final XPathMatcher PLUGINS_MATCHER = new XPathMatcher("/project/build/plugins");
 
     @Option(displayName = "Plugin group ID",
-            description = "Group ID of the plugin from which the dependency will be removed. Supports glob." +
-                    "A Group ID is the first part of a dependency coordinate 'org.openrewrite.maven:rewrite-maven-plugin:VERSION'.",
+            description = """
+                    Group ID of the plugin from which the dependency will be removed. Supports glob.\
+                    A Group ID is the first part of a dependency coordinate 'org.openrewrite.maven:rewrite-maven-plugin:VERSION'.\
+                    """,
             example = "org.openrewrite.maven")
     String pluginGroupId;
 
     @Option(displayName = "Plugin artifact ID",
-            description = "Artifact ID of the plugin from which the dependency will be removed. Supports glob." +
-                    "The second part of a dependency coordinate 'org.openrewrite.maven:rewrite-maven-plugin:VERSION'.",
+            description = """
+                    Artifact ID of the plugin from which the dependency will be removed. Supports glob.\
+                    The second part of a dependency coordinate 'org.openrewrite.maven:rewrite-maven-plugin:VERSION'.\
+                    """,
             example = "rewrite-maven-plugin")
     String pluginArtifactId;
 
@@ -63,7 +67,7 @@ public class RemovePluginDependency extends Recipe {
 
     @Override
     public String getInstanceNameSuffix() {
-        return String.format("from `%s:%s`", pluginGroupId, pluginArtifactId);
+        return "from `%s:%s`".formatted(pluginGroupId, pluginArtifactId);
     }
 
     @Override
@@ -90,12 +94,12 @@ public class RemovePluginDependency extends Recipe {
                                     childValueMatches(plugin, "artifactId", pluginArtifactId)
                     )
                     .findAny();
-            if (!maybePlugin.isPresent()) {
+            if (maybePlugin.isEmpty()) {
                 return plugins;
             }
             Xml.Tag plugin = maybePlugin.get();
             Optional<Xml.Tag> maybeDependencies = plugin.getChild("dependencies");
-            if (!maybeDependencies.isPresent()) {
+            if (maybeDependencies.isEmpty()) {
                 return plugins;
             }
             Xml.Tag dependencies = maybeDependencies.get();

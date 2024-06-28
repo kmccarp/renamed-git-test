@@ -41,9 +41,11 @@ public class RemoveOwaspSuppressions extends Recipe {
 
     @Override
     public String getDescription() {
-        return "Remove all OWASP suppressions with a suppression end date in the past, as these are no longer valid. " +
-               "For use with the OWASP `dependency-check` tool. " +
-               "More details on OWASP suppression files can be found [here](https://jeremylong.github.io/DependencyCheck/general/suppression.html).";
+        return """
+               Remove all OWASP suppressions with a suppression end date in the past, as these are no longer valid. \
+               For use with the OWASP `dependency-check` tool. \
+               More details on OWASP suppression files can be found [here](https://jeremylong.github.io/DependencyCheck/general/suppression.html).\
+               """;
     }
 
     @Override
@@ -59,8 +61,7 @@ public class RemoveOwaspSuppressions extends Recipe {
             }
 
             private boolean isPastDueSuppression(Content content) {
-                if (content instanceof Xml.Tag) {
-                    Xml.Tag child = (Xml.Tag) content;
+                if (content instanceof Xml.Tag child) {
                     if (child.getName().equals("suppress")) {
                         for (Xml.Attribute attribute : child.getAttributes()) {
                             if (attribute.getKeyAsString().equals("until")) {

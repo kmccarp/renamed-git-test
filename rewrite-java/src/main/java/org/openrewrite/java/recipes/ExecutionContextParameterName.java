@@ -48,11 +48,10 @@ public class ExecutionContextParameterName extends Recipe {
                     public J.MethodDeclaration visitMethodDeclaration(J.MethodDeclaration method, ExecutionContext ctx) {
                         J.MethodDeclaration m = super.visitMethodDeclaration(method, ctx);
                         for (Statement parameter : m.getParameters()) {
-                            if (parameter instanceof J.VariableDeclarations) {
-                                J.VariableDeclarations param = (J.VariableDeclarations) parameter;
+                            if (parameter instanceof J.VariableDeclarations param) {
                                 if (TypeUtils.isOfClassType(param.getType(),
                                         "org.openrewrite.ExecutionContext")) {
-                                    m = (J.MethodDeclaration) new RenameVariable<ExecutionContext>(param.getVariables().get(0), "ctx")
+                                    m = (J.MethodDeclaration) new RenameVariable<ExecutionContext>(param.getVariables().getFirst(), "ctx")
                                             .visitNonNull(m, ctx);
                                 }
                             }
